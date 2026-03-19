@@ -57,14 +57,14 @@ Phase 4 — Capstone (weeks 7–8)
 ### Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-architect-foundations.git
-cd claude-architect-foundations
+git clone https://github.com/maxwellsdm1867/caludeArchitect.git
+cd caludeArchitect/claude-architect-foundations
 pip install -r requirements.txt          # anthropic, jupyter, pydantic, python-dotenv
 ```
 
 Create a `.env` file in the repo root with your API key (already in `.gitignore`):
 ```bash
-echo 'ANTHROPIC_API_KEY=sk-ant-...' > ../.env
+echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
 ```
 
 ### Start JupyterLab
