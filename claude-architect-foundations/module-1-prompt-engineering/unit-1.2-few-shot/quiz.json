@@ -1,0 +1,72 @@
+{
+  "unit": "1.2",
+  "title": "Few-Shot Prompting for Consistency",
+  "task_statement": "4.2",
+  "questions": [
+    {
+      "id": "1.2.1",
+      "scenario": "Your agent handles customer requests but inconsistently selects between lookup_order and check_shipping for ambiguous queries like 'where's my package?' You have added detailed tool descriptions and instructions but the routing is still unreliable.",
+      "question": "What should you try next?",
+      "options": [
+        "A) Add a routing classifier that parses user intent before the agent processes the request",
+        "B) Add 3-4 few-shot examples showing correct tool selection for ambiguous queries, with reasoning for why one tool was chosen over the other",
+        "C) Consolidate lookup_order and check_shipping into a single order_status tool",
+        "D) Increase the system prompt detail to 2000+ tokens with comprehensive routing rules"
+      ],
+      "correct": "B",
+      "explanation": "Few-shot examples with reasoning are the most effective technique for resolving ambiguous tool selection when instructions alone are not working. A is over-engineered for this stage — a separate classifier adds latency and complexity when examples would solve the problem directly. C changes the architecture instead of fixing the prompt. D adds tokens without adding the judgment that examples provide."
+    },
+    {
+      "id": "1.2.2",
+      "scenario": "Your extraction system uses 3 few-shot examples, all showing well-formatted invoices with complete data. When processing a handwritten note with missing fields, the model invents values for the missing fields instead of returning null.",
+      "question": "What is the most likely cause of this hallucination?",
+      "options": [
+        "A) The model temperature is too high, causing random value generation",
+        "B) All examples show complete data — the model has no guidance for handling missing fields, so it follows the pattern of always producing values",
+        "C) The model context window is too small to hold all three examples",
+        "D) Handwritten notes require a different model than invoices"
+      ],
+      "correct": "B",
+      "explanation": "This is the happy-path trap. When all few-shot examples show clean, complete inputs, the model learns the pattern 'always produce a value for every field.' It has never seen an example where the correct output is null, so it hallucinates values instead. The fix is to add an example with missing data where the correct output explicitly shows null fields."
+    },
+    {
+      "id": "1.2.3",
+      "scenario": "A teammate creates few-shot examples for a classification task. Each example shows the input and the correct label, but no reasoning for why that label was chosen. The system works well on inputs similar to the examples but fails on novel inputs.",
+      "question": "What change would most improve generalization to novel inputs?",
+      "options": [
+        "A) Add 20 more examples to cover more input patterns",
+        "B) Add reasoning to each example explaining why the label was chosen and why alternatives were rejected",
+        "C) Switch to a larger model with more parameters",
+        "D) Remove the examples and rely on detailed instructions instead"
+      ],
+      "correct": "B",
+      "explanation": "Without reasoning, few-shot examples act as a lookup table — the model matches on surface patterns rather than understanding the underlying logic. Adding reasoning (why this label, why not the alternatives) enables the model to generalize to novel inputs. More examples (A) adds coverage but not understanding. A larger model (C) does not compensate for missing reasoning. Removing examples (D) loses the demonstrated judgment."
+    },
+    {
+      "id": "1.2.4",
+      "scenario": "You are building an extraction pipeline for varied document formats: invoices (structured tables), emails (narrative text), and scanned receipts (noisy OCR). Currently using detailed instructions but extraction quality varies wildly across formats.",
+      "question": "What is the most effective approach to achieve consistent extraction?",
+      "options": [
+        "A) Build a separate extraction pipeline for each document format with format-specific instructions",
+        "B) Add 3 few-shot examples — one per format — showing correct extraction with reasoning about where to find fields in each layout",
+        "C) Increase the instruction length to cover every possible field location in every format",
+        "D) Pre-process all documents into a standard text format before extraction"
+      ],
+      "correct": "B",
+      "explanation": "Few-shot examples showing extraction from each format teach the model where to find fields in different layouts. One example per format (3 total) is sufficient because the reasoning enables generalization. A is over-engineered and creates maintenance burden. C adds tokens without the demonstrated judgment that examples provide. D is a valid engineering approach but adds complexity — examples are the first-line fix."
+    },
+    {
+      "id": "1.2.5",
+      "scenario": "Your few-shot extraction prompt includes 4 examples. The system correctly extracts data from most documents but occasionally converts 'approximately $500' to exactly 500.00 without noting the approximation. Stakeholders want the original phrasing preserved alongside the numeric value.",
+      "question": "What is the best way to fix this?",
+      "options": [
+        "A) Add an instruction: 'When values are approximate, preserve the original text alongside the numeric value'",
+        "B) Replace one of the existing examples with one that shows an approximate value, extracting both the numeric conversion and the original text, with reasoning explaining the conversion decision",
+        "C) Add a post-processing step that detects approximate language and adds the original text",
+        "D) Increase the number of examples to 8, adding 4 examples with approximate values"
+      ],
+      "correct": "B",
+      "explanation": "The most effective fix is adding (or replacing) an example that demonstrates the exact behavior you want: extracting both the numeric value and the original approximate text, with reasoning explaining why both are preserved. A might help but instructions alone are less effective than demonstrated examples for format details. C is a workaround that does not teach the model the correct behavior. D is excessive — one well-crafted example with reasoning is more effective than 4 without."
+    }
+  ]
+}

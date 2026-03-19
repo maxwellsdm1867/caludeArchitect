@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Template &mdash; Claude Architect Foundations</title>
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../../assets/styles.css">
+
+  <!-- Prism.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js" defer></script>
+
+  <!-- Theme & Interactivity -->
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       SITE HEADER
+       ============================================================ -->
+  <header class="site-header">
+    <a href="../../index.html" class="site-title">Claude Architect Foundations</a>
+    <button class="theme-toggle" aria-label="Toggle color theme">
+      <span class="theme-icon"></span>
+      <span class="theme-label">System</span>
+    </button>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main class="overview-page">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a>
+      <span class="sep"></span>
+      <a href="../index.html">Module 1: Prompt Engineering</a>
+      <span class="sep"></span>
+      <span>Unit 3: System Prompts</span>
+    </nav>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+      <span class="dot completed"></span>
+      <span class="dot completed"></span>
+      <span class="dot current"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="progress-label">Unit 3 of 5</span>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1>System Prompts</h1>
+      <p class="subtitle">How to set the stage for reliable, role-specific Claude responses.</p>
+    </header>
+
+    <!-- --------------------------------------------------------
+         CONCEPT CARD
+         -------------------------------------------------------- -->
+    <section class="concept-card">
+      <h3>What Is a System Prompt?</h3>
+      <p>
+        A system prompt is the first message in a conversation that establishes context,
+        role, constraints, and output format for the model. Unlike user messages, the
+        system prompt is typically hidden from end users and persists across the entire
+        conversation.
+      </p>
+      <p>
+        Effective system prompts follow the <strong>GRADE</strong> framework:
+        <strong>G</strong>oal, <strong>R</strong>ole, <strong>A</strong>udience,
+        <strong>D</strong>eliverables, <strong>E</strong>xamples.
+      </p>
+    </section>
+
+    <!-- --------------------------------------------------------
+         DECISION TREE
+         -------------------------------------------------------- -->
+    <h2>Choosing System Prompt Complexity</h2>
+    <ul class="decision-tree">
+      <li>
+        Is the task open-ended or constrained?
+        <ul>
+          <li>
+            Constrained (e.g., classification)
+            <ul>
+              <li>Short system prompt with output schema</li>
+            </ul>
+          </li>
+          <li>
+            Open-ended (e.g., writing, analysis)
+            <ul>
+              <li>
+                Does the task need domain expertise?
+                <ul>
+                  <li>Yes &rarr; Detailed role + examples</li>
+                  <li>No &rarr; Concise role + constraints</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- --------------------------------------------------------
+         EXAM TRAP CALLOUT
+         -------------------------------------------------------- -->
+    <div class="exam-trap">
+      <p>
+        <strong>Exam Trap:</strong>
+        The exam may present a system prompt that includes <code>"You must always..."</code>
+        phrasing. Remember: absolute language like "always" and "never" can cause Claude to
+        refuse legitimate edge-case requests. Prefer guidance with escape hatches
+        over rigid mandates.
+      </p>
+    </div>
+
+    <!-- --------------------------------------------------------
+         KEY INSIGHT CALLOUT
+         -------------------------------------------------------- -->
+    <div class="key-insight">
+      <p>
+        <strong>Key Insight:</strong>
+        System prompts are <em>not</em> immutable instructions. Claude treats them as
+        strong guidance, but a well-crafted user message can override them. The exam tests
+        whether you understand the distinction between system-level guidance and hard
+        constraints enforced through tool design.
+      </p>
+    </div>
+
+    <!-- --------------------------------------------------------
+         CODE EXAMPLE WITH FILENAME HEADER
+         -------------------------------------------------------- -->
+    <h2>Code Example</h2>
+    <div class="code-example">
+      <div class="code-title">system_prompt.py</div>
+      <pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    system="You are a senior Python developer reviewing code for "
+           "security vulnerabilities. Flag any issues with severity "
+           "levels: critical, high, medium, low. Use markdown tables "
+           "for your output.",
+    messages=[
+        {"role": "user", "content": "Review this function:\n\n"
+         "def get_user(id):\n"
+         "    query = f'SELECT * FROM users WHERE id = {id}'\n"
+         "    return db.execute(query)"}
+    ]
+)
+
+print(message.content[0].text)</code></pre>
+    </div>
+
+    <!-- --------------------------------------------------------
+         TAB GROUP (Before / After Comparison)
+         -------------------------------------------------------- -->
+    <h2>Before &amp; After: System Prompts</h2>
+    <div class="tab-group">
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab">Vague Prompt</button>
+        <button class="tab" role="tab">Precise Prompt</button>
+      </div>
+      <div class="tab-panel active" role="tabpanel">
+        <div class="code-example">
+          <pre><code class="language-python">system = "You are a helpful assistant. Answer questions about Python."</code></pre>
+        </div>
+        <p class="text-muted text-small">
+          Too vague &mdash; no role specificity, no output format, no constraints.
+          Claude will produce generic, unfocused answers.
+        </p>
+      </div>
+      <div class="tab-panel" role="tabpanel">
+        <div class="code-example">
+          <pre><code class="language-python">system = """You are an expert Python instructor for intermediate developers.
+When answering:
+- Start with a one-sentence summary
+- Show a minimal code example
+- Explain edge cases and common pitfalls
+- Use type hints in all code
+Output format: Markdown with fenced code blocks."""</code></pre>
+        </div>
+        <p class="text-muted text-small">
+          Specific role, structured output, clear expectations &mdash; Claude will deliver
+          consistent, high-quality responses.
+        </p>
+      </div>
+    </div>
+
+    <!-- --------------------------------------------------------
+         COMPARISON TABLE
+         -------------------------------------------------------- -->
+    <h2>Comparison: Prompt Placement</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>System Prompt</th>
+          <th>User Message Prefix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Visibility</td>
+          <td>Hidden from end user</td>
+          <td>Visible in conversation</td>
+        </tr>
+        <tr>
+          <td>Persistence</td>
+          <td>Entire conversation</td>
+          <td>Single turn only</td>
+        </tr>
+        <tr>
+          <td>Token cost</td>
+          <td>Cached after first call</td>
+          <td>Sent every turn</td>
+        </tr>
+        <tr>
+          <td>Override risk</td>
+          <td>Low (strong guidance)</td>
+          <td>High (easily overridden)</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td><code>Role, format, constraints</code></td>
+          <td><code>Per-turn instructions</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- --------------------------------------------------------
+         COLLAPSIBLE SECTION
+         -------------------------------------------------------- -->
+    <div class="collapsible">
+      <button class="collapsible-trigger">
+        <span>Advanced: Multi-turn System Prompt Strategies</span>
+        <span class="arrow">&#9654;</span>
+      </button>
+      <div class="collapsible-content">
+        <p>
+          In multi-turn conversations, system prompts remain in context for every exchange.
+          This means overly long system prompts increase cost linearly with conversation length.
+          Strategies to manage this:
+        </p>
+        <ul>
+          <li><strong>Layered prompts:</strong> Core identity in system, task-specific details in the first user turn.</li>
+          <li><strong>Prompt caching:</strong> Use Anthropic's prompt caching to reduce costs on the static system portion.</li>
+          <li><strong>Dynamic injection:</strong> Append tool results or context only when relevant, not in every turn.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- --------------------------------------------------------
+         JSON CODE EXAMPLE
+         -------------------------------------------------------- -->
+    <h2>API Response Structure</h2>
+    <div class="code-example">
+      <div class="code-title">response.json</div>
+      <pre><code class="language-json">{
+  "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "| Severity | Issue | Line |\n|----------|-------|------|\n| Critical | SQL Injection | 2 |"
+    }
+  ],
+  "model": "claude-sonnet-4-20250514",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 245,
+    "output_tokens": 68
+  }
+}</code></pre>
+    </div>
+
+    <!-- --------------------------------------------------------
+         QUIZ SECTION
+         -------------------------------------------------------- -->
+    <section class="quiz-section">
+      <h2>Knowledge Check</h2>
+
+      <div class="quiz-question" data-correct="b">
+        <h3>1. Which is the primary advantage of using a system prompt over prepending instructions to the user message?</h3>
+        <button class="quiz-option" data-value="a">A) System prompts support longer text than user messages</button>
+        <button class="quiz-option" data-value="b">B) System prompts are cached and persist across turns, reducing token costs</button>
+        <button class="quiz-option" data-value="c">C) System prompts cannot be overridden by user messages</button>
+        <button class="quiz-option" data-value="d">D) System prompts are encrypted and hidden from the model</button>
+        <div class="quiz-reveal">
+          <p>
+            <strong>B)</strong> System prompts are sent once and cached by the API. They persist for
+            the entire conversation, so you avoid re-sending role/format instructions on every turn.
+            Option C is wrong because system prompts <em>can</em> be overridden by sufficiently
+            specific user messages. Option D is wrong because the model reads the system prompt
+            directly.
+          </p>
+        </div>
+      </div>
+
+      <div class="quiz-question" data-correct="b">
+        <h3>2. A system prompt says "Never discuss competitor products." A user asks: "Compare your capabilities to GPT-4." What is the most likely behavior?</h3>
+        <p class="scenario">Claude receives a direct question that conflicts with system-level guidance.</p>
+        <button class="quiz-option" data-value="a">A) Claude will refuse the request entirely</button>
+        <button class="quiz-option" data-value="b">B) Claude will describe its own capabilities without directly comparing</button>
+        <button class="quiz-option" data-value="c">C) Claude will ignore the system prompt and compare freely</button>
+        <button class="quiz-option" data-value="d">D) Claude will throw an API error</button>
+        <div class="quiz-reveal">
+          <p>
+            <strong>B)</strong> Claude will attempt to honor the system prompt by avoiding direct
+            competitor discussion while still being helpful. It typically redirects by discussing
+            its own features. System prompts produce <em>soft constraints</em> that Claude
+            navigates with nuance, not binary compliance.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- --------------------------------------------------------
+         UNIT NAVIGATION
+         -------------------------------------------------------- -->
+    <nav class="unit-nav" aria-label="Unit navigation">
+      <a href="../unit-2/index.html" class="prev">Unit 2: Message Structure</a>
+      <a href="../unit-4/index.html" class="next">Unit 4: Few-Shot Examples</a>
+    </nav>
+
+  </main>
+
+</body>
+</html>

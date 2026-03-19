@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 1.1 — Explicit Criteria over Vague Instructions</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 1</a><span class="sep"></span>
+    <span>Unit 1.1</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 1.1 — Explicit Criteria over Vague Instructions</h1>
+    <p class="subtitle">Task Statement 4.1 — Design prompts with explicit criteria to improve precision and reduce false positives</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Vague-to-Precise Spectrum -->
+  <section class="concept-card">
+    <h2>The Vague-to-Precise Spectrum</h2>
+    <p>Every prompt lands on this spectrum. The exam rewards Level 4.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Level</th><th>Prompt Style</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1 — Useless</strong></td>
+          <td>"Review this code and report any issues."</td>
+          <td>Reports everything from semicolons to architecture opinions</td>
+        </tr>
+        <tr>
+          <td><strong>2 — Still Bad</strong></td>
+          <td>"Be conservative and only report high-confidence findings."</td>
+          <td>No actionable criteria; model drops random findings or hedges</td>
+        </tr>
+        <tr>
+          <td><strong>3 — Better</strong></td>
+          <td>"Review for bugs and security issues. No style preferences."</td>
+          <td>Excludes style but "bugs" is still undefined</td>
+        </tr>
+        <tr>
+          <td><strong>4 — Production</strong></td>
+          <td>DO flag: comment contradicts code behavior.<br>DON'T flag: imprecise but non-misleading comments.</td>
+          <td>Categorical rules eliminate ambiguity at the boundary</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: replace subjective adjectives (<em>careful, conservative, important</em>)
+      with <strong>categorical DO/DON'T rules</strong> that define exactly what counts as
+      a finding and what to skip.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Explicit categorical criteria (DO flag / DON'T flag) are the <strong>only</strong>
+    reliable precision control. The model has no calibrated sense of "conservative" in
+    your context. Specific rules about <em>what to flag</em> and <em>what to skip</em>
+    are what the exam rewards.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Answer options containing "be conservative," "only report high-confidence findings,"
+    or "focus on important issues" are <strong>almost always distractors</strong>. The
+    correct answer defines explicit categorical rules — not confidence filtering.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> — you'll see it fail, understand why, then build the right solution.</p>
+    <p><code>python run.py open module-1 unit-1.1 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <span></span>
+    <a href="../unit-1.2-few-shot/overview.html" class="next">Unit 1.2 — Few-Shot Prompting</a>
+  </nav>
+
+</div>
+</body>
+</html>

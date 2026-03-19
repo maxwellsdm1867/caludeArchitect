@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 1.3 — Structured Output via tool_use & JSON Schemas</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 1</a><span class="sep"></span>
+    <span>Unit 1.3</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 1.3 — Structured Output via <code>tool_use</code> &amp; JSON Schemas</h1>
+    <p class="subtitle">Task Statement 4.3 — Enforce structured output using tool use and JSON schemas</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: tool_choice -->
+  <section class="concept-card">
+    <h2>The <code>tool_choice</code> Decision</h2>
+    <p>
+      <code>tool_use</code> with JSON schemas is the <strong>only reliable way</strong> to
+      guarantee schema-compliant output. The API validates the response against your schema
+      before returning it — malformed JSON is impossible.
+    </p>
+    <p>The <code>tool_choice</code> parameter controls whether and how Claude calls tools:</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th><code>tool_choice</code></th><th>Behavior</th><th>Use When</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>"auto"</code></td>
+          <td>May return text OR call a tool</td>
+          <td>Model should decide if extraction applies</td>
+        </tr>
+        <tr>
+          <td><code>"any"</code></td>
+          <td>Must call a tool; picks which one</td>
+          <td>Multiple schemas, unknown document type</td>
+        </tr>
+        <tr>
+          <td><code>{"type":"tool","name":"..."}</code></td>
+          <td>Must call the specific named tool</td>
+          <td>Single schema, deterministic pipeline</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Schema design rule: if a source document <em>might not contain</em> a field, that
+      field must be <strong>nullable</strong>. Mark it <code>"type": ["string", "null"]</code>.
+      A required field that only accepts non-null values forces the model to fabricate data
+      to satisfy the constraint.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Required field + absent data = fabrication. Make optional fields nullable:
+    <code>"required": ["warranty_expiry"]</code> with <code>"type": ["string", "null"]</code>.
+    The key is always present in output, but the model can return <code>null</code> when the
+    information is not in the source document.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    <code>"auto"</code> does <strong>NOT</strong> guarantee a tool call. If the model
+    decides extraction does not apply, it returns conversational text. If you need
+    structured output every time, use <code>"any"</code> to force a tool call.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> — you'll see it fail, understand why, then build the right solution.</p>
+    <p><code>python run.py open module-1 unit-1.3 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-1.2-few-shot/overview.html" class="prev">Unit 1.2 — Few-Shot Prompting</a>
+    <a href="../unit-1.4-validation-retry/overview.html" class="next">Unit 1.4 — Validation &amp; Retry</a>
+  </nav>
+
+</div>
+</body>
+</html>

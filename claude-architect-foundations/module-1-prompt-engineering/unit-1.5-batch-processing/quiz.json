@@ -1,0 +1,67 @@
+{
+  "unit": "1.5",
+  "title": "Batch Processing Strategies",
+  "task_statement": "4.5",
+  "questions": [
+    {
+      "id": "1.5-q1",
+      "question": "What is the primary benefit of the Message Batches API?",
+      "options": [
+        "A) Lower latency than the synchronous API",
+        "B) 50% cost savings compared to the synchronous API",
+        "C) Built-in multi-turn tool calling support",
+        "D) Guaranteed delivery within 1 hour"
+      ],
+      "correct": "B",
+      "explanation": "The Message Batches API provides 50% cost savings in exchange for no latency SLA. It does NOT provide lower latency, does NOT support multi-turn tool calling, and has a 24-hour (not 1-hour) processing window."
+    },
+    {
+      "id": "1.5-q2",
+      "question": "A team's batch jobs typically complete in 2-3 hours. They propose using the Batch API for a CI pipeline that blocks merges until code review is complete. Is this appropriate?",
+      "options": [
+        "A) Yes — 2-3 hours is acceptable for code review turnaround",
+        "B) Yes — as long as they set a timeout at 4 hours",
+        "C) No — the Batch API has no latency SLA, so it could take up to 24 hours and block developers",
+        "D) No — the Batch API does not support code review tasks"
+      ],
+      "correct": "C",
+      "explanation": "The CI pipeline is a blocking workflow — developers are waiting for the result before they can merge. 'Usually 2-3 hours' is not an SLA. The batch window is up to 24 hours with no guarantee, so one slow run could block developers all day. The synchronous API is required for blocking workflows."
+    },
+    {
+      "id": "1.5-q3",
+      "question": "Your SLA requires batch results within 36 hours of data availability. Using the standard 24-hour batch window, what is the maximum interval between batch submissions?",
+      "options": [
+        "A) 36 hours",
+        "B) 24 hours",
+        "C) 12 hours",
+        "D) 6 hours"
+      ],
+      "correct": "C",
+      "explanation": "Maximum submission interval = SLA deadline - batch window = 36 - 24 = 12 hours. In the worst case, data arrives right after a submission, waits up to 12 hours for the next submission, then the batch takes up to 24 hours to process (12 + 24 = 36 hours, meeting the SLA)."
+    },
+    {
+      "id": "1.5-q4",
+      "question": "A batch of 1,000 document classifications completes with 50 failures. What is the correct recovery approach?",
+      "options": [
+        "A) Resubmit the entire batch of 1,000 documents",
+        "B) Resubmit only the 50 failed documents, identified by their custom_id values",
+        "C) Switch to the synchronous API for the failed documents",
+        "D) Increase the batch window timeout and resubmit all documents"
+      ],
+      "correct": "B",
+      "explanation": "The custom_id field is the correlation key that lets you identify which specific requests failed. You resubmit only the failed documents with appropriate fixes (such as chunking oversized documents). Resubmitting the entire batch wastes cost and time."
+    },
+    {
+      "id": "1.5-q5",
+      "question": "Before submitting a 10,000-document batch job, what should you do first?",
+      "options": [
+        "A) Submit the full batch immediately to maximize throughput",
+        "B) Test the prompt on a small sample set and refine until the first-pass success rate is acceptable",
+        "C) Use the synchronous API for the first 100 documents, then switch to batch for the rest",
+        "D) Split the batch into 10 sub-batches of 1,000 and submit them simultaneously"
+      ],
+      "correct": "B",
+      "explanation": "Prompt refinement before batch submission is a cost optimization pattern. A poorly tuned prompt may produce a high failure rate across thousands of documents, requiring costly resubmission. Testing on a small sample (20-50 documents) via the synchronous API lets you iterate on the prompt until accuracy is acceptable before committing to the full batch."
+    }
+  ]
+}

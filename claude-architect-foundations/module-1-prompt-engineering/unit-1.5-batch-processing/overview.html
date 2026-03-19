@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 1.5 — Batch Processing Strategies</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 1</a><span class="sep"></span>
+    <span>Unit 1.5</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 1.5 — Batch Processing Strategies</h1>
+    <p class="subtitle">Task Statement 4.5 — Design efficient batch processing strategies</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Sync vs Batch -->
+  <section class="concept-card">
+    <h2>Sync API vs. Batch API</h2>
+    <p>One question decides everything: <strong>is something blocked waiting for the result?</strong></p>
+    <ul class="decision-tree">
+      <li>
+        <span class="decision-node">Is a user, developer, or pipeline waiting for the result before proceeding?</span>
+        <ul>
+          <li>
+            <span class="decision-node">Yes — blocking workflow</span>
+            <ul>
+              <li><span class="decision-leaf"><strong>Synchronous API</strong> — latency matters, pay full price</span></li>
+            </ul>
+            <p style="margin-left:2rem; opacity:0.7; font-size:0.9em">e.g., pre-merge code review, PR comment generation, real-time chat</p>
+          </li>
+          <li>
+            <span class="decision-node">No — non-blocking workflow</span>
+            <ul>
+              <li><span class="decision-leaf"><strong>Batch API</strong> — 50% savings, 24h window, no latency SLA</span></li>
+            </ul>
+            <p style="margin-left:2rem; opacity:0.7; font-size:0.9em">e.g., nightly tech debt report, weekly security audit, training data classification</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Batch API — Five Facts for the Exam</h3>
+    <ol>
+      <li><strong>50% cost savings</strong> — the primary benefit.</li>
+      <li><strong>24-hour processing window</strong> — no latency SLA whatsoever.</li>
+      <li><strong><code>custom_id</code></strong> — your correlation key; every request carries one, results come back tagged with it.</li>
+      <li><strong>No multi-turn tool calling</strong> — cannot execute a tool and feed results back within the same batch item.</li>
+      <li><strong>Failure recovery</strong> — resubmit only failed documents (by <code>custom_id</code>), not the entire batch.</li>
+    </ol>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    50% savings, 24-hour window, no latency SLA, <code>custom_id</code> for correlation,
+    no multi-turn. If the SLA deadline minus 24 hours is zero or negative, batch
+    <strong>cannot be used at all</strong> — the SLA is tighter than the batch window allows.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Batch usually finishes in a few hours" is <strong>NOT</strong> an SLA. The exam will
+    present someone arguing that batch is fine for blocking workflows because "it usually
+    completes quickly." This is the #1 distractor. "Usually fast" is irrelevant — the
+    24-hour window is the only guarantee. Never use batch for blocking workflows.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> — you'll see it fail, understand why, then build the right solution.</p>
+    <p><code>python run.py open module-1 unit-1.5 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-1.4-validation-retry/overview.html" class="prev">Unit 1.4 — Validation &amp; Retry</a>
+    <a href="../unit-1.6-multi-pass-review/overview.html" class="next">Unit 1.6 — Multi-Pass Review</a>
+  </nav>
+
+</div>
+</body>
+</html>

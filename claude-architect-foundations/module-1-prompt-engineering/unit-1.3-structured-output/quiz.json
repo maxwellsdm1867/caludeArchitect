@@ -1,0 +1,67 @@
+{
+  "unit": "1.3",
+  "title": "Structured Output via tool_use & JSON Schemas",
+  "task_statement": "4.3",
+  "questions": [
+    {
+      "id": "1.3.1",
+      "question": "You are building an extraction pipeline that processes legal contracts. Some contracts contain termination clauses and some do not. You need structured output that always includes a 'termination_clause' field. Which schema design prevents the model from fabricating clause text?",
+      "options": {
+        "A": "Mark termination_clause as required with type: \"string\"",
+        "B": "Mark termination_clause as required with type: [\"string\", \"null\"] and a description stating to return null if absent",
+        "C": "Remove termination_clause from the required array entirely",
+        "D": "Add a system prompt instruction saying \"do not invent termination clauses\""
+      },
+      "correct": "B",
+      "explanation": "Making the field required with a nullable type ensures the key is always present in the output (predictable structure) while giving the model permission to return null when the clause doesn't exist in the document. Option A forces fabrication. Option C means the key may be missing, complicating downstream parsing. Option D is unreliable against schema constraints."
+    },
+    {
+      "id": "1.3.2",
+      "question": "Your pipeline uses tool_choice: \"auto\" with an extract_metadata tool. In production, roughly 20% of documents receive a plain-text response instead of structured extraction. What change ensures structured output for every document?",
+      "options": {
+        "A": "Add \"You must always use the extract_metadata tool\" to the system prompt",
+        "B": "Switch tool_choice to {\"type\": \"tool\", \"name\": \"extract_metadata\"}",
+        "C": "Switch tool_choice to \"any\" and remove all other tools",
+        "D": "Both B and C would work; B is more explicit"
+      },
+      "correct": "D",
+      "explanation": "Both B (forced tool selection) and C (any with a single tool) guarantee the model calls extract_metadata. B is preferred because it explicitly names the tool, making the intent clear and robust against future tool additions. A is unreliable because tool_choice: \"auto\" lets the model override prompt instructions."
+    },
+    {
+      "id": "1.3.3",
+      "question": "You define a tool with an enum field: \"priority\": {\"enum\": [\"low\", \"medium\", \"high\"]}. During testing, the model occasionally assigns \"high\" priority to items that are clearly low-priority based on the source text. What type of error is this?",
+      "options": {
+        "A": "A syntax error that JSON Schema should have caught",
+        "B": "A semantic error — the value is schema-valid but factually wrong",
+        "C": "A structural error — the field is in the wrong location",
+        "D": "A format error — the enum type is misconfigured"
+      },
+      "correct": "B",
+      "explanation": "The value \"high\" is a valid enum option, so the schema is satisfied. However, it doesn't match the source document's intent. This is a semantic error — the output is structurally correct but factually incorrect. JSON Schema validation cannot detect this; you need a validation-retry loop or human review."
+    },
+    {
+      "id": "1.3.4",
+      "question": "You have three extraction tools: extract_invoice, extract_receipt, and extract_contract. Documents arrive with unknown types. Which tool_choice setting lets Claude pick the appropriate extraction schema while guaranteeing structured output?",
+      "options": {
+        "A": "tool_choice: \"auto\"",
+        "B": "tool_choice: \"any\"",
+        "C": "tool_choice: {\"type\": \"tool\", \"name\": \"extract_invoice\"}",
+        "D": "tool_choice: \"none\""
+      },
+      "correct": "B",
+      "explanation": "\"any\" forces the model to call one of the available tools but lets it choose which one based on the document content. \"auto\" doesn't guarantee a tool call. Forced selection (C) always calls extract_invoice regardless of document type. \"none\" disables tool use entirely."
+    },
+    {
+      "id": "1.3.5",
+      "question": "An extraction schema includes: \"shipping_cost\": {\"type\": \"number\"} as a required, non-nullable field. When processing a digital-download invoice that has no shipping, what is the most likely model behavior?",
+      "options": {
+        "A": "The API returns an error because the model cannot fill the field",
+        "B": "The model returns shipping_cost: 0, which may be technically incorrect",
+        "C": "The model omits the shipping_cost field from its response",
+        "D": "The model returns shipping_cost: null"
+      },
+      "correct": "B",
+      "explanation": "When a non-nullable number field is required, the model must provide a numeric value. It will likely output 0 — a plausible default, but semantically different from 'not applicable.' The value 0 means 'shipping was free,' not 'there was no shipping.' To distinguish these cases, make the field nullable so the model can return null when shipping doesn't apply."
+    }
+  ]
+}

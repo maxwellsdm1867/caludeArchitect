@@ -1,0 +1,72 @@
+{
+  "unit": "1.1",
+  "title": "Explicit Criteria over Vague Instructions",
+  "task_statement": "4.1",
+  "questions": [
+    {
+      "id": "1.1.1",
+      "scenario": "Your CI pipeline uses Claude to review pull requests. Developers report that the comment-accuracy check has a 45% false positive rate. Other categories (null safety, error handling) are accurate at 92%. Developer trust in the entire review system is declining.",
+      "question": "What is the most effective first step to address this?",
+      "options": [
+        "A) Add 'only flag high-confidence comment issues' to the review prompt",
+        "B) Temporarily disable the comment-accuracy category and rebuild its prompt with explicit contradiction criteria and few-shot examples",
+        "C) Increase the model temperature to encourage more diverse review approaches",
+        "D) Switch to a larger model with better reasoning capabilities"
+      ],
+      "correct": "B",
+      "explanation": "Disabling the noisy category restores trust in the accurate categories immediately, while you fix the underlying prompt. Option A is the classic trap — 'high-confidence' does not measurably improve precision. Option C is nonsensical (higher temperature increases randomness). Option D does not address the prompt quality issue."
+    },
+    {
+      "id": "1.1.2",
+      "scenario": "You are writing a code review prompt for Claude that should catch comment-vs-code contradictions. A colleague suggests adding 'Be conservative and only report issues you are very confident about' to reduce false positives.",
+      "question": "Why is this approach ineffective?",
+      "options": [
+        "A) The model's temperature is too high for conservative output",
+        "B) 'Conservative' and 'confident' are vague — the model has no calibrated sense of these terms in your domain, so it may suppress real bugs while keeping false positives",
+        "C) The model cannot read code comments accurately enough",
+        "D) Being conservative only works with few-shot examples, not instructions"
+      ],
+      "correct": "B",
+      "explanation": "The model does not have an internal dial labeled 'conservatism.' When told to be conservative, it might (1) report fewer issues overall including real bugs, (2) add hedging language without changing what it reports, or (3) apply its own undefined importance ranking that does not match yours. None of these reduce false positives in the categories you care about. Specific categorical criteria do."
+    },
+    {
+      "id": "1.1.3",
+      "scenario": "Your automated review system flags the following code:\n\ndef get_user_name(user_id: int) -> str:\n    \"\"\"Fetches user name from the database.\"\"\"\n    record = db.query(users_table).filter_by(id=user_id).first()\n    return record.full_name\n\nThe system reports: 'Comment says user name but code returns full_name — possible mismatch.'",
+      "question": "Is this a true positive or a false positive?",
+      "options": [
+        "A) True positive — the comment says 'user name' but the code returns 'full_name', which could be a first+last name",
+        "B) False positive — the comment is slightly imprecise but not misleading; 'user name' and 'full_name' are compatible descriptions of the same behavior",
+        "C) True positive — the function name says 'get_user_name' but should say 'get_full_name'",
+        "D) Cannot determine without seeing the database schema"
+      ],
+      "correct": "B",
+      "explanation": "This is a false positive. The comment says 'fetches user name' and the code returns a name field from the user record. The comment is slightly imprecise (it does not specify whether it is a first name, last name, or full name) but a developer reading the comment would not form a wrong belief about what the function does. The litmus test: does the comment cause the developer to believe something incorrect? No — so do not flag it."
+    },
+    {
+      "id": "1.1.4",
+      "scenario": "You manage three review categories in production. After analyzing last month's results:\n- Security: 94% precision, 40 findings/week\n- Null safety: 91% precision, 25 findings/week\n- Naming conventions: 52% precision, 110 findings/week\nDevelopers have started ignoring all review findings.",
+      "question": "What is the best remediation strategy?",
+      "options": [
+        "A) Add 'only report critical issues' to all three category prompts to reduce overall volume",
+        "B) Disable the naming-conventions category, keep security and null-safety active, then rebuild the naming prompt with explicit criteria before re-enabling",
+        "C) Lower the model temperature across all categories to make output more deterministic",
+        "D) Combine all three categories into a single prompt so the model can prioritize across them"
+      ],
+      "correct": "B",
+      "explanation": "The naming-conventions category with 52% precision at high volume is the trust-killer. Disabling it immediately restores developer confidence in the two accurate categories (94% and 91%). You then rebuild the naming prompt with explicit DO/DON'T criteria before re-enabling it. Option A applies a vague instruction ('critical') that does not fix the root cause. Option C does not address prompt quality. Option D risks degrading the good categories."
+    },
+    {
+      "id": "1.1.5",
+      "scenario": "You are designing a prompt for Claude to review API endpoint documentation against actual endpoint behavior. You need to decide which discrepancies to flag.",
+      "question": "Which prompt criteria will produce the lowest false positive rate?",
+      "options": [
+        "A) 'Flag any documentation that does not perfectly match the code. Be thorough.'",
+        "B) 'Flag documentation issues that seem important. Use your best judgment about what developers need to know.'",
+        "C) 'Flag documentation ONLY when: (1) the documented HTTP method differs from the actual method, (2) a documented parameter does not exist in the code, or (3) the documented response schema contradicts the actual return type. DO NOT flag: missing documentation for existing parameters, or documentation that is less detailed than the implementation.'",
+        "D) 'Flag high-confidence documentation issues only. Be conservative and avoid false positives.'"
+      ],
+      "correct": "C",
+      "explanation": "Option C defines exact categorical rules for what to flag and what to skip. It draws a clear line between contradictions (wrong method, nonexistent parameter, wrong return type) and imprecision (missing docs, less detail). Options A, B, and D all rely on undefined terms ('perfectly match', 'seem important', 'high-confidence', 'conservative') that give the model no actionable criteria."
+    }
+  ]
+}

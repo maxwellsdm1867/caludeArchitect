@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 1.6 — Multi-Instance and Multi-Pass Review</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 1</a><span class="sep"></span>
+    <span>Unit 1.6</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 1.6 — Multi-Instance and Multi-Pass Review</h1>
+    <p class="subtitle">Task Statement 4.6 — Design multi-instance and multi-pass review architectures</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Self-review bias + multi-pass -->
+  <section class="concept-card">
+    <h2>The Review Architecture Decision</h2>
+    <p>Two problems, two solutions:</p>
+
+    <h3>Problem 1: Self-Review Bias</h3>
+    <ul class="decision-tree">
+      <li>
+        <span class="decision-node">Who is reviewing the generated code?</span>
+        <ul>
+          <li>
+            <span class="decision-node">Same session that generated it</span>
+            <ul>
+              <li><span class="decision-leaf"><strong>Self-review bias</strong> — retains reasoning context, cannot question its own assumptions</span></li>
+            </ul>
+          </li>
+          <li>
+            <span class="decision-node">New instance that sees only the code</span>
+            <ul>
+              <li><span class="decision-leaf"><strong>Independent review</strong> — evaluates code on its merits, catches assumption errors</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Problem 2: Attention Dilution in Large PRs</h3>
+    <ul class="decision-tree">
+      <li>
+        <span class="decision-node">How many files in the PR?</span>
+        <ul>
+          <li>
+            <span class="decision-node">Small (1-3 files)</span>
+            <ul>
+              <li><span class="decision-leaf">Single-pass review is adequate</span></li>
+            </ul>
+          </li>
+          <li>
+            <span class="decision-node">Large (many files)</span>
+            <ul>
+              <li><span class="decision-leaf"><strong>Pass 1:</strong> Per-file local analysis (one request per file)<br>
+              <strong>Pass 2:</strong> Cross-file integration analysis (data flow, API contracts, shared state)</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p>
+      In a single-pass review of many files, early files get thorough review while later
+      files get progressively less attention. Splitting into per-file passes ensures
+      consistent review depth. The cross-file pass then catches integration bugs that
+      no single-file review can see.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The generating instance retains its reasoning context — it literally cannot question
+    its own assumptions. A fresh instance that receives <strong>only the code</strong>
+    (no conversation history, no generation reasoning) evaluates each decision on its
+    merits and is far more likely to catch assumption errors.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Use extended thinking" and "use a bigger context window" do <strong>NOT</strong> fix
+    self-review bias or attention dilution. Extended thinking gives more reasoning time
+    with the <em>same</em> anchoring bias. A bigger context window holds more text but
+    still allocates attention unevenly. The correct answers are: independent instance
+    for bias, per-file passes for dilution.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> — you'll see it fail, understand why, then build the right solution.</p>
+    <p><code>python run.py open module-1 unit-1.6 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-1.5-batch-processing/overview.html" class="prev">Unit 1.5 — Batch Processing</a>
+    <a href="../../module-2-context-reliability/" class="next">Module 2 — Context &amp; Reliability</a>
+  </nav>
+
+</div>
+</body>
+</html>

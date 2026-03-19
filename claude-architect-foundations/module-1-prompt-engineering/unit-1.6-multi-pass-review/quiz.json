@@ -1,0 +1,67 @@
+{
+  "unit": "1.6",
+  "title": "Multi-Instance and Multi-Pass Review",
+  "task_statement": "4.6",
+  "questions": [
+    {
+      "id": "1.6-q1",
+      "question": "Why is same-session self-review unreliable when Claude has just generated the code being reviewed?",
+      "options": [
+        "A) The model runs out of context window space for the review",
+        "B) The model retains its reasoning context from generation, creating anchoring bias that prevents it from questioning its own assumptions",
+        "C) The model's temperature setting is too low for critical review",
+        "D) The synchronous API does not support review tasks after generation"
+      ],
+      "correct": "B",
+      "explanation": "Self-review bias occurs because the generating instance retains its reasoning context — the assumptions it made, the edge cases it dismissed, and the justifications for its design choices. This anchoring bias means it systematically fails to question its own decisions. This is NOT a context window, temperature, or API limitation."
+    },
+    {
+      "id": "1.6-q2",
+      "question": "A colleague suggests adding 'Review your code very carefully and think step by step' to the self-review prompt to improve review quality. What is the best assessment?",
+      "options": [
+        "A) This will significantly improve review quality by forcing more careful analysis",
+        "B) This is ineffective — the prompt cannot remove the reasoning context already in the conversation that causes anchoring bias",
+        "C) This will help if combined with extended thinking",
+        "D) This works for small files but not for large PRs"
+      ],
+      "correct": "B",
+      "explanation": "The problem is not that the model is being careless — it is that the model has access to its own generation reasoning in the conversation context. No prompt wording can remove context that is already present. The solution is an independent instance that never sees the generation reasoning."
+    },
+    {
+      "id": "1.6-q3",
+      "question": "When reviewing a 12-file pull request, what is the primary risk of putting all files into a single review prompt?",
+      "options": [
+        "A) The total token count will exceed the model's context window",
+        "B) Attention dilution — earlier files receive deeper review while later files are skimmed",
+        "C) The model will refuse to review more than 5 files at once",
+        "D) The review will take too long and time out"
+      ],
+      "correct": "B",
+      "explanation": "Attention dilution causes the model to allocate review depth unevenly across files. Earlier files in the context tend to get more thorough review, while later files are skimmed. This is a property of transformer attention, not a context window limit. The solution is per-file local passes followed by a cross-file integration pass."
+    },
+    {
+      "id": "1.6-q4",
+      "question": "In a multi-pass review architecture, what does the integration pass focus on that the local passes cannot catch?",
+      "options": [
+        "A) Syntax errors within individual files",
+        "B) Code style violations in each file",
+        "C) Cross-file issues: data flow between modules, API contract mismatches, and shared state mutations",
+        "D) Performance bottlenecks within individual functions"
+      ],
+      "correct": "C",
+      "explanation": "Local passes review each file in isolation and catch within-file issues (bugs, edge cases, style). The integration pass specifically targets cross-file concerns: whether the output of one module matches the expected input of another, whether API contracts are consistent across file boundaries, and whether shared state is mutated safely."
+    },
+    {
+      "id": "1.6-q5",
+      "question": "A team argues that using a model with a larger context window eliminates the need for multi-pass review. What is the correct response?",
+      "options": [
+        "A) They are correct — a larger context window means all files can be reviewed thoroughly in one pass",
+        "B) They are partially correct — it works for PRs up to 10 files but not beyond",
+        "C) They are incorrect — a larger context window allows the model to hold more text but does NOT fix attention dilution; splitting into focused passes is the correct solution",
+        "D) They are incorrect — larger context windows are slower and more expensive, making multi-pass cheaper"
+      ],
+      "correct": "C",
+      "explanation": "A larger context window means the model can hold more text, but it does not change how attention is distributed across that text. The model still allocates attention unevenly, with earlier content receiving more depth. Multi-pass splitting ensures consistent review depth by giving each file a focused pass where it receives full attention."
+    }
+  ]
+}

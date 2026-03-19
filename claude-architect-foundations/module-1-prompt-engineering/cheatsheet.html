@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 Cheat Sheet — Prompt Engineering & Structured Output</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/theme.js" defer></script>
+  <style>
+    /* === Cheatsheet Layout — CSS Columns for masonry packing === */
+    .cheatsheet {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2rem;
+      font-size: .8125rem;
+      line-height: 1.5;
+    }
+    .cheatsheet h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: .25rem;
+      letter-spacing: -.03em;
+    }
+    .cheatsheet .sheet-subtitle {
+      font-size: .8125rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: .5rem;
+    }
+    .cheatsheet-grid {
+      columns: 2;
+      column-gap: 1rem;
+    }
+    /* Sections */
+    .cs-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .875rem 1rem;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+      box-shadow: var(--shadow-sm);
+    }
+    .cs-section h2 {
+      font-size: .8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: .5rem;
+      padding-bottom: .375rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .cs-section h3 {
+      font-size: .8125rem;
+      font-weight: 700;
+      margin-top: .625rem;
+      margin-bottom: .25rem;
+    }
+    .cs-section p,
+    .cs-section li {
+      margin-bottom: .25rem;
+    }
+    .cs-section ul,
+    .cs-section ol {
+      padding-left: 1.125rem;
+      margin-bottom: .375rem;
+    }
+    .cs-section ul { list-style: disc; }
+    .cs-section ol { list-style: decimal; }
+    /* Decision tree compact */
+    .cs-tree {
+      padding-left: .875rem;
+      border-left: 2px solid var(--accent);
+      margin: .375rem 0;
+    }
+    .cs-tree .branch {
+      margin-bottom: .25rem;
+    }
+    /* Full-width section spanning both columns */
+    .cs-full {
+      column-span: all;
+    }
+    /* Distractor list */
+    .cs-distractor-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .cs-distractor-list li {
+      padding: .15rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cs-distractor-list li:last-child { border-bottom: none; }
+    .cs-distractor-list .wrong {
+      color: var(--danger);
+      font-weight: 700;
+    }
+    /* Pattern match list */
+    .cs-pattern-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .cs-pattern-list li {
+      padding: .12rem 0;
+      display: flex;
+      gap: .4rem;
+      align-items: baseline;
+    }
+    .cs-pattern-list .trigger {
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .cs-pattern-list .action {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    /* Inline code */
+    .cheatsheet code {
+      font-size: .76rem;
+      padding: .08em .25em;
+    }
+
+    /* === Print === */
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      [data-theme] {
+        --bg: #fff; --bg-card: #f5f5f5; --text: #000; --text-muted: #444;
+        --border: #ccc; --accent: #4040cc; --accent-light: #e8e6ff;
+        --danger: #c00; --danger-bg: #fff0f0; --info: #06c; --info-bg: #f0f6ff;
+        --success: #070; --success-bg: #f0fff0; --warning: #960; --warning-bg: #fffaf0;
+        --code-bg: #f0f0f0;
+      }
+      .cheatsheet {
+        max-width: 100%;
+        padding: 0;
+        font-size: .68rem;
+        line-height: 1.35;
+      }
+      .cheatsheet h1 { font-size: 1.05rem; }
+      .cheatsheet .sheet-subtitle { font-size: .66rem; }
+      .cheatsheet-grid { gap: .4rem; }
+      .cs-section {
+        padding: .35rem .5rem;
+        border-radius: 3px;
+        box-shadow: none;
+      }
+      .cs-section h2 { font-size: .7rem; }
+      .cs-section h3 { font-size: .66rem; }
+      .cs-table { font-size: .66rem; }
+      .cs-table th, .cs-table td { padding: .15rem .3rem; }
+      .cs-rule, .cs-tip, .cs-ok { font-size: .62rem; padding: .05rem .25rem; }
+      .cheatsheet code { font-size: .64rem; }
+      .theme-toggle { display: none !important; }
+      @page {
+        size: letter;
+        margin: .4in;
+      }
+    }
+
+    /* === Responsive (mobile) === */
+    @media (max-width: 768px) {
+      .cheatsheet-grid {
+        grid-template-columns: 1fr;
+      }
+      .cheatsheet { padding: .75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="cheatsheet">
+
+  <h1>Module 1: Prompt Engineering &amp; Structured Output</h1>
+  <p class="sheet-subtitle">Domain 4, Task Statements 4.1&ndash;4.6 &mdash; Claude Architect Foundations Quick Reference</p>
+
+  <div class="cheatsheet-grid">
+
+    <!-- ============================================================
+         S1: EXPLICIT CRITERIA (TS 4.1)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>1 &mdash; Explicit Criteria (TS 4.1)</h2>
+
+      <h3>Vague-to-Precise Spectrum</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Level</th><th>Example</th><th>Quality</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>L1 Vague</td><td>"Flag bad stuff"</td><td>Unusable</td></tr>
+          <tr><td>L2 Directional</td><td>"Flag security issues"</td><td>High FP rate</td></tr>
+          <tr><td>L3 Specific</td><td>"Flag SQL injection, XSS, path traversal"</td><td>Good</td></tr>
+          <tr><td>L4 Precise</td><td>"Flag user input concatenated into SQL without parameterization"</td><td>Production-ready</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cs-rule">Exam Rule</span> "Be conservative" is ALWAYS a distractor</h3>
+      <p>Telling the model "be conservative" or "only flag high-confidence" is <strong>never</strong> the fix for false positives. It reduces recall without improving precision.</p>
+
+      <h3>3-Step FP Fix Recipe</h3>
+      <ol>
+        <li><strong>Disable</strong> the high-FP category entirely</li>
+        <li><strong>Rebuild</strong> its criteria with explicit DO/DON'T rules</li>
+        <li><strong>Re-enable</strong> with new precise criteria</li>
+      </ol>
+
+      <h3>Quick Self-Test</h3>
+      <p><em>"Does the prompt define DO-flag / DON'T-flag criteria?"</em> &mdash; If no, rewrite before anything else.</p>
+    </section>
+
+    <!-- ============================================================
+         S2: FEW-SHOT PROMPTING (TS 4.2)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>2 &mdash; Few-Shot Prompting (TS 4.2)</h2>
+
+      <h3>When to Use Few-Shot</h3>
+      <ul>
+        <li>Inconsistent output format or style</li>
+        <li>Ambiguous tool selection across calls</li>
+        <li>Varied document formats (invoices, receipts, etc.)</li>
+        <li>High false positive rates despite clear instructions</li>
+      </ul>
+
+      <h3>Anatomy of a Good Example</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Component</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Input</strong></td><td>Realistic source material</td></tr>
+          <tr><td><strong>Action</strong></td><td>What the model should do</td></tr>
+          <tr><td><strong>Reasoning</strong></td><td>Why this action is correct</td></tr>
+        </tbody>
+      </table>
+      <p><span class="cs-tip">Key</span> Not just input &rarr; output. Include reasoning.</p>
+
+      <h3>How Many Examples?</h3>
+      <p><strong>2&ndash;4 targeted examples</strong> covering distinct scenarios. Diminishing returns past 5.</p>
+
+      <h3><span class="cs-rule">Trap</span> Happy-Path-Only Examples</h3>
+      <p>Only showing "clean" examples &rarr; model hallucinates on edge cases. Always include at least one negative/edge-case example.</p>
+
+      <h3><span class="cs-rule">Exam Rule</span></h3>
+      <p><strong>Few-shot examples &gt; detailed instructions</strong> for consistency problems. If both are answer options, prefer few-shot.</p>
+    </section>
+
+    <!-- ============================================================
+         S3: STRUCTURED OUTPUT / tool_use (TS 4.3)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>3 &mdash; Structured Output / tool_use (TS 4.3)</h2>
+
+      <h3><code>tool_choice</code> Decision Table</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Value</th><th>Behavior</th><th>Use When</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>"auto"</code></td><td>May return text (no tool call)</td><td>Model decides if extraction needed</td></tr>
+          <tr><td><code>"any"</code></td><td>Must call <em>some</em> tool</td><td>Multiple schemas; unknown doc type</td></tr>
+          <tr><td><code>{"type":"tool","name":"X"}</code></td><td>Must call tool <strong>X</strong></td><td>Specific extraction required first</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Schema Design Rules</h3>
+      <ul>
+        <li><strong>Optional data</strong> &rarr; <code>nullable</code> field (prevents fabrication)</li>
+        <li><strong>Extensible categories</strong> &rarr; <code>enum</code> + <code>"other"</code> + detail field</li>
+        <li><strong>Ambiguous data</strong> &rarr; <code>"unclear"</code> escape valve in enum</li>
+      </ul>
+
+      <h3>What Schemas Prevent vs. Don't</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>PREVENTS</th><th>DOES NOT PREVENT</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>JSON syntax errors</td><td>Semantic errors (totals don't sum)</td></tr>
+          <tr><td>Missing required fields</td><td>Values in wrong fields</td></tr>
+          <tr><td>Invalid enum values</td><td>Fabricated nullable-should-be values</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         S4: VALIDATION & RETRY (TS 4.4)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>4 &mdash; Validation &amp; Retry (TS 4.4)</h2>
+
+      <h3>Retry Decision Tree</h3>
+      <div class="cs-tree">
+        <div class="branch"><strong>Format error</strong> (malformed JSON, wrong type) &rarr; <span class="cs-ok">RETRY</span></div>
+        <div class="branch"><strong>Structural error</strong> (missing field, extra field) &rarr; <span class="cs-ok">RETRY</span></div>
+        <div class="branch"><strong>Semantic error</strong> (values conflict, totals wrong) &rarr; <span class="cs-tip">RETRY w/ self-correction</span></div>
+        <div class="branch"><strong>Info absent from source</strong> (data not in document) &rarr; <span class="cs-rule">DO NOT RETRY</span></div>
+      </div>
+
+      <h3>Retry Pattern</h3>
+      <p>Send back: <strong>original doc</strong> + <strong>failed extraction</strong> + <strong>SPECIFIC error description</strong>. Generic "try again" does not work.</p>
+
+      <h3>Self-Correction Technique</h3>
+      <p>Extract both <code>calculated_total</code> and <code>stated_total</code> side-by-side, with a <code>conflict_detected</code> boolean. Let downstream code resolve.</p>
+
+      <h3>Systematic FP Analysis</h3>
+      <p>Add a <code>detected_pattern</code> field to capture <em>why</em> the model flagged something &mdash; enables batch analysis of false positive root causes.</p>
+    </section>
+
+    <!-- ============================================================
+         S5: BATCH PROCESSING (TS 4.5)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>5 &mdash; Batch Processing (TS 4.5)</h2>
+
+      <h3>Decision Matrix</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Requirement</th><th>API Choice</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Blocking / real-time needed</td><td><strong>Synchronous</strong> (Messages API)</td></tr>
+          <tr><td>Non-blocking / cost-sensitive</td><td><strong>Batch API</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Key Numbers</h3>
+      <ul>
+        <li><strong>50% cost savings</strong> vs. synchronous API</li>
+        <li><strong>24-hour processing window</strong> (max)</li>
+        <li><strong>No latency SLA</strong> &mdash; may finish in hours, may take 24h</li>
+      </ul>
+
+      <h3>Constraints</h3>
+      <ul>
+        <li>No multi-turn tool calling within a batch request</li>
+        <li>Correlate results by <code>custom_id</code></li>
+      </ul>
+
+      <h3>SLA Math</h3>
+      <p><code>submission_frequency = sla_hours - 24</code>. If you need results within 48h, submit every 24h.</p>
+
+      <h3>Failure Handling</h3>
+      <ul>
+        <li>Resubmit only failed docs (match by <code>custom_id</code>)</li>
+        <li>Chunk oversized batches</li>
+      </ul>
+
+      <h3><span class="cs-rule">Trap</span></h3>
+      <p>"Usually finishes in hours" is <strong>NOT</strong> an SLA basis. Design around the 24h worst case.</p>
+    </section>
+
+    <!-- ============================================================
+         S6: MULTI-PASS REVIEW (TS 4.6)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>6 &mdash; Multi-Pass Review (TS 4.6)</h2>
+
+      <h3>Self-Review Bias</h3>
+      <p>Same session &rarr; retains reasoning &rarr; misses own mistakes. The model is biased toward confirming its prior output.</p>
+
+      <h3>Fix: Independent Instance</h3>
+      <p>Use a <strong>separate API call</strong> with no generation context. The reviewer must not see the generator's chain of thought.</p>
+
+      <h3>Multi-Pass for Large PRs</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Pass</th><th>Scope</th><th>Focus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pass 1</td><td>Per-file</td><td>Local analysis (bugs, style, logic)</td></tr>
+          <tr><td>Pass 2</td><td>Cross-file</td><td>Integration (data flow, API contracts, consistency)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Root Cause of Inconsistent Depth</h3>
+      <p><strong>Attention dilution</strong> &mdash; large input causes the model to skim rather than deeply analyze each section.</p>
+
+      <h3><span class="cs-rule">Traps</span> (all WRONG fixes)</h3>
+      <ul>
+        <li>Bigger context window &ne; fix</li>
+        <li>Extended thinking &ne; fix</li>
+        <li>"Review carefully" instruction &ne; fix</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================
+         S7: EXAM PATTERN RECOGNITION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>7 &mdash; Exam Pattern Recognition</h2>
+      <table class="cs-table">
+        <thead>
+          <tr><th>If the question says&hellip;</th><th>The answer points to&hellip;</th><th>TS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>"System has too many false positives"</td><td>Explicit criteria <em>or</em> few-shot examples</td><td>4.1 / 4.2</td></tr>
+          <tr><td>"Output format is inconsistent"</td><td>Few-shot examples</td><td>4.2</td></tr>
+          <tr><td>"Model fabricates data"</td><td>Nullable schema fields</td><td>4.3</td></tr>
+          <tr><td>"Need guaranteed JSON structure"</td><td><code>tool_use</code>, not prompt-based JSON</td><td>4.3</td></tr>
+          <tr><td>"Extraction keeps failing validation"</td><td>Retry with error feedback</td><td>4.4</td></tr>
+          <tr><td>"Need to process 10K documents cheaply"</td><td>Batch API</td><td>4.5</td></tr>
+          <tr><td>"Generated code has bugs the generator missed"</td><td>Independent review instance</td><td>4.6</td></tr>
+          <tr><td>"Large PR review is inconsistent"</td><td>Multi-pass: per-file + cross-file</td><td>4.6</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         S8: DISTRACTOR DETECTION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>8 &mdash; Distractor Detection Cheat Code</h2>
+      <p>Common wrong answers on the exam. If you see these as options, eliminate them first:</p>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Distractor Phrasing</th><th>Why It's Wrong</th><th>Correct Direction</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"Be conservative" / "only flag high-confidence"</td>
+            <td>Reduces recall without fixing root cause</td>
+            <td>Explicit DO/DON'T criteria (4.1)</td>
+          </tr>
+          <tr>
+            <td>"Add more detail to instructions" <span class="text-muted">(when few-shot is an option)</span></td>
+            <td>Instructions are not as effective as examples for consistency</td>
+            <td>Few-shot examples (4.2)</td>
+          </tr>
+          <tr>
+            <td>"Use a bigger model" / "bigger context window"</td>
+            <td>Does not fix attention dilution or structural problems</td>
+            <td>Multi-pass architecture (4.6)</td>
+          </tr>
+          <tr>
+            <td>"Retry" <span class="text-muted">(when info is absent from source)</span></td>
+            <td>Can't extract what doesn't exist; retrying fabricates</td>
+            <td>Nullable fields + accept absence (4.3/4.4)</td>
+          </tr>
+          <tr>
+            <td>"Batch API" <span class="text-muted">(for blocking workflows)</span></td>
+            <td>Batch API has no latency SLA; can't serve real-time</td>
+            <td>Synchronous Messages API (4.5)</td>
+          </tr>
+          <tr>
+            <td>"Self-review in same session" / "extended thinking for review"</td>
+            <td>Same context = same blind spots; thinking harder &ne; fresh perspective</td>
+            <td>Independent review instance (4.6)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div><!-- /cheatsheet-grid -->
+
+</main>
+
+</body>
+</html>

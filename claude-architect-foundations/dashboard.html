@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Architect Foundations — Dashboard</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --bg-card: #1a1d27;
+      --bg-card-hover: #222632;
+      --text: #e4e4e7;
+      --text-muted: #8b8b95;
+      --text-heading: #ffffff;
+      --border: #2a2d3a;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --green: #22c55e;
+      --green-bg: rgba(34,197,94,0.12);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245,158,11,0.12);
+      --red: #ef4444;
+      --red-bg: rgba(239,68,68,0.12);
+      --gray: #52525b;
+      --gray-bg: rgba(82,82,91,0.12);
+      --ring-track: #2a2d3a;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4);
+      --radius: 12px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f4f5;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f9f9fb;
+      --text: #27272a;
+      --text-muted: #71717a;
+      --text-heading: #09090b;
+      --border: #e4e4e7;
+      --ring-track: #e4e4e7;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --green-bg: rgba(34,197,94,0.08);
+      --amber-bg: rgba(245,158,11,0.08);
+      --red-bg: rgba(239,68,68,0.08);
+      --gray-bg: rgba(82,82,91,0.06);
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== Layout ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ===== Header ===== */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+    }
+
+    header h1 span {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ===== Theme Toggle ===== */
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .theme-toggle button {
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .theme-toggle button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .theme-toggle button:hover:not(.active) {
+      color: var(--text);
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-danger {
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    .btn-danger:hover {
+      background: var(--red-bg);
+    }
+
+    /* ===== Top Stats Grid ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      line-height: 1.1;
+    }
+
+    .stat-card .sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ===== Progress Ring ===== */
+    .ring-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-ring {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    .progress-ring .track {
+      stroke: var(--ring-track);
+    }
+
+    .progress-ring .fill {
+      stroke: var(--accent);
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    .ring-label {
+      font-size: 1.1rem;
+      font-weight: 700;
+      fill: var(--text-heading);
+    }
+
+    /* ===== Domain Coverage ===== */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--accent);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .domain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .domain-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .domain-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .domain-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-heading);
+    }
+
+    .domain-weight {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--ring-track);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+      background: var(--accent);
+    }
+
+    .progress-bar-fill.green { background: var(--green); }
+    .progress-bar-fill.amber { background: var(--amber); }
+    .progress-bar-fill.red { background: var(--red); }
+
+    /* ===== Module Cards ===== */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+
+    .module-card:hover {
+      border-color: var(--accent);
+    }
+
+    .module-header {
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .module-header:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .module-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .module-id {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    .module-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+
+    .module-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-pct {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+    }
+
+    .expand-icon {
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      font-size: 12px;
+    }
+
+    .module-card.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .module-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .module-card.expanded .module-body {
+      max-height: 1000px;
+    }
+
+    .module-body-inner {
+      padding: 0 20px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== Unit Rows ===== */
+    .unit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .unit-row:last-child {
+      border-bottom: none;
+    }
+
+    .unit-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unit-info a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .unit-info a:hover {
+      color: var(--accent-light);
+    }
+
+    .unit-id-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      min-width: 52px;
+    }
+
+    /* ===== Stage Dots ===== */
+    .stage-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .stage-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: default;
+      position: relative;
+    }
+
+    .stage-dot.gray {
+      background: var(--gray-bg);
+      color: var(--gray);
+      border: 1px solid var(--gray);
+    }
+
+    .stage-dot.green {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+
+    .stage-dot.amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid var(--amber);
+    }
+
+    .stage-dot.red {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid var(--red);
+    }
+
+    .stage-dot[title] {
+      cursor: help;
+    }
+
+    /* ===== Weak Areas & Timeline ===== */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-grid { grid-template-columns: 1fr; }
+      .modules-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 12px;
+    }
+
+    .weak-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: var(--red-bg);
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+
+    .weak-item .name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .weak-item .score {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--red);
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-time {
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+
+    .timeline-desc {
+      color: var(--text);
+    }
+
+    .empty-state {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-style: italic;
+      padding: 12px 0;
+    }
+
+    /* ===== Cheatsheet Link ===== */
+    .cheatsheet-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: 8px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .cheatsheet-link:hover {
+      background: rgba(99,102,241,0.1);
+    }
+
+    /* ===== Confirm Dialog ===== */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .confirm-overlay.visible {
+      display: flex;
+    }
+
+    .confirm-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .confirm-box h3 {
+      font-size: 16px;
+      color: var(--text-heading);
+      margin-bottom: 8px;
+    }
+
+    .confirm-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <h1><span>Claude Architect</span> Foundations</h1>
+    <div class="header-actions">
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme="light" title="Light">&#9788;</button>
+        <button data-theme="dark" title="Dark">&#9790;</button>
+        <button data-theme="system" title="System" class="active">Auto</button>
+      </div>
+      <button class="btn btn-danger" id="resetBtn">Reset Progress</button>
+    </div>
+  </header>
+
+  <!-- Top Stats -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+      <div class="label">Overall Progress</div>
+      <div class="ring-container">
+        <svg class="progress-ring" viewBox="0 0 80 80">
+          <circle class="track" cx="40" cy="40" r="34"/>
+          <circle class="fill" id="ringFill" cx="40" cy="40" r="34"
+                  stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+          <text x="40" y="44" text-anchor="middle" class="ring-label" id="ringText">0%</text>
+        </svg>
+        <div>
+          <div id="completedUnits" style="font-size:14px;font-weight:600;color:var(--text-heading)">0 / 30 units</div>
+          <div id="completedStages" style="font-size:12px;color:var(--text-muted)">0 stages done</div>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Exam Readiness</div>
+      <div class="value" id="readinessScore">0%</div>
+      <div class="sub" id="readinessSub">Weighted by domain percentages</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Challenges Passed</div>
+      <div class="value" id="challengesPassed">0</div>
+      <div class="sub" id="challengesSub">0 attempted</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Quiz Average</div>
+      <div class="value" id="quizAvg">--</div>
+      <div class="sub" id="quizSub">0 quizzes taken</div>
+    </div>
+  </div>
+
+  <!-- Domain Coverage -->
+  <div class="section-title">Domain Coverage <span class="badge">Weighted</span></div>
+  <div class="domain-list" id="domainList"></div>
+
+  <!-- Module Cards -->
+  <div class="section-title">Modules</div>
+  <div class="modules-grid" id="modulesGrid"></div>
+
+  <!-- Bottom: Weak Areas + Timeline -->
+  <div class="bottom-grid">
+    <div class="panel">
+      <div class="panel-title">Weak Areas</div>
+      <div id="weakAreas"><div class="empty-state">Complete some units to see weak areas.</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Recent Activity</div>
+      <div id="timeline"><div class="empty-state">No activity yet. Start a unit!</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Confirmation -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Reset All Progress?</h3>
+    <p>This will clear all completion states, scores, and notes. This cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn" id="cancelReset">Cancel</button>
+      <button class="btn btn-danger" id="confirmReset">Reset Everything</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== Module directory mapping =====
+  const MODULE_DIRS = {
+    'module-1': 'module-1-prompt-engineering',
+    'module-2': 'module-2-context-reliability',
+    'module-3': 'module-3-claude-code-config',
+    'module-4': 'module-4-tool-design-mcp',
+    'module-5': 'module-5-agentic-architecture'
+  };
+
+  const UNIT_DIRS = {
+    'unit-1.1': 'unit-1.1-explicit-criteria',
+    'unit-1.2': 'unit-1.2-few-shot',
+    'unit-1.3': 'unit-1.3-structured-output',
+    'unit-1.4': 'unit-1.4-validation-retry',
+    'unit-1.5': 'unit-1.5-batch-processing',
+    'unit-1.6': 'unit-1.6-multi-pass-review',
+    'unit-2.1': 'unit-2.1-context-preservation',
+    'unit-2.2': 'unit-2.2-escalation-patterns',
+    'unit-2.3': 'unit-2.3-error-propagation',
+    'unit-2.4': 'unit-2.4-codebase-context',
+    'unit-2.5': 'unit-2.5-human-review-workflows',
+    'unit-2.6': 'unit-2.6-provenance',
+    'unit-3.1': 'unit-3.1-claude-md-hierarchy',
+    'unit-3.2': 'unit-3.2-commands-skills',
+    'unit-3.3': 'unit-3.3-path-specific-rules',
+    'unit-3.4': 'unit-3.4-plan-vs-direct',
+    'unit-3.5': 'unit-3.5-iterative-refinement',
+    'unit-3.6': 'unit-3.6-ci-cd-integration',
+    'unit-4.1': 'unit-4.1-tool-descriptions',
+    'unit-4.2': 'unit-4.2-structured-errors',
+    'unit-4.3': 'unit-4.3-tool-distribution',
+    'unit-4.4': 'unit-4.4-mcp-integration',
+    'unit-4.5': 'unit-4.5-built-in-tools',
+    'unit-5.1': 'unit-5.1-agentic-loop',
+    'unit-5.2': 'unit-5.2-coordinator-subagent',
+    'unit-5.3': 'unit-5.3-subagent-context',
+    'unit-5.4': 'unit-5.4-enforcement-handoff',
+    'unit-5.5': 'unit-5.5-agent-sdk-hooks',
+    'unit-5.6': 'unit-5.6-task-decomposition',
+    'unit-5.7': 'unit-5.7-session-management'
+  };
+
+  // ===== Theme =====
+  function applyTheme(theme) {
+    if (theme === 'system') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    localStorage.setItem('caf-theme', theme);
+    document.querySelectorAll('.theme-toggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.theme === theme);
+    });
+  }
+
+  document.getElementById('themeToggle').addEventListener('click', e => {
+    if (e.target.tagName === 'BUTTON') applyTheme(e.target.dataset.theme);
+  });
+
+  applyTheme(localStorage.getItem('caf-theme') || 'system');
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (localStorage.getItem('caf-theme') === 'system') applyTheme('system');
+  });
+
+  // ===== Load Progress =====
+  async function loadProgress() {
+    try {
+      const resp = await fetch('progress.json');
+      if (!resp.ok) throw new Error('Failed to load progress.json');
+      return await resp.json();
+    } catch (err) {
+      console.error('Could not load progress.json:', err);
+      return null;
+    }
+  }
+
+  // ===== Compute Stats =====
+  function computeStats(data) {
+    const modules = data.modules;
+    let totalUnits = 0;
+    let completedUnits = 0;
+    let totalStages = 0;
+    let completedStages = 0;
+    let challengesPassed = 0;
+    let challengesAttempted = 0;
+    let quizTotal = 0;
+    let quizSum = 0;
+    let quizCount = 0;
+    const domainProgress = {};
+    const weakAreas = [];
+
+    for (const [modId, mod] of Object.entries(modules)) {
+      let modStages = 0;
+      let modCompleted = 0;
+      const unitCount = Object.keys(mod.units).length;
+
+      for (const [unitId, unit] of Object.entries(mod.units)) {
+        totalUnits++;
+        const stages = [unit.overview_read, unit.walkthrough_completed, unit.challenge_passed, unit.quiz_score !== null];
+        const done = stages.filter(Boolean).length;
+        totalStages += 4;
+        completedStages += done;
+        modStages += 4;
+        modCompleted += done;
+
+        if (done === 4) completedUnits++;
+
+        if (unit.challenge_attempts > 0) challengesAttempted++;
+        if (unit.challenge_passed) challengesPassed++;
+        if (unit.quiz_score !== null) {
+          quizCount++;
+          quizSum += unit.quiz_score;
+        }
+
+        // Track weak areas: units with attempts but not passed, or low quiz scores
+        const unitScore = done / 4;
+        if (done > 0 && done < 4) {
+          weakAreas.push({
+            id: unitId,
+            name: unit.name,
+            module: mod.name,
+            progress: unitScore,
+            quizScore: unit.quiz_score,
+            challengePassed: unit.challenge_passed
+          });
+        }
+      }
+
+      const modProgress = modStages > 0 ? modCompleted / modStages : 0;
+      domainProgress[modId] = {
+        name: mod.name,
+        domain: mod.domain,
+        weight: mod.weight,
+        progress: modProgress,
+        unitCount: unitCount
+      };
+    }
+
+    // Exam readiness: weighted average of domain progress
+    let readiness = 0;
+    let totalWeight = 0;
+    for (const dp of Object.values(domainProgress)) {
+      readiness += dp.progress * dp.weight;
+      totalWeight += dp.weight;
+    }
+    readiness = totalWeight > 0 ? readiness / totalWeight : 0;
+
+    // Sort weak areas by lowest progress
+    weakAreas.sort((a, b) => a.progress - b.progress);
+
+    return {
+      totalUnits,
+      completedUnits,
+      totalStages,
+      completedStages,
+      overallPct: totalStages > 0 ? completedStages / totalStages : 0,
+      challengesPassed,
+      challengesAttempted,
+      quizAvg: quizCount > 0 ? quizSum / quizCount : null,
+      quizCount,
+      readiness,
+      domainProgress,
+      weakAreas: weakAreas.slice(0, 5)
+    };
+  }
+
+  // ===== Render =====
+  function render(data) {
+    if (!data) {
+      document.getElementById('statsGrid').innerHTML =
+        '<div class="stat-card"><div class="label">Error</div><div class="sub">Could not load progress.json. Make sure it exists in the same directory as this HTML file.</div></div>';
+      return;
+    }
+
+    const stats = computeStats(data);
+
+    // Ring
+    const circumference = 2 * Math.PI * 34;
+    const offset = circumference * (1 - stats.overallPct);
+    document.getElementById('ringFill').style.strokeDashoffset = offset;
+    document.getElementById('ringText').textContent = Math.round(stats.overallPct * 100) + '%';
+    document.getElementById('completedUnits').textContent = stats.completedUnits + ' / ' + stats.totalUnits + ' units';
+    document.getElementById('completedStages').textContent = stats.completedStages + ' stages done';
+
+    // Readiness
+    const readPct = Math.round(stats.readiness * 100);
+    document.getElementById('readinessScore').textContent = readPct + '%';
+    document.getElementById('readinessScore').style.color =
+      readPct >= 80 ? 'var(--green)' : readPct >= 50 ? 'var(--amber)' : readPct > 0 ? 'var(--red)' : 'var(--text-heading)';
+
+    // Challenges
+    document.getElementById('challengesPassed').textContent = stats.challengesPassed;
+    document.getElementById('challengesSub').textContent = stats.challengesAttempted + ' attempted';
+
+    // Quiz
+    document.getElementById('quizAvg').textContent = stats.quizAvg !== null ? Math.round(stats.quizAvg) + '%' : '--';
+    document.getElementById('quizSub').textContent = stats.quizCount + ' quizzes taken';
+
+    // Domain bars
+    const domainList = document.getElementById('domainList');
+    domainList.innerHTML = '';
+    for (const [modId, dp] of Object.entries(stats.domainProgress)) {
+      const pct = Math.round(dp.progress * 100);
+      const barClass = pct >= 80 ? 'green' : pct >= 40 ? 'amber' : pct > 0 ? 'red' : '';
+      domainList.innerHTML += `
+        <div class="domain-row">
+          <div class="domain-header">
+            <span class="domain-name">${dp.domain}: ${dp.name}</span>
+            <span class="domain-weight">${dp.weight}% weight &middot; ${pct}% complete</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill ${barClass}" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }
+
+    // Module cards
+    const modulesGrid = document.getElementById('modulesGrid');
+    modulesGrid.innerHTML = '';
+    for (const [modId, mod] of Object.entries(data.modules)) {
+      const units = mod.units;
+      const unitEntries = Object.entries(units);
+      const totalS = unitEntries.length * 4;
+      let doneS = 0;
+      unitEntries.forEach(([, u]) => {
+        if (u.overview_read) doneS++;
+        if (u.walkthrough_completed) doneS++;
+        if (u.challenge_passed) doneS++;
+        if (u.quiz_score !== null) doneS++;
+      });
+      const modPct = totalS > 0 ? Math.round((doneS / totalS) * 100) : 0;
+
+      let unitsHTML = '';
+      for (const [unitId, unit] of unitEntries) {
+        const modDir = MODULE_DIRS[modId] || modId;
+        const unitDir = UNIT_DIRS[unitId] || unitId;
+        const overviewPath = modDir + '/' + unitDir + '/overview.html';
+
+        const oState = unit.overview_read ? 'green' : 'gray';
+        const wState = unit.walkthrough_completed ? 'green' : 'gray';
+        const cState = unit.challenge_passed ? 'green' : (unit.challenge_attempts > 0 ? 'red' : 'gray');
+        const qState = unit.quiz_score !== null ? (unit.quiz_score >= 70 ? 'green' : 'amber') : (unit.quiz_attempts > 0 ? 'red' : 'gray');
+
+        unitsHTML += `
+          <div class="unit-row">
+            <div class="unit-info">
+              <span class="unit-id-label">${unitId}</span>
+              <a href="${overviewPath}">${unit.name}</a>
+            </div>
+            <div class="stage-dots">
+              <div class="stage-dot ${oState}" title="Overview: ${unit.overview_read ? 'Read' : 'Not read'}">O</div>
+              <div class="stage-dot ${wState}" title="Walkthrough: ${unit.walkthrough_completed ? 'Done' : 'Not done'}">W</div>
+              <div class="stage-dot ${cState}" title="Challenge: ${unit.challenge_passed ? 'Passed' : unit.challenge_attempts > 0 ? 'Failed (' + unit.challenge_attempts + ' attempts)' : 'Not attempted'}">C</div>
+              <div class="stage-dot ${qState}" title="Quiz: ${unit.quiz_score !== null ? unit.quiz_score + '%' : unit.quiz_attempts > 0 ? 'Failed' : 'Not taken'}">Q</div>
+            </div>
+          </div>`;
+      }
+
+      const cheatsheetPath = MODULE_DIRS[modId] + '/cheatsheet.html';
+
+      modulesGrid.innerHTML += `
+        <div class="module-card" data-mod="${modId}">
+          <div class="module-header" onclick="this.parentElement.classList.toggle('expanded')">
+            <div class="module-title-group">
+              <span class="module-id">${modId.toUpperCase()} &middot; ${mod.domain}</span>
+              <span class="module-name">${mod.name}</span>
+            </div>
+            <div class="module-meta">
+              <span class="module-pct">${modPct}%</span>
+              <span class="expand-icon">&#9660;</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="module-body-inner">
+              ${unitsHTML}
+              <a class="cheatsheet-link" href="${cheatsheetPath}">&#128203; Cheat Sheet</a>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // Weak areas
+    const weakEl = document.getElementById('weakAreas');
+    if (stats.weakAreas.length === 0) {
+      weakEl.innerHTML = '<div class="empty-state">Complete some units to see weak areas.</div>';
+    } else {
+      weakEl.innerHTML = stats.weakAreas.map(w => `
+        <div class="weak-item">
+          <span class="name">${w.id}: ${w.name}</span>
+          <span class="score">${Math.round(w.progress * 100)}% done</span>
+        </div>
+      `).join('');
+    }
+
+    // Timeline
+    const timelineEl = document.getElementById('timeline');
+    if (!data.student.last_activity) {
+      timelineEl.innerHTML = '<div class="empty-state">No activity yet. Start a unit!</div>';
+    } else {
+      // Build activity from progress data
+      const activities = [];
+
+      if (data.student.started) {
+        activities.push({ time: data.student.started, desc: 'Started the course' });
+      }
+
+      for (const [modId, mod] of Object.entries(data.modules)) {
+        for (const [unitId, unit] of Object.entries(mod.units)) {
+          if (unit.overview_read) {
+            activities.push({ time: data.student.last_activity, desc: `Read overview: ${unit.name}` });
+          }
+          if (unit.walkthrough_completed) {
+            activities.push({ time: data.student.last_activity, desc: `Completed walkthrough: ${unit.name}` });
+          }
+          if (unit.challenge_attempts > 0) {
+            const status = unit.challenge_passed ? 'Passed' : 'Attempted';
+            activities.push({ time: data.student.last_activity, desc: `${status} challenge: ${unit.name}` });
+          }
+          if (unit.quiz_score !== null) {
+            activities.push({ time: data.student.last_activity, desc: `Quiz ${unit.quiz_score}%: ${unit.name}` });
+          }
+        }
+      }
+
+      if (activities.length === 0) {
+        timelineEl.innerHTML = '<div class="empty-state">No activity yet. Start a unit!</div>';
+      } else {
+        activities.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+        timelineEl.innerHTML = activities.slice(0, 10).map(a => {
+          const timeStr = a.time ? new Date(a.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+          return `<div class="timeline-item"><span class="timeline-time">${timeStr}</span><span class="timeline-desc">${a.desc}</span></div>`;
+        }).join('');
+      }
+    }
+  }
+
+  // ===== Reset =====
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('confirmOverlay').classList.add('visible');
+  });
+
+  document.getElementById('cancelReset').addEventListener('click', () => {
+    document.getElementById('confirmOverlay').classList.remove('visible');
+  });
+
+  document.getElementById('confirmOverlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      document.getElementById('confirmOverlay').classList.remove('visible');
+    }
+  });
+
+  document.getElementById('confirmReset').addEventListener('click', async () => {
+    document.getElementById('confirmOverlay').classList.remove('visible');
+    try {
+      const resp = await fetch('progress.json');
+      const data = await resp.json();
+
+      // Reset all fields
+      data.student.started = null;
+      data.student.last_activity = null;
+      for (const mod of Object.values(data.modules)) {
+        mod.cheatsheet_reviewed = false;
+        for (const unit of Object.values(mod.units)) {
+          unit.overview_read = false;
+          unit.walkthrough_completed = false;
+          unit.challenge_passed = false;
+          unit.challenge_attempts = 0;
+          unit.challenge_last_score = null;
+          unit.quiz_score = null;
+          unit.quiz_attempts = 0;
+          unit.confidence = null;
+          unit.notes = '';
+        }
+      }
+      data.capstone.scenarios_completed = [];
+      data.capstone.mock_exam_scores = [];
+
+      // When served via file://, we cannot write back.
+      // Show the reset JSON so the user can save it manually, or use run.py.
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'progress.json';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // Re-render with reset data
+      render(data);
+      alert('Progress reset. A new progress.json has been downloaded. Replace the existing file with it.');
+    } catch (err) {
+      alert('Could not reset: ' + err.message);
+    }
+  });
+
+  // ===== Init =====
+  loadProgress().then(render);
+})();
+</script>
+
+</body>
+</html>

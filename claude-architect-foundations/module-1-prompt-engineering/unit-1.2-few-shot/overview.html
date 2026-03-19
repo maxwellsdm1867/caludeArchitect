@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 1.2 — Few-Shot Prompting for Consistency</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 1</a><span class="sep"></span>
+    <span>Unit 1.2</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 1.2 — Few-Shot Prompting for Consistency</h1>
+    <p class="subtitle">Task Statement 4.2 — Apply few-shot prompting to improve output consistency and quality</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: When to use few-shot -->
+  <section class="concept-card">
+    <h2>When to Use Few-Shot</h2>
+    <p>Ask one question: <strong>is the output inconsistent across runs despite clear instructions?</strong></p>
+    <ul class="decision-tree">
+      <li>
+        <span class="decision-node">Output inconsistent despite instructions?</span>
+        <ul>
+          <li>
+            <span class="decision-node">Yes — format varies, tool selection unreliable, edge cases hallucinated</span>
+            <ul>
+              <li><span class="decision-leaf">Add 2-4 few-shot examples with <strong>Input + Action + Reasoning</strong></span></li>
+            </ul>
+          </li>
+          <li>
+            <span class="decision-node">No — simple factual task, unambiguous output</span>
+            <ul>
+              <li><span class="decision-leaf">Skip few-shot — adds tokens without value</span></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p>
+      Few-shot works because it demonstrates <strong>judgment</strong>. A rule says
+      "handle ambiguous cases." An example <em>shows</em> what ambiguous looks like and
+      what the correct response is — including <em>why the alternative was rejected</em>.
+    </p>
+    <p>
+      Each example <strong>must</strong> have three parts:
+    </p>
+    <ol>
+      <li><strong>Input</strong> — the actual user message or document</li>
+      <li><strong>Action</strong> — the tool call, classification, or extraction result</li>
+      <li><strong>Reasoning</strong> — why this action and why not the alternative</li>
+    </ol>
+    <p>Without reasoning, examples are just a lookup table. The model matches on surface
+    keywords instead of understanding the underlying logic.</p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Examples must include Input &#8594; Action &#8594; <strong>Reasoning</strong>.
+    Reasoning is what enables generalization to novel inputs. Without it, the model
+    pattern-matches keywords ("cancel" &#8594; cancel_order) instead of understanding
+    intent.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Happy-path-only examples cause hallucination on edge cases. If all examples show
+    clean, well-formatted inputs, the model has no guidance for messy real-world data
+    and will <strong>invent values</strong> rather than return null. Always include at
+    least one edge-case example with missing or ambiguous data.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> — you'll see it fail, understand why, then build the right solution.</p>
+    <p><code>python run.py open module-1 unit-1.2 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-1.1-explicit-criteria/overview.html" class="prev">Unit 1.1 — Explicit Criteria</a>
+    <a href="../unit-1.3-structured-output/overview.html" class="next">Unit 1.3 — Structured Output</a>
+  </nav>
+
+</div>
+</body>
+</html>

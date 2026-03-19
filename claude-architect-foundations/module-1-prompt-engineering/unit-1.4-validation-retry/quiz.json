@@ -1,0 +1,67 @@
+{
+  "unit": "1.4",
+  "title": "Validation, Retry, and Feedback Loops",
+  "task_statement": "4.4",
+  "questions": [
+    {
+      "id": "1.4.1",
+      "question": "Your extraction pipeline validates that invoice totals match the sum of line items. An extraction returns a stated_total of $1,250 but the sum of line items is $1,350. What is the best approach?",
+      "options": {
+        "A": "Retry with the original document and a generic 'please try again' instruction",
+        "B": "Retry with the original document, the failed extraction, and the specific error: 'Sum of line items ($1,350) does not match stated_total ($1,250)'",
+        "C": "Do not retry — the information is absent from the source document",
+        "D": "Automatically correct the total to $1,350 without retrying"
+      },
+      "correct": "B",
+      "explanation": "This is a semantic error where the data exists but was extracted inconsistently. Retry with specific error feedback has a medium success rate for semantic errors. Option A lacks the specific error context. Option C is wrong — the data exists, it's just contradictory. Option D changes data without understanding whether the line items or the stated total is correct."
+    },
+    {
+      "id": "1.4.2",
+      "question": "Your pipeline extracts warranty information from product manuals. A validation error flags that warranty_expiry is null for a document about disposable cleaning supplies. The source document contains no warranty information. What should you do?",
+      "options": {
+        "A": "Retry with error feedback asking the model to find the warranty date",
+        "B": "Retry up to 3 times — the model may extract it on a subsequent attempt",
+        "C": "Do not retry — accept null as the correct value for this document",
+        "D": "Change the schema to make warranty_expiry a required non-nullable field"
+      },
+      "correct": "C",
+      "explanation": "The information is genuinely absent from the source document. Retrying won't create data that doesn't exist — it would only waste compute or, worse, cause the model to fabricate a warranty date to satisfy the retry request. Null is the correct extraction when the data isn't in the source."
+    },
+    {
+      "id": "1.4.3",
+      "question": "You are building a code review feedback loop. After 500 reviews, you notice that the 'unused_import' pattern has an 85% dismissal rate by developers. How should you use this data?",
+      "options": {
+        "A": "Remove the code review system entirely since it has high false positives",
+        "B": "Add 'unused_import' to a suppression list and feed it back into the review prompt to skip that pattern",
+        "C": "Retrain the model on the dismissed findings",
+        "D": "Ask developers to stop dismissing findings"
+      },
+      "correct": "B",
+      "explanation": "The detected_pattern field enables exactly this kind of feedback loop. By tracking dismissal rates per pattern, you can suppress high-false-positive patterns systematically. This improves signal-to-noise ratio without removing the entire system. Option A is an overreaction. Option C is not how the API works. Option D doesn't address the root cause."
+    },
+    {
+      "id": "1.4.4",
+      "question": "Which three components must a retry prompt include for maximum effectiveness?",
+      "options": {
+        "A": "The system prompt, the tool definition, and the error message",
+        "B": "The original document, the failed extraction result, and the specific validation error",
+        "C": "The model name, the temperature setting, and the max_tokens value",
+        "D": "The user's name, the timestamp, and the extraction ID"
+      },
+      "correct": "B",
+      "explanation": "An effective retry prompt includes: (1) the original document so the model has the source data, (2) the failed extraction so it can see what it produced, and (3) the specific validation error so it knows exactly what to fix. Omitting any of these significantly reduces the retry success rate."
+    },
+    {
+      "id": "1.4.5",
+      "question": "You design an extraction schema with both 'stated_total' and 'calculated_total' fields, plus a 'conflict_detected' boolean. What is the primary benefit of this self-correction pattern?",
+      "options": {
+        "A": "It prevents the model from making calculation errors",
+        "B": "It eliminates the need for any validation logic",
+        "C": "It makes contradictions visible so downstream systems can flag them for review",
+        "D": "It doubles the extraction accuracy by averaging the two totals"
+      },
+      "correct": "C",
+      "explanation": "Self-correction schemas don't prevent errors — they make errors visible. By extracting both the stated total and a calculated total, contradictions surface immediately. The conflict_detected flag lets downstream code route discrepancies to human review rather than silently propagating wrong data. The pattern is about transparency, not prevention."
+    }
+  ]
+}
