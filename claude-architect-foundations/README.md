@@ -127,14 +127,14 @@ Recommended workflow: Claude Code edits notebook cells via MCP, you run them int
 
 ## Module index
 
-| Module | Directory | Domain | Weight | Prerequisites |
-|--------|-----------|--------|--------|---------------|
-| [Module 1: Prompt Engineering & Structured Output](module-1-prompt-engineering/) | `module-1-prompt-engineering/` | Domain 4 | 20% | None |
-| [Module 2: Context Management & Reliability](module-2-context-reliability/) | `module-2-context-reliability/` | Domain 5 | 15% | None |
-| [Module 3: Claude Code Configuration & Workflows](module-3-claude-code-config/) | `module-3-claude-code-config/` | Domain 3 | 20% | Module 1 |
-| [Module 4: Tool Design & MCP Integration](module-4-tool-design-mcp/) | `module-4-tool-design-mcp/` | Domain 2 | 18% | Modules 1, 2 |
-| [Module 5: Agentic Architecture & Orchestration](module-5-agentic-architecture/) | `module-5-agentic-architecture/` | Domain 1 | 27% | Modules 1–4 |
-| [Capstone: Scenario Practice](capstone/) | `capstone/` | All | 100% | Modules 1–5 |
+| Module | Directory | Domain | Weight | Coverage | Prerequisites |
+|--------|-----------|--------|--------|----------|---------------|
+| [Module 1: Prompt Engineering & Structured Output](module-1-prompt-engineering/) | `module-1-prompt-engineering/` | Domain 4 | 20% | 6 units, 47 concepts | None |
+| [Module 2: Context Management & Reliability](module-2-context-reliability/) | `module-2-context-reliability/` | Domain 5 | 15% | 6 units, 48 concepts | None |
+| [Module 3: Claude Code Configuration & Workflows](module-3-claude-code-config/) | `module-3-claude-code-config/` | Domain 3 | 20% | 6 units, 57 concepts | Module 1 |
+| [Module 4: Tool Design & MCP Integration](module-4-tool-design-mcp/) | `module-4-tool-design-mcp/` | Domain 2 | 18% | 5 units, 44 concepts | Modules 1, 2 |
+| [Module 5: Agentic Architecture & Orchestration](module-5-agentic-architecture/) | `module-5-agentic-architecture/` | Domain 1 | 27% | 7 units, 57 concepts | Modules 1–4 |
+| [Capstone: Scenario Practice](capstone/) | `capstone/` | All | 100% | 6 scenarios, 42 questions | Modules 1–5 |
 
 ## Exam scenarios you'll encounter
 
