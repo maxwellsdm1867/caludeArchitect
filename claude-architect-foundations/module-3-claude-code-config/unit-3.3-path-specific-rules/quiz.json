@@ -1,0 +1,72 @@
+{
+  "unit": "3.3",
+  "title": "Path-Specific Rules with Glob Patterns",
+  "task_statement": "3.3",
+  "questions": [
+    {
+      "id": "3.3.1",
+      "scenario": "Your monorepo has test files scattered across 12 different directories (src/api/tests/, src/auth/tests/, src/billing/tests/, etc.). You want all test files to follow the same conventions: use describe/it blocks, mock external services, and follow a specific naming pattern.",
+      "question": "What is the most maintainable way to enforce this?",
+      "options": [
+        "A) Add a CLAUDE.md file in each of the 12 test directories with the testing conventions",
+        "B) Create .claude/rules/testing.md with paths: [\"**/*.test.*\", \"**/*.spec.*\"] containing the conventions",
+        "C) Add the testing conventions to the root CLAUDE.md since they apply everywhere",
+        "D) Create a .claude/commands/test-conventions.md that developers run manually before writing tests"
+      ],
+      "correct": "B",
+      "explanation": "A single .claude/rules/ file with glob patterns handles cross-cutting concerns across the entire codebase. paths: [\"**/*.test.*\", \"**/*.spec.*\"] matches all test files regardless of directory. Option A creates 12 copies that must be kept in sync — a maintenance nightmare. Option C applies testing rules even to non-test files, adding noise. Option D requires manual action."
+    },
+    {
+      "id": "3.3.2",
+      "scenario": "You have the following rule file:\n\n---\npaths:\n  - \"*.py\"\n---\n# Python Standards\n- Use type hints on all function signatures\n\nA developer reports that Python files in subdirectories (src/models/user.py) are not getting the type hint rule applied.",
+      "question": "What is wrong with the glob pattern?",
+      "options": [
+        "A) The paths field should use double quotes, not the current format",
+        "B) The pattern *.py only matches Python files in the root directory — use **/*.py to match at any depth",
+        "C) The rule file needs to be in the same directory as the Python files",
+        "D) .claude/rules/ files cannot target Python files specifically"
+      ],
+      "correct": "B",
+      "explanation": "The glob pattern *.py matches files in the root directory only. The ** wildcard is needed to match at any depth: **/*.py matches Python files in any subdirectory. This is standard glob syntax — * matches within a single directory level, ** matches across directory boundaries."
+    },
+    {
+      "id": "3.3.3",
+      "scenario": "Your project has:\n- .claude/rules/api.md with paths: [\"src/api/**\"]\n- src/api/CLAUDE.md with API-specific instructions\n\nBoth contain instructions for the API layer but they sometimes conflict.",
+      "question": "How are these two mechanisms applied when Claude edits src/api/routes.ts?",
+      "options": [
+        "A) Only .claude/rules/api.md applies — rules files take priority over directory CLAUDE.md",
+        "B) Only src/api/CLAUDE.md applies — directory CLAUDE.md takes priority over rules files",
+        "C) Both are loaded and merged — Claude receives instructions from both sources",
+        "D) The system detects the conflict and prompts the developer to choose one"
+      ],
+      "correct": "C",
+      "explanation": "Both .claude/rules/ files and directory CLAUDE.md are loaded and merged when they apply to the same file. There is no priority system — Claude receives all applicable instructions. The solution to conflicts is to avoid overlap: use rules files for cross-cutting file-type patterns and directory CLAUDE.md for location-specific context."
+    },
+    {
+      "id": "3.3.4",
+      "scenario": "You need different rules for:\n- SQL migration files (use explicit column types, no ALTER TABLE shortcuts)\n- SQL seed files (allow INSERT shortcuts, use transaction blocks)\n\nBoth file types live in the database/ directory but follow different conventions.",
+      "question": "What is the best configuration?",
+      "options": [
+        "A) One database/CLAUDE.md with both sets of rules and a note about which applies to which",
+        "B) Two .claude/rules/ files: one with paths: [\"**/migrations/**/*.sql\"] and one with paths: [\"**/seeds/**/*.sql\"]",
+        "C) A single .claude/rules/sql.md with paths: [\"**/*.sql\"] containing all SQL rules",
+        "D) Add SQL-specific instructions to the root CLAUDE.md"
+      ],
+      "correct": "B",
+      "explanation": "Two separate rules files with specific glob patterns give each file type its own targeted instructions. Option A puts conflicting rules in one file, relying on Claude to figure out which applies. Option C applies migration rules to seed files and vice versa. Option D is too broad."
+    },
+    {
+      "id": "3.3.5",
+      "scenario": "A developer creates .claude/rules/security.md with this content:\n\n---\npaths:\n  - \"**/*.ts\"\n  - \"**/*.js\"\n---\n# Security Rules\n- Never log sensitive data (passwords, tokens, API keys)\n- Always validate user input before passing to database queries\n- Use parameterized queries, never string concatenation for SQL\n\nAnother developer argues this should be in the root CLAUDE.md instead since security applies everywhere.",
+      "question": "Which placement is more appropriate and why?",
+      "options": [
+        "A) Root CLAUDE.md — security rules are universal and should not be scoped to file types",
+        "B) .claude/rules/ — the glob pattern ensures rules are loaded only when editing code files, not when editing documentation or config files where they are irrelevant",
+        "C) Both — duplicate the rules in both locations for redundancy",
+        "D) Neither — security rules should be enforced by linters, not Claude Code"
+      ],
+      "correct": "B",
+      "explanation": "Scoping security rules to code files (*.ts, *.js) via .claude/rules/ is more precise. These rules are irrelevant when editing README.md, package.json, or other non-code files. Loading them only for code files reduces noise and keeps Claude focused. Root CLAUDE.md would apply these rules even when editing a documentation file."
+    }
+  ]
+}

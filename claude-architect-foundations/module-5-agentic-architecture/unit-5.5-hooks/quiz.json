@@ -1,0 +1,72 @@
+{
+  "unit": "5.5",
+  "title": "Agent SDK Hooks",
+  "task_statement": "1.5",
+  "questions": [
+    {
+      "id": "5.5.1",
+      "scenario": "Your agent retrieves customer records from a database tool. The tool returns dates in various formats ('2024-01-15', 'January 15, 2024', '01/15/2024'). The downstream system requires all dates in ISO 8601 format (YYYY-MM-DD). Currently, you have a prompt instruction telling the model to normalize dates.",
+      "question": "What is the correct approach to ensure 100% consistent date formatting?",
+      "options": [
+        "A) Improve the prompt instruction with more specific examples of date normalization",
+        "B) Add a PostToolUse hook on the database tool that programmatically converts all date fields to ISO 8601 format before the model sees the result",
+        "C) Add a PreToolCall hook that requests the database to return dates in ISO format",
+        "D) Use few-shot examples showing the model how to normalize dates"
+      ],
+      "correct": "B",
+      "explanation": "A PostToolUse hook programmatically normalizes tool output before the model processes it. This is deterministic — 100% consistency. Prompt instructions (options A and D) achieve high but not perfect consistency. Option C puts the normalization responsibility on the database tool, which may not support format specification."
+    },
+    {
+      "id": "5.5.2",
+      "scenario": "Your agent has access to a customer_lookup tool that returns full customer records including Social Security numbers. The agent should be able to look up customers but should never see or return SSNs to users.",
+      "question": "What is the correct hook-based approach?",
+      "options": [
+        "A) Add a system prompt instruction: 'Never include SSNs in your responses'",
+        "B) Add a PostToolUse hook on customer_lookup that redacts the SSN field from the tool result before the model processes it",
+        "C) Add a PreResponse hook that scans the final output for SSN patterns",
+        "D) Remove the SSN field from the database entirely"
+      ],
+      "correct": "B",
+      "explanation": "A PostToolUse hook that redacts SSNs from the tool result means the model never sees the data in the first place. This is the most secure approach — you cannot leak what you never had. Option A relies on prompts (non-deterministic). Option C catches SSNs in output but the model still processed them. Option D may not be feasible if other systems need the SSN."
+    },
+    {
+      "id": "5.5.3",
+      "scenario": "You are building a compliance system for a financial agent. Regulations require that any transaction over $10,000 must be flagged for review before execution. The agent has a process_transaction tool.",
+      "question": "Which hook configuration is correct?",
+      "options": [
+        "A) PostToolUse hook that flags the transaction after it has been processed",
+        "B) PreToolCall hook on process_transaction that checks the amount and blocks execution if over $10,000, returning an error message telling the agent to request compliance review first",
+        "C) PreResponse hook that checks if any large transactions were mentioned in the output",
+        "D) PostToolUse hook that reverses the transaction if it exceeds $10,000"
+      ],
+      "correct": "B",
+      "explanation": "A PreToolCall hook prevents the tool from executing until the compliance condition is met. This is a prerequisite gate — the transaction literally cannot process without prior review. Option A fires after execution (too late). Option C only catches mentions, not executions. Option D reversal is complex and error-prone — prevention is always better than rollback."
+    },
+    {
+      "id": "5.5.4",
+      "scenario": "Your agent uses multiple tools that return monetary values. Some return amounts as strings ('$1,234.56'), others as floats (1234.56), and others as integers in cents (123456). The model sometimes gets confused and makes calculation errors.",
+      "question": "What is the best approach to prevent calculation errors?",
+      "options": [
+        "A) Add detailed prompt instructions explaining each tool's monetary format",
+        "B) Add PostToolUse hooks on each monetary tool that normalize all amounts to a consistent format (e.g., float with 2 decimal places in a standardized JSON field) before the model processes them",
+        "C) Add a calculator tool so the model can verify its arithmetic",
+        "D) Use a stronger model that is better at arithmetic"
+      ],
+      "correct": "B",
+      "explanation": "PostToolUse hooks normalize all monetary outputs to a consistent format before the model processes them. This eliminates the format confusion that causes calculation errors. Option A relies on the model remembering format details (error-prone). Option C treats the symptom, not the cause. Option D does not solve the inconsistent input format problem."
+    },
+    {
+      "id": "5.5.5",
+      "scenario": "A team is debating whether to use hooks or prompt instructions for the following requirements:\n\n1. Ensure the agent always greets customers by name\n2. Block access to the admin_delete tool for non-admin users\n3. Convert all temperatures from Fahrenheit to Celsius\n4. Suggest related products after answering a question",
+      "question": "Which requirements should use hooks and which should use prompts?",
+      "options": [
+        "A) Hooks for all four — maximum reliability",
+        "B) Hooks for 2 and 3 (security and data normalization); Prompts for 1 and 4 (style and suggestion)",
+        "C) Prompts for all four — hooks add unnecessary complexity",
+        "D) Hooks for 2 only (security); Prompts for 1, 3, and 4"
+      ],
+      "correct": "B",
+      "explanation": "Requirement 2 (blocking unauthorized tool access) is a security enforcement — must be a PreToolCall hook. Requirement 3 (temperature conversion) is data normalization — PostToolUse hook for 100% consistency. Requirements 1 (greeting style) and 4 (suggestions) are non-critical style/behavior preferences where prompt guidance is appropriate and hooks would be overkill."
+    }
+  ]
+}

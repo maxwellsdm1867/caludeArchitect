@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 4.3 — Tool Distribution &amp; tool_choice Config</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 4</a><span class="sep"></span>
+    <span>Unit 4.3</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 4.3 — Tool Distribution &amp; tool_choice Config</h1>
+    <p class="subtitle">Task Statement 2.3 — Design tool distributions across agents and configure tool_choice for reliable selection</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Tool Distribution Design -->
+  <section class="concept-card">
+    <h2>The 4-5 Tool Limit</h2>
+    <p>Giving an agent 18 tools degrades selection reliability. The exam tests whether you scope each agent to 4-5 tools with optional cross-role tools.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Agent Design</th><th>Tools</th><th>Selection Reliability</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Monolith (wrong)</strong></td>
+          <td>18 tools on one agent</td>
+          <td>Degrades &mdash; too many options cause decision confusion</td>
+        </tr>
+        <tr>
+          <td><strong>Scoped (correct)</strong></td>
+          <td>4-5 per role-specific agent</td>
+          <td>High &mdash; each agent has a focused, manageable toolset</td>
+        </tr>
+        <tr>
+          <td><strong>Cross-role tool</strong></td>
+          <td>1 shared tool (e.g., verify_fact) added to multiple agents</td>
+          <td>High &mdash; high-frequency needs met without routing overhead</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:1.5rem">tool_choice Modes</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Mode</th><th>Behavior</th><th>Use When</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>"auto"</code></td>
+          <td>Model decides whether to call a tool or respond with text</td>
+          <td>Conversational agents where text responses are valid</td>
+        </tr>
+        <tr>
+          <td><code>"any"</code></td>
+          <td>Model MUST call some tool (cannot respond with text only)</td>
+          <td>Pipeline steps where tool execution is always required</td>
+        </tr>
+        <tr>
+          <td><code>{"type":"tool","name":"X"}</code></td>
+          <td>Model MUST call the specific named tool</td>
+          <td>Forced extraction, first step in a multi-step pipeline</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The 4-5 tool limit is about <strong>decision complexity, not capability</strong>. An agent
+    with 18 tools can theoretically do more, but it selects the wrong tool more often. The fix
+    is not better descriptions (though those help) &mdash; it is scoping each agent to a focused
+    toolset that matches its role. Use a coordinator agent to route between specialized agents.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    When the question mentions <strong>18+ tools</strong> and <strong>unreliable selection</strong>,
+    the correct answer is almost always &ldquo;scope to 4-5 tools per agent.&rdquo; Distractors
+    include &ldquo;improve all tool descriptions&rdquo; (partial fix, not root cause), &ldquo;add
+    a routing classifier&rdquo; (unnecessary complexity), or &ldquo;switch to a larger model&rdquo;
+    (model size does not fix decision complexity).
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with <strong>18 tools on one agent</strong> &mdash; you&rsquo;ll see selection degrade, then distribute tools across focused agents.</p>
+    <p><code>python run.py open module-4 unit-4.3 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-4.2-structured-errors/overview.html" class="prev">Unit 4.2 &mdash; Structured Errors</a>
+    <a href="../unit-4.4-mcp-server-integration/overview.html" class="next">Unit 4.4 &mdash; MCP Server Integration</a>
+  </nav>
+
+</div>
+</body>
+</html>

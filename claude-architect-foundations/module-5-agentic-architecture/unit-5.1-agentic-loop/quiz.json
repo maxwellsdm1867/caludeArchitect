@@ -1,0 +1,72 @@
+{
+  "unit": "5.1",
+  "title": "The Agentic Loop Lifecycle",
+  "task_statement": "1.1",
+  "questions": [
+    {
+      "id": "5.1.1",
+      "scenario": "You are building an agentic coding assistant using the Anthropic API. The agent has access to file read, file write, and terminal tools. During testing, you notice the agent sometimes stops mid-task after completing only the first step of a multi-step operation, even though more work remains.",
+      "question": "What is the most likely cause and the correct fix?",
+      "options": [
+        "A) The agent's iteration cap is too low — increase the maximum loop iterations from 5 to 50",
+        "B) The loop checks for text content in the response as a completion signal — switch to checking stop_reason == \"end_turn\" as the sole termination condition",
+        "C) The model temperature is too low, causing deterministic early stopping — increase temperature to 0.7",
+        "D) The tools are returning too much data, overwhelming the context window — reduce tool output size"
+      ],
+      "correct": "B",
+      "explanation": "When the model emits text alongside tool calls (which it can do in the same response), checking for text content triggers premature loop exit. The correct termination signal is stop_reason == \"end_turn\". Option A treats a symptom (iteration caps are a safety net, not the primary mechanism). Options C and D do not address the control flow issue."
+    },
+    {
+      "id": "5.1.2",
+      "scenario": "A colleague proposes this agentic loop implementation:\n\nfor i in range(10):\n    response = client.messages.create(...)\n    if \"I have completed\" in response.content[0].text:\n        break\n    # process tool calls...\n\nThe loop works for simple tasks but fails on complex multi-step operations.",
+      "question": "What are the TWO problems with this implementation?",
+      "options": [
+        "A) The for loop should be a while loop, and the model should use extended thinking instead of tool calls",
+        "B) The iteration cap (10) is the primary stopping mechanism, and termination relies on parsing natural language instead of checking stop_reason",
+        "C) The response.content[0].text access will throw an error when the model returns tool_use blocks, and the for loop should use range(100) instead",
+        "D) The model needs a system prompt to know it should say 'I have completed', and the loop should retry on errors"
+      ],
+      "correct": "B",
+      "explanation": "Two anti-patterns: (1) The fixed iteration cap of 10 will cut off legitimate long-running tasks — it should be a safety net, not the primary mechanism. (2) Parsing natural language ('I have completed') is unreliable because the model may say this at intermediate steps or may not say it at all. The correct approach: while True with stop_reason == \"end_turn\" as the break condition."
+    },
+    {
+      "id": "5.1.3",
+      "scenario": "Your agentic loop correctly uses stop_reason to control flow. The model returns a response with stop_reason == \"tool_use\". The response.content array contains both a text block ('Let me search for that file') and a tool_use block (calling the file_search tool).",
+      "question": "What should your code do with this response?",
+      "options": [
+        "A) Process only the text block since text indicates the model is communicating its plan, then wait for the next response",
+        "B) Process only the tool_use block, ignoring the text since stop_reason is \"tool_use\"",
+        "C) Append the full assistant response (both text and tool_use blocks) to messages, execute the tool, append the tool_result, and continue the loop",
+        "D) This is an error state — a response cannot contain both text and tool_use blocks simultaneously"
+      ],
+      "correct": "C",
+      "explanation": "A response can contain both text and tool_use blocks. The correct behavior is to append the ENTIRE assistant response to the messages array (preserving both blocks), execute the tool(s), append the tool result(s), and continue the loop. Discarding either block corrupts the conversation history. Option D is factually wrong — mixed content is normal."
+    },
+    {
+      "id": "5.1.4",
+      "scenario": "You are choosing between two architectural approaches for a customer support agent:\n\nApproach A (Pre-configured): Step 1: Look up customer. Step 2: Check order status. Step 3: Generate response.\n\nApproach B (Model-driven): Give the model lookup, order, and response tools. Let it decide the sequence based on the customer's question.",
+      "question": "Which approach is correct for an agentic system and why?",
+      "options": [
+        "A) Approach A — pre-configured steps are more reliable because the model cannot skip important steps",
+        "B) Approach B — model-driven tool selection allows the agent to adapt its approach based on the specific query, which is the core advantage of agentic systems",
+        "C) Approach A — pre-configured steps are faster because the model does not need to decide which tool to use",
+        "D) Neither — customer support should not use agentic systems because they are too unpredictable"
+      ],
+      "correct": "B",
+      "explanation": "The fundamental advantage of agentic systems is model-driven decision making. If the customer asks 'Where is my order?', the agent can go directly to order lookup without first searching customer info (it may already have the customer ID). Pre-configured sequences remove this adaptability, turning the 'agent' into a rigid pipeline. The exam consistently rewards model-driven approaches over pre-configured ones."
+    },
+    {
+      "id": "5.1.5",
+      "scenario": "Your production agent occasionally enters infinite loops when a tool consistently returns errors. The agent keeps retrying the same tool call with the same parameters. You need a solution that preserves the model-driven loop while preventing runaway iterations.",
+      "question": "What is the best approach?",
+      "options": [
+        "A) Add a hard iteration cap of 5 as the primary loop termination condition",
+        "B) Parse the model's text output for phrases like 'I'm stuck' to detect when to stop",
+        "C) Keep stop_reason as the primary termination signal but add a safety cap (e.g., 25 iterations) that logs a warning and breaks, plus return clear error messages from failing tools so the model can adapt its approach",
+        "D) Remove the failing tool from the tools list after 3 consecutive errors"
+      ],
+      "correct": "C",
+      "explanation": "The correct approach preserves the model-driven loop (stop_reason is still the primary signal) while adding a safety net (high iteration cap with logging). Clear error messages from tools give the model the information it needs to try a different approach rather than blindly retrying. Option A makes the cap the primary mechanism (anti-pattern). Option B uses unreliable NL parsing. Option D dynamically modifying tools mid-conversation creates unpredictable behavior."
+    }
+  ]
+}

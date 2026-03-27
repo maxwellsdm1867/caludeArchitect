@@ -1,0 +1,72 @@
+{
+  "unit": "2.2",
+  "title": "Escalation & Ambiguity Resolution",
+  "task_statement": "5.2",
+  "questions": [
+    {
+      "id": "2.2.1",
+      "scenario": "Your AI customer support agent handles billing inquiries. A customer writes: 'I want to talk to a real person about this charge.' The agent has access to the customer's account and can see the charge is a valid subscription renewal.",
+      "question": "What should the agent do?",
+      "options": [
+        "A) Explain the charge first, then offer to escalate if the customer is still unsatisfied",
+        "B) Escalate immediately to a human agent — the customer explicitly requested a human",
+        "C) Analyze the customer's sentiment to determine if they're frustrated enough to warrant escalation",
+        "D) Offer to resolve the billing issue and only escalate if the agent cannot find a resolution"
+      ],
+      "correct": "B",
+      "explanation": "When a customer explicitly requests a human, escalate immediately. Do NOT investigate first, explain first, or try to resolve first. Customer preference for human interaction overrides all other escalation logic. Options A and D delay the requested escalation. Option C applies sentiment analysis, which is unreliable and irrelevant when the customer has made an explicit request."
+    },
+    {
+      "id": "2.2.2",
+      "scenario": "Your support agent encounters a customer requesting a 'loyalty discount' for being a 10-year customer. The agent's policy database has discount rules for new customers, students, and employees, but nothing about loyalty-based discounts.",
+      "question": "What is the correct agent behavior?",
+      "options": [
+        "A) Deny the request because the policy doesn't mention loyalty discounts",
+        "B) Offer the closest available discount (student or employee) as a workaround",
+        "C) Escalate to a human agent with the context: policy gap detected — customer requests loyalty discount, no matching policy found",
+        "D) Use the agent's judgment to approve a reasonable discount amount based on the customer's tenure"
+      ],
+      "correct": "C",
+      "explanation": "A policy gap means the customer's request falls outside the agent's defined authority. The agent cannot invent policy (Option D) or apply unrelated policies (Option B). Denying outright (Option A) may be wrong — a human may have authority to approve loyalty discounts. The correct action is escalation with structured context so the human can make the decision."
+    },
+    {
+      "id": "2.2.3",
+      "scenario": "Your support agent detects that a customer is using aggressive language ('this is ridiculous,' 'worst service ever') while asking about a simple order status check. The order status is available and shows the package will arrive tomorrow.",
+      "question": "Should the agent escalate based on the customer's tone?",
+      "options": [
+        "A) Yes — aggressive language indicates high frustration that requires human de-escalation",
+        "B) No — provide the order status and delivery estimate; offer escalation only if the customer explicitly requests it after receiving the information",
+        "C) Yes — sentiment analysis shows the customer is in the 'angry' category, which triggers automatic escalation",
+        "D) No — ignore the tone completely and provide a minimal, factual response"
+      ],
+      "correct": "B",
+      "explanation": "Sentiment-based escalation fails here: the customer is frustrated but the issue is simple and within the agent's capability. Escalating wastes human agent time on a status check. The correct approach: resolve the issue first, then offer escalation if the customer wants it. Option A and C over-escalate based on tone rather than issue complexity. Option D ignores the customer's emotional state entirely, which is poor service."
+    },
+    {
+      "id": "2.2.4",
+      "scenario": "You are designing escalation triggers for a support agent. A colleague suggests: 'Have the agent self-assess its confidence. If confidence is below 70%, escalate to a human.'",
+      "question": "Why is this approach unreliable?",
+      "options": [
+        "A) 70% is the wrong threshold — 50% would be more appropriate",
+        "B) Model self-assessed confidence is not calibrated for escalation decisions — the model may report high confidence on wrong answers and low confidence on correct ones",
+        "C) The model cannot calculate confidence percentages with enough precision",
+        "D) Confidence-based escalation only works with extended thinking mode enabled"
+      ],
+      "correct": "B",
+      "explanation": "Model self-assessed confidence is not calibrated for real-world escalation decisions. The model may confidently provide incorrect answers (overconfidence) or express uncertainty about responses it could handle correctly (underconfidence). Escalation triggers should be based on observable conditions: customer requests human, policy gap detected, tool calls fail N times — not the model's self-reported confidence. Options A, C, and D argue about implementation details of a fundamentally flawed approach."
+    },
+    {
+      "id": "2.2.5",
+      "scenario": "Your support agent has attempted three different approaches to resolve a customer's technical issue: restarting the service, clearing the cache, and re-authenticating. None have worked. The customer hasn't requested a human and isn't showing frustration.",
+      "question": "What should happen next?",
+      "options": [
+        "A) Try additional troubleshooting steps — the agent should exhaust all possibilities before escalating",
+        "B) Ask the customer if they would like to be escalated to a technical specialist",
+        "C) Escalate automatically — three failed resolution attempts should trigger escalation with full context of what was tried",
+        "D) Analyze the customer's sentiment to determine if escalation is warranted"
+      ],
+      "correct": "C",
+      "explanation": "A concrete 'no progress after N attempts' trigger is a reliable escalation condition. After 3 failed approaches, the agent has demonstrated that the issue is beyond its capability. Automatic escalation with context (what was tried, what failed) is the correct pattern. Option A risks frustrating the customer with more failed attempts. Option B puts the burden on the customer to know when to escalate. Option D uses sentiment, which is irrelevant to the technical capability gap."
+    }
+  ]
+}

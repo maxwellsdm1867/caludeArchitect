@@ -1,0 +1,72 @@
+{
+  "unit": "5.6",
+  "title": "Task Decomposition Strategies",
+  "task_statement": "1.6",
+  "questions": [
+    {
+      "id": "5.6.1",
+      "scenario": "You are building a code review system for a large monorepo. Pull requests can touch 5-50 files. When given the entire PR at once, the model provides shallow analysis — catching obvious issues but missing subtle bugs in individual files.",
+      "question": "What decomposition strategy addresses this?",
+      "options": [
+        "A) Use a larger context window model so it can process all files without attention dilution",
+        "B) Split into per-file analysis passes (each file reviewed individually for deep local analysis) followed by a cross-file pass (checking API contracts, data flow, and consistency across files)",
+        "C) Review only the 5 most-changed files to reduce the workload",
+        "D) Add 'review carefully and thoroughly' to the prompt to increase analysis depth"
+      ],
+      "correct": "B",
+      "explanation": "The per-file + cross-file pattern directly addresses attention dilution. Per-file passes enable deep analysis without the model trying to track 50 files simultaneously. The cross-file pass then catches integration issues invisible at the single-file level. Option A does not fix attention dilution (bigger window does not mean deeper analysis). Option C loses coverage. Option D is a vague instruction."
+    },
+    {
+      "id": "5.6.2",
+      "scenario": "Your research agent is tasked with producing a comprehensive report on 'the impact of AI on creative industries.' A developer designs the decomposition as: Subagent 1 researches 'AI in visual arts,' Subagent 2 researches 'AI in music production,' and Subagent 3 researches 'AI in film production.'",
+      "question": "What is the risk with this decomposition?",
+      "options": [
+        "A) Three subagents is too many — reduce to one",
+        "B) The decomposition is too narrow — it misses writing, gaming, advertising, fashion, and other creative industries, resulting in incomplete coverage",
+        "C) The subagents should communicate directly with each other to avoid duplication",
+        "D) The coordinator should handle all research itself without subagents"
+      ],
+      "correct": "B",
+      "explanation": "This is the classic narrow decomposition trap. The developer pre-defined three categories, but 'creative industries' encompasses many more fields. The coverage gap means the final report will be incomplete. A better approach: either use broader category definitions or let the coordinator dynamically identify relevant subcategories before dispatching subagents."
+    },
+    {
+      "id": "5.6.3",
+      "scenario": "You have a document processing pipeline that always follows the same steps: (1) extract text from PDF, (2) identify key entities, (3) validate against a schema, (4) format for storage. The pipeline processes thousands of identical-format invoices.",
+      "question": "Which decomposition approach is correct for this use case?",
+      "options": [
+        "A) Dynamic decomposition — let the model decide the processing steps for each invoice",
+        "B) Prompt chaining — a fixed sequence of steps since the pipeline is well-defined and uniform",
+        "C) Coordinator-subagent — one subagent per processing step",
+        "D) A single monolithic prompt that does all four steps at once"
+      ],
+      "correct": "B",
+      "explanation": "Prompt chaining (fixed step sequence) is ideal for well-understood, uniform pipelines. Every invoice follows the same flow, so there is no benefit to dynamic decomposition — it would add latency and unpredictability. Option A wastes the coordinator's decision-making on a solved problem. Option C adds orchestration overhead for a linear pipeline. Option D risks attention dilution on complex invoices."
+    },
+    {
+      "id": "5.6.4",
+      "scenario": "A debugging agent receives a bug report and needs to find the root cause. The bug could be in frontend code, backend APIs, database queries, or infrastructure configuration. The specific investigation path depends on what each step reveals.",
+      "question": "Which decomposition approach is correct for this use case?",
+      "options": [
+        "A) Prompt chaining — define a fixed investigation sequence (check frontend, then backend, then DB, then infrastructure)",
+        "B) Dynamic decomposition — let the coordinator analyze initial evidence and dispatch subagents based on what it discovers, adapting the investigation path as results come in",
+        "C) Run all four investigation subagents in parallel and combine results",
+        "D) Use a single agent with all tools and let it investigate without decomposition"
+      ],
+      "correct": "B",
+      "explanation": "Debugging is an inherently adaptive task — you do not know where the bug is until you investigate. Dynamic decomposition lets the coordinator start with initial evidence, form hypotheses, and dispatch targeted subagents. Option A wastes effort on irrelevant areas. Option C may work but is wasteful if the bug is obvious in one area. Option D risks tool overload."
+    },
+    {
+      "id": "5.6.5",
+      "scenario": "Your per-file code review system produces high-quality individual file analyses. However, it misses a critical bug: File A defines an API endpoint accepting {user_id: int}, but File B calls that endpoint passing {userId: string}. Neither file has a bug in isolation.",
+      "question": "What does this demonstrate and what is the fix?",
+      "options": [
+        "A) The per-file analysis is broken — add more detail to per-file prompts",
+        "B) This demonstrates why cross-file analysis is essential — add a second pass that receives all per-file results and checks for API contract mismatches, data flow inconsistencies, and naming convention conflicts across files",
+        "C) The model needs a bigger context window to hold both files simultaneously",
+        "D) Add a type-checking tool to each per-file subagent"
+      ],
+      "correct": "B",
+      "explanation": "This is an integration bug invisible at the per-file level. The cross-file pass exists specifically to catch these: API contract mismatches, data flow errors, and cross-file inconsistencies. It receives the summaries from all per-file passes and looks for contradictions. Option A cannot fix this — no amount of per-file detail helps when the bug spans two files. Option C adds context but not structure."
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.5 — Human Review Workflows & Confidence Calibration</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.5</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.5 — Human Review Workflows & Confidence Calibration</h1>
+    <p class="subtitle">Task Statement 5.5 — Design human review workflows with calibrated confidence signals</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Accuracy Assessment Layers -->
+  <section class="concept-card">
+    <h2>The Accuracy Masking Problem</h2>
+    <p>Aggregate accuracy numbers hide field-level failures. The exam tests whether you can identify where to look and how to measure.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Measurement Level</th><th>What It Shows</th><th>What It Hides</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Aggregate accuracy</strong> (97%)</td>
+          <td>Overall system performance looks great</td>
+          <td>Specific fields (dates, amounts) may be at 60%</td>
+        </tr>
+        <tr>
+          <td><strong>Per-document-type accuracy</strong></td>
+          <td>Invoices at 99%, handwritten receipts at 45%</td>
+          <td>Which specific fields fail within each type</td>
+        </tr>
+        <tr>
+          <td><strong>Per-field accuracy</strong></td>
+          <td>Vendor name: 99%, line items: 72%, tax: 55%</td>
+          <td>Nothing &mdash; this is the actionable level</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: always drill down to <strong>per-field accuracy on the worst-performing document types</strong>.
+      Use stratified sampling (sample by document type, not uniformly) to catch failures that aggregate
+      metrics hide. Build validation sets that represent the hard cases, not just the easy ones.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Field-level confidence scores enable <strong>targeted human review</strong>. Instead of reviewing
+    all extractions (expensive) or random samples (misses problems), route only low-confidence fields
+    to humans. A document with 95% average confidence but 30% confidence on the "total_amount" field
+    needs human review of <em>that one field</em>, not the entire document.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "The system achieves 97% accuracy on the validation set" sounds reassuring but is a
+    <strong>distractor signal</strong> when the question mentions multiple document types or
+    field categories. The correct response is to break down accuracy by document type and by
+    field &mdash; aggregate accuracy masks per-field failures.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with aggregate accuracy metrics that look great &mdash; then you'll discover field-level failures hiding underneath, and build a stratified review system.</p>
+    <p><code>python run.py open module-2 unit-2.5 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-2.4-codebase-context/overview.html" class="prev">Unit 2.4 &mdash; Codebase Context</a>
+    <a href="../unit-2.6-provenance/overview.html" class="next">Unit 2.6 &mdash; Provenance</a>
+  </nav>
+
+</div>
+</body>
+</html>

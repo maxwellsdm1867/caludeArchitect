@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3.1 — CLAUDE.md Hierarchy &amp; Modular Organization</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 3</a><span class="sep"></span>
+    <span>Unit 3.1</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 3.1 — CLAUDE.md Hierarchy &amp; Modular Organization</h1>
+    <p class="subtitle">Task Statement 3.1 — Configure Claude Code projects using CLAUDE.md hierarchy, @import, rules, and memory</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Where to put your rules -->
+  <section class="concept-card">
+    <h2>The CLAUDE.md Hierarchy: Where Should Your Rule Live?</h2>
+    <p>Claude Code merges instructions from three levels. The exam tests whether you pick the right one.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Level</th><th>File Location</th><th>Shared via Git?</th><th>Use When</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>User</strong></td>
+          <td><code>~/.claude/CLAUDE.md</code></td>
+          <td>No &mdash; personal only</td>
+          <td>Personal preferences (editor style, language prefs)</td>
+        </tr>
+        <tr>
+          <td><strong>Project</strong></td>
+          <td><code>CLAUDE.md</code> or <code>.claude/CLAUDE.md</code> at repo root</td>
+          <td>Yes &mdash; team-wide</td>
+          <td>Team standards (coding style, architecture rules, setup)</td>
+        </tr>
+        <tr>
+          <td><strong>Directory</strong></td>
+          <td><code>subdirectory/CLAUDE.md</code></td>
+          <td>Yes &mdash; scoped</td>
+          <td>Package-specific rules (test conventions, API patterns)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Merge order:</strong> User + Project + Directory. All three are merged together.
+      Directory-level CLAUDE.md is loaded when Claude reads or edits files in that directory.
+    </p>
+    <p>
+      <strong>Additional mechanisms:</strong>
+    </p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Mechanism</th><th>Purpose</th><th>Key Detail</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>@import</code></td>
+          <td>Pull content from other files into CLAUDE.md</td>
+          <td>Keeps CLAUDE.md DRY; imports are resolved at load time</td>
+        </tr>
+        <tr>
+          <td><code>.claude/rules/</code></td>
+          <td>Path-specific rules with glob patterns</td>
+          <td>YAML frontmatter with <code>paths:</code> field; more granular than directory CLAUDE.md</td>
+        </tr>
+        <tr>
+          <td><code>/memory</code> command</td>
+          <td>Persist facts across sessions</td>
+          <td>Writes to <code>~/.claude/</code> (user) or <code>.claude/</code> (project) memory files</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The CLAUDE.md hierarchy is a <strong>prompt layering system</strong>. User-level sets personal
+    defaults, project-level sets team standards, and directory-level adds scoped context. The
+    <code>@import</code> directive keeps large configurations modular without duplication. Think
+    of it like CSS specificity &mdash; more specific rules supplement (not replace) broader ones.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "A new team member doesn't see your coding standards." If the rules are in
+    <code>~/.claude/CLAUDE.md</code> (user-level), they are <strong>not version-controlled</strong>.
+    The fix is to move them to project-level <code>.claude/CLAUDE.md</code> or <code>CLAUDE.md</code>
+    at the repo root. User-level is personal only.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see misconfigured CLAUDE.md placement fail, understand why, then build the right hierarchy.</p>
+    <p><code>python run.py open module-3 unit-3.1 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <span></span>
+    <a href="../unit-3.2-commands-skills/overview.html" class="next">Unit 3.2 — Custom Slash Commands &amp; Skills</a>
+  </nav>
+
+</div>
+</body>
+</html>

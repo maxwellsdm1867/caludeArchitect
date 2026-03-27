@@ -11,11 +11,11 @@ Tool descriptions are prompts (Module 1). Error responses need the patterns from
 
 | Unit | Topic | Key exam concepts |
 |------|-------|-------------------|
-| [4.1](unit-4.1-tool-descriptions.md) | Effective tool descriptions & boundaries | Descriptions as primary selection mechanism, disambiguation, splitting vs consolidating |
-| [4.2](unit-4.2-structured-errors.md) | Structured error responses for MCP tools | isError flag, errorCategory, isRetryable, local recovery vs propagation |
-| [4.3](unit-4.3-tool-distribution.md) | Tool distribution & tool_choice config | 4-5 tools per agent max, scoped access, cross-role tools, tool_choice modes |
-| [4.4](unit-4.4-mcp-server-integration.md) | MCP server integration | .mcp.json vs ~/.claude.json, env variable expansion, MCP resources, community servers |
-| [4.5](unit-4.5-builtin-tools.md) | Built-in tools (Read, Write, Edit, Bash, Grep, Glob) | Grep for content, Glob for paths, Edit unique text matching, incremental codebase exploration |
+| [4.1](unit-4.1-tool-descriptions/overview.html) | Effective tool descriptions & boundaries | Descriptions as primary selection mechanism, disambiguation, splitting vs consolidating |
+| [4.2](unit-4.2-structured-errors/overview.html) | Structured error responses for MCP tools | isError flag, errorCategory, isRetryable, local recovery vs propagation |
+| [4.3](unit-4.3-tool-distribution/overview.html) | Tool distribution & tool_choice config | 4-5 tools per agent max, scoped access, cross-role tools, tool_choice modes |
+| [4.4](unit-4.4-mcp-server-integration/overview.html) | MCP server integration | .mcp.json vs ~/.claude.json, env variable expansion, MCP resources, community servers |
+| [4.5](unit-4.5-builtin-tools/overview.html) | Built-in tools (Read, Write, Edit, Bash, Grep, Glob) | Grep for content, Glob for paths, Edit unique text matching, incremental codebase exploration |
 
 ## Key mental models
 

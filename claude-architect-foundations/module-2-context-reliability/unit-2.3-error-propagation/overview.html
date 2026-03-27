@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.3 — Error Propagation in Multi-Agent Systems</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.3</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.3 — Error Propagation in Multi-Agent Systems</h1>
+    <p class="subtitle">Task Statement 5.3 — Design error handling that preserves context and enables intelligent recovery</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Error Propagation Patterns -->
+  <section class="concept-card">
+    <h2>The Error Propagation Pyramid</h2>
+    <p>When a subagent fails, the system's response determines whether the workflow recovers or collapses. The exam tests three patterns.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Pattern</th><th>Behavior</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Anti-pattern 1: Silent Suppression</strong></td>
+          <td>Subagent fails, returns empty results as "success"</td>
+          <td>Coordinator proceeds with missing data &mdash; wrong answers, no warning</td>
+        </tr>
+        <tr>
+          <td><strong>Anti-pattern 2: Catastrophic Termination</strong></td>
+          <td>Subagent fails, exception propagates up the chain</td>
+          <td>Entire workflow terminates even when partial results are usable</td>
+        </tr>
+        <tr>
+          <td><strong>Correct: Structured Propagation</strong></td>
+          <td>Subagent returns <code>{error_type, attempted_query, partial_results, alternatives}</code></td>
+          <td>Coordinator decides: retry, alternative approach, proceed with partial, or escalate</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The critical distinction: <strong>access failures</strong> (permission denied, network timeout)
+      are different from <strong>empty results</strong> (query returned zero rows). The first means
+      "we couldn't look" &mdash; the second means "we looked and found nothing." Your error handling
+      must distinguish these because the correct recovery action is different.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Structured error context enables <strong>local recovery</strong> &mdash; the coordinator can
+    retry with different parameters, try an alternative data source, or proceed with partial results
+    and flag the gap. This is only possible when errors include <code>error_type</code>,
+    <code>attempted_query</code>, and <code>partial_results</code>. Generic error messages
+    ("something went wrong") force global escalation.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Wrap all subagent calls in try/except and continue on failure" looks like error handling
+    but is actually <strong>silent suppression</strong> &mdash; the worst anti-pattern. The exam
+    tests whether you recognize that catching and ignoring errors is worse than crashing, because
+    it produces silently wrong results.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with silent error suppression &mdash; you'll see a multi-agent pipeline produce wrong answers without any warning, then build structured error propagation.</p>
+    <p><code>python run.py open module-2 unit-2.3 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-2.2-escalation-patterns/overview.html" class="prev">Unit 2.2 &mdash; Escalation Patterns</a>
+    <a href="../unit-2.4-codebase-context/overview.html" class="next">Unit 2.4 &mdash; Codebase Context</a>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.5 — Agent SDK Hooks</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.5</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.5 — Agent SDK Hooks</h1>
+    <p class="subtitle">Task Statement 1.5 — Use PostToolUse hooks for normalization, tool call interception for compliance, and understand hooks vs prompts for enforcement</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Hook types -->
+  <section class="concept-card">
+    <h2>Agent SDK Hook Points</h2>
+    <p>Hooks are code functions that run at specific points in the agentic loop. They intercept, validate, or transform data without modifying the model's behavior via prompts.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Hook</th><th>Fires When</th><th>Use Case</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PreToolCall</strong></td>
+          <td>Before a tool is executed</td>
+          <td>Validate inputs, block unauthorized calls, enforce prerequisite gates</td>
+        </tr>
+        <tr>
+          <td><strong>PostToolUse</strong></td>
+          <td>After a tool returns its result</td>
+          <td>Normalize output (dates, currencies), redact sensitive data, log for audit</td>
+        </tr>
+        <tr>
+          <td><strong>PreResponse</strong></td>
+          <td>Before the final response is sent to the user</td>
+          <td>Content filtering, compliance checks on the final output</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Hooks vs Prompts: When to Use Which</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Requirement</th><th>Hooks (Code)</th><th>Prompts (Instructions)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Guarantee: must work 100% of the time</td>
+          <td><strong>Use hooks</strong> &mdash; deterministic</td>
+          <td>Not reliable enough</td>
+        </tr>
+        <tr>
+          <td>Data normalization (date formats, currency)</td>
+          <td><strong>Use PostToolUse hook</strong></td>
+          <td>Model may forget or normalize inconsistently</td>
+        </tr>
+        <tr>
+          <td>Block unauthorized tool calls</td>
+          <td><strong>Use PreToolCall hook</strong></td>
+          <td>Model may still attempt the call</td>
+        </tr>
+        <tr>
+          <td>Style preferences (tone, verbosity)</td>
+          <td>Overkill</td>
+          <td><strong>Use prompts</strong> &mdash; flexible, easy to iterate</td>
+        </tr>
+        <tr>
+          <td>Best practices (suggest alternatives)</td>
+          <td>Overkill</td>
+          <td><strong>Use prompts</strong> &mdash; non-critical</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Hooks execute <strong>deterministically in code</strong> &mdash; they cannot be circumvented
+    by the model. This makes them the correct choice for any rule that must be followed 100% of the
+    time: compliance checks, data normalization, sensitive data redaction, and prerequisite gates.
+    Prompts are for guidance; hooks are for enforcement.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    When the exam asks about normalizing tool outputs (e.g., ensuring all dates are in ISO format),
+    the answer is a <strong>PostToolUse hook</strong>, not a prompt instruction. The model might
+    normalize dates correctly 95% of the time via prompts, but a PostToolUse hook does it 100% of
+    the time. For data consistency, always choose the deterministic option.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with a <strong>prompt-based</strong> normalization approach &mdash; you'll see inconsistent dates, then build hooks that guarantee consistency.</p>
+    <p><code>python run.py open module-5 unit-5.5 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.4-enforcement-handoff/overview.html" class="prev">Unit 5.4 — Enforcement & Handoff</a>
+    <a href="../unit-5.6-task-decomposition/overview.html" class="next">Unit 5.6 — Task Decomposition</a>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3.5 — Iterative Refinement Techniques</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 3</a><span class="sep"></span>
+    <span>Unit 3.5</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 3.5 — Iterative Refinement Techniques</h1>
+    <p class="subtitle">Task Statement 3.5 — Apply iterative refinement patterns to improve Claude Code output quality</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Decision table: Which refinement technique? -->
+  <section class="concept-card">
+    <h2>Choosing the Right Refinement Technique</h2>
+    <p>Iterative refinement means feeding Claude's output back to improve it. The exam tests which technique matches which problem.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Problem Signal</th><th>Technique</th><th>How It Works</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Output doesn't match desired format/style</strong></td>
+          <td>Input/Output Examples</td>
+          <td>Show concrete before/after pairs; Claude learns the transformation pattern</td>
+        </tr>
+        <tr>
+          <td><strong>Output has logical errors or edge cases</strong></td>
+          <td>Test-Driven Iteration</td>
+          <td>Write tests first, let Claude iterate until tests pass; tests act as the spec</td>
+        </tr>
+        <tr>
+          <td><strong>Requirements are unclear or evolving</strong></td>
+          <td>Interview Pattern</td>
+          <td>Ask Claude to ask clarifying questions before generating; elicits hidden requirements</td>
+        </tr>
+        <tr>
+          <td><strong>First attempt is close but needs polish</strong></td>
+          <td>Targeted Feedback</td>
+          <td>Point out specific issues in the output and ask for targeted fixes only</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>The Interview Pattern</h3>
+    <p>Instead of guessing requirements, instruct Claude to ask questions first:</p>
+    <ol>
+      <li>Tell Claude to ask 3-5 clarifying questions before generating</li>
+      <li>Answer the questions with specific requirements</li>
+      <li>Claude generates with full context, reducing iterations</li>
+    </ol>
+    <p>This front-loads context gathering and produces better first drafts.</p>
+
+    <h3>Test-Driven Iteration Flow</h3>
+    <ol>
+      <li>Write failing tests that define the desired behavior</li>
+      <li>Ask Claude to implement until tests pass</li>
+      <li>Add edge case tests, iterate again</li>
+      <li>Tests become the living specification</li>
+    </ol>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Test-driven iteration is the most <strong>reliable</strong> refinement technique because
+    tests provide an <strong>objective, automated success criterion</strong>. Input/output
+    examples and interviews rely on human judgment each iteration. Tests let Claude
+    self-verify and iterate autonomously until the spec is met.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "A developer keeps manually reviewing and correcting Claude's output through many rounds."
+    The wrong answer is "use a more capable model" or "write better instructions." The right
+    answer is <strong>test-driven iteration</strong> &mdash; write tests that encode the
+    requirements, then let Claude iterate against the tests. This eliminates the manual
+    review bottleneck.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see aimless iteration without feedback, then apply structured refinement techniques.</p>
+    <p><code>python run.py open module-3 unit-3.5 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-3.4-plan-vs-direct/overview.html" class="prev">Unit 3.4 — Plan Mode vs Direct</a>
+    <a href="../unit-3.6-cicd-integration/overview.html" class="next">Unit 3.6 — CI/CD Integration</a>
+  </nav>
+
+</div>
+</body>
+</html>

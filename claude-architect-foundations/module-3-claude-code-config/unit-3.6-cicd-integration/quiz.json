@@ -1,0 +1,72 @@
+{
+  "unit": "3.6",
+  "title": "CI/CD Integration",
+  "task_statement": "3.6",
+  "questions": [
+    {
+      "id": "3.6.1",
+      "scenario": "Your team wants to add an automated Claude Code review step to their GitHub Actions CI pipeline. The review should run on every pull request, analyze the diff, and output structured findings that can be parsed by downstream scripts.",
+      "question": "What is the correct Claude Code invocation?",
+      "options": [
+        "A) claude \"Review this PR\" --format json",
+        "B) claude -p \"Review the PR diff for security issues\" --output-format json",
+        "C) claude --ci --review --json",
+        "D) claude -p \"Review this PR\" --output-format text | jq '.findings'"
+      ],
+      "correct": "B",
+      "explanation": "The -p flag enables headless (non-interactive) mode for CI, and --output-format json produces machine-readable JSON for downstream parsing. Option A is missing the -p flag needed for non-interactive execution. Option C uses non-existent flags. Option D requests text format and tries to parse it as JSON, which will fail."
+    },
+    {
+      "id": "3.6.2",
+      "scenario": "Your CI pipeline has two steps: (1) Claude analyzes code for issues, (2) Claude generates fix suggestions for the issues found. Step 2 needs to know about the findings from Step 1.",
+      "question": "What is the best way to pass context between the two steps?",
+      "options": [
+        "A) Use --continue in Step 2 to resume the session from Step 1",
+        "B) Write Step 1's findings to a temporary file, then include the file contents in Step 2's prompt",
+        "C) Both A and B are valid — --continue resumes the session, or you can pass findings explicitly in the prompt",
+        "D) Store findings in an environment variable and reference it in Step 2's prompt"
+      ],
+      "correct": "C",
+      "explanation": "Both approaches work. --continue resumes the most recent session, which preserves all context from Step 1. Alternatively, capturing Step 1's JSON output and injecting it into Step 2's prompt gives explicit control over what context is passed. The choice depends on whether you want full session continuity (--continue) or selective context passing (explicit injection)."
+    },
+    {
+      "id": "3.6.3",
+      "scenario": "A CI pipeline using Claude Code produces different review findings on the same PR when run multiple times. The team expects deterministic results for reproducibility.",
+      "question": "What is the most likely cause and how should it be addressed?",
+      "options": [
+        "A) The model is non-deterministic — set temperature to 0 in the prompt",
+        "B) Session state from previous CI runs is leaking into new runs — ensure each run uses session isolation (default with -p) and pass all context explicitly in the prompt",
+        "C) The CI runner's memory is caching previous responses — clear the cache between runs",
+        "D) Use a deterministic model variant designed for CI pipelines"
+      ],
+      "correct": "B",
+      "explanation": "The -p flag provides session isolation by default — each invocation starts fresh. If results vary, the most likely cause is that context is leaking (e.g., using --continue accidentally, or the prompt references dynamic content like timestamps). The fix is to ensure isolation and make all prompt inputs explicit and stable. While models are inherently non-deterministic, session state leakage is the more common and fixable cause in CI."
+    },
+    {
+      "id": "3.6.4",
+      "scenario": "A CI pipeline has three sequential Claude Code steps: (1) analyze code for security issues, (2) generate fix suggestions, and (3) produce a final summary. A developer writes the pipeline so that all three steps use `claude -p` with independent prompts. Step 2 does not receive Step 1's findings, and Step 3 does not know about either previous step's output.",
+      "question": "What is the most appropriate fix?",
+      "options": [
+        "A) Replace all three `claude -p` calls with a single long prompt that asks Claude to do all three tasks at once",
+        "B) Use `--continue` on Steps 2 and 3 so each step resumes the previous session, or capture each step's JSON output and inject it into the next step's prompt",
+        "C) Store the outputs in environment variables and hope Claude reads them automatically",
+        "D) Add `--output-format stream-json` to all three steps so they can stream context to each other in real time"
+      ],
+      "correct": "B",
+      "explanation": "The --continue flag resumes the most recent session, preserving all prior context. Alternatively, capturing each step's --output-format json output and injecting it into the next prompt gives explicit control over what context is passed. Option A loses the benefits of multi-step decomposition. Option C does not work — Claude Code does not automatically read environment variables as context. Option D misunderstands stream-json, which is an output format for real-time consumers, not a mechanism for passing context between steps."
+    },
+    {
+      "id": "3.6.5",
+      "scenario": "A team runs Claude Code in their CI pipeline to review every PR. They notice that review quality degrades on large PRs with 500+ lines of changes. Small PRs get thorough, accurate reviews.",
+      "question": "What is the most effective fix?",
+      "options": [
+        "A) Increase the context window size for the CI model",
+        "B) Add 'review this PR thoroughly and carefully' to the prompt",
+        "C) Split the review into multiple focused passes — one per file or file group — and aggregate findings, similar to multi-pass review (Module 1, Unit 1.6)",
+        "D) Limit PRs to 200 lines and reject larger ones"
+      ],
+      "correct": "C",
+      "explanation": "Large PRs cause attention dilution — the model skims rather than deeply analyzing each section. The fix is multi-pass review: split the diff into per-file or per-module chunks, run separate claude -p invocations for each, and aggregate findings. This mirrors the multi-pass pattern from Module 1, Unit 1.6. Option B is the 'review carefully' trap — subjective instructions do not fix structural problems."
+    }
+  ]
+}

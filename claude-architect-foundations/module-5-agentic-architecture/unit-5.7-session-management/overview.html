@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.7 — Session State & Resumption</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.7</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.7 — Session State & Resumption</h1>
+    <p class="subtitle">Task Statement 1.7 — Manage session state with --resume, fork_session, stale context risks, and fresh session + summary patterns</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Session management approaches -->
+  <section class="concept-card">
+    <h2>Session Resumption Decision Table</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Mechanism</th><th>Context</th><th>Use When</th><th>Risk</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>--resume</strong></td>
+          <td>Restores full prior session context</td>
+          <td>Continuing an interrupted task with the same data</td>
+          <td>Stale context if underlying data has changed</td>
+        </tr>
+        <tr>
+          <td><strong>fork_session</strong></td>
+          <td>Snapshot of current context at fork point</td>
+          <td>Exploratory branches, parallel approaches</td>
+          <td>Divergent branches may conflict on shared resources</td>
+        </tr>
+        <tr>
+          <td><strong>Fresh session + summary</strong></td>
+          <td>Clean context with structured summary of prior work</td>
+          <td>When prior data may be stale, or for independent review</td>
+          <td>Summary may lose nuance from the original session</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>The Stale Context Problem</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Scenario</th><th>Danger of --resume</th><th>Better Approach</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Code review after PR updated</td>
+          <td>Agent reviews outdated code from prior session</td>
+          <td>Fresh session + summary of prior findings</td>
+        </tr>
+        <tr>
+          <td>Data analysis after DB migration</td>
+          <td>Agent references old schema or data</td>
+          <td>Fresh session with current schema</td>
+        </tr>
+        <tr>
+          <td>Debugging after a hotfix</td>
+          <td>Agent's understanding of the bug is based on pre-fix state</td>
+          <td>Fresh session + summary of what was tried and what changed</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    <code>--resume</code> restores context but <strong>not reality</strong>. If the underlying
+    data, code, or environment has changed since the session was paused, the resumed session
+    operates on stale assumptions. The <strong>fresh session + summary</strong> pattern avoids
+    this: start a new session, pass a structured summary of prior work, and let the agent
+    re-examine current state.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Use --resume to continue the analysis" sounds efficient but is <strong>wrong when the
+    underlying data has changed</strong>. If the exam scenario mentions updated files, new
+    commits, or changed data since the session paused, the answer is fresh session + summary
+    &mdash; not --resume. Stale context leads to incorrect conclusions.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts by <strong>resuming a stale session</strong> &mdash; you'll see the agent make wrong assumptions, then build the fresh session + summary pattern.</p>
+    <p><code>python run.py open module-5 unit-5.7 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.6-task-decomposition/overview.html" class="prev">Unit 5.6 — Task Decomposition</a>
+    <span></span>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "unit": "4.3",
+  "title": "Tool Distribution & tool_choice Config",
+  "task_statement": "2.3",
+  "questions": [
+    {
+      "id": "4.3.1",
+      "scenario": "Your multi-agent system has a single orchestrator agent with 18 tools covering customer support, billing, inventory, and shipping. Tool selection accuracy has dropped to 65%, and the system frequently calls billing tools when users ask about shipping.",
+      "question": "What is the most effective architectural change?",
+      "options": [
+        "A) Improve all 18 tool descriptions with better positive triggers and negative boundaries",
+        "B) Split into 4 role-specific agents (support, billing, inventory, shipping) with 4-5 tools each, coordinated by a lightweight router",
+        "C) Switch to a larger model that can handle more tools reliably",
+        "D) Add a classification step before tool selection to pre-filter tools"
+      ],
+      "correct": "B",
+      "explanation": "18 tools exceed the reliable selection threshold. The root cause is decision complexity, not description quality. Splitting into focused agents (4-5 tools each) eliminates the combinatorial problem. Option A helps but does not address the fundamental complexity issue. Option C -- model size does not fix decision complexity. Option D adds latency without fixing the underlying problem."
+    },
+    {
+      "id": "4.3.2",
+      "scenario": "You have a data extraction pipeline where Claude must always extract structured data from a document, never respond with just text. You are configuring tool_choice.",
+      "question": "Which tool_choice configuration is correct?",
+      "options": [
+        "A) tool_choice: 'auto' -- let the model decide whether extraction is needed",
+        "B) tool_choice: 'any' -- force the model to call some extraction tool, but let it pick which schema",
+        "C) tool_choice: {'type': 'tool', 'name': 'extract_invoice'} -- force a specific extraction tool",
+        "D) Do not set tool_choice -- the default behavior is sufficient"
+      ],
+      "correct": "B",
+      "explanation": "In a pipeline where extraction is always required, 'any' guarantees the model calls a tool (preventing text-only responses) while allowing flexibility in which extraction schema to use. 'auto' (A, D) allows the model to skip extraction entirely. Forced specific tool (C) works only if you know the document type in advance -- 'any' is better when the doc type varies."
+    },
+    {
+      "id": "4.3.3",
+      "scenario": "Your multi-agent system has a research agent (4 tools) and a synthesis agent (3 tools). The synthesis agent frequently needs to verify a fact during its work. Currently, it must send a message back to the coordinator which routes to the research agent, adding 2 extra round trips.",
+      "question": "What is the most efficient solution?",
+      "options": [
+        "A) Give the synthesis agent all 4 of the research agent's tools so it can do its own research",
+        "B) Add a single cross-role tool (verify_fact) to the synthesis agent that calls the research agent's fact-checking function directly",
+        "C) Increase the synthesis agent's context window so it receives more research data upfront",
+        "D) Have the coordinator pre-fetch all possibly relevant facts before invoking the synthesis agent"
+      ],
+      "correct": "B",
+      "explanation": "A cross-role tool is a single, high-frequency tool duplicated across agents for efficiency. Adding verify_fact to the synthesis agent (now 4 tools, still under the limit) eliminates the 2 extra round trips for the most common cross-agent need. Option A violates the 4-5 tool limit (7 total). Option C does not help when the needed fact is not in the pre-loaded context. Option D wastes tokens on irrelevant facts."
+    },
+    {
+      "id": "4.3.4",
+      "scenario": "You are building a two-step pipeline: Step 1 extracts metadata from a document, Step 2 enriches the metadata with external data. You want to ensure Step 1 always runs the metadata extractor before Step 2 runs the enrichment tool.",
+      "question": "How should you configure tool_choice for each step?",
+      "options": [
+        "A) Both steps: tool_choice 'auto' -- trust the model to call tools in the right order",
+        "B) Step 1: tool_choice {'type': 'tool', 'name': 'extract_metadata'}. Step 2: tool_choice {'type': 'tool', 'name': 'enrich_data'}",
+        "C) Both steps: tool_choice 'any' -- the model must call a tool but picks which one",
+        "D) Step 1: tool_choice 'any'. Step 2: tool_choice 'auto' -- let Step 2 decide if enrichment is needed"
+      ],
+      "correct": "B",
+      "explanation": "Forced tool_choice guarantees the exact tool is called in each pipeline step. This eliminates any possibility of the model skipping extraction or calling enrichment first. Option A risks the model responding with text instead of calling tools. Option C allows the model to call the wrong tool in each step. Option D allows Step 2 to skip enrichment."
+    },
+    {
+      "id": "4.3.5",
+      "scenario": "Your system has 3 agents: writer (5 tools), reviewer (4 tools), and publisher (3 tools). A new requirement arrives: all agents need access to a 'get_style_guide' tool for checking content against brand guidelines. Adding it would push the writer agent to 6 tools.",
+      "question": "How should you handle this?",
+      "options": [
+        "A) Add get_style_guide to all 3 agents -- 6 tools for the writer is still manageable",
+        "B) Create a dedicated style-checking agent with get_style_guide as its only tool",
+        "C) Add get_style_guide as a cross-role tool to all 3 agents, and consolidate the writer's 2 least-used tools into 1 to stay within the 4-5 limit",
+        "D) Only add get_style_guide to the reviewer agent since it is most relevant there"
+      ],
+      "correct": "C",
+      "explanation": "The 4-5 tool guideline should be maintained. Adding a cross-role tool is correct, but the writer at 6 tools starts to push the boundary. Consolidating 2 rarely-used tools keeps the writer at 5. Option A ignores the tool limit. Option B adds unnecessary routing overhead for a single tool. Option D does not meet the requirement that all agents need it."
+    }
+  ]
+}

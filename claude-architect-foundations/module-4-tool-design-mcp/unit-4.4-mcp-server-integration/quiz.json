@@ -1,0 +1,72 @@
+{
+  "unit": "4.4",
+  "title": "MCP Server Integration",
+  "task_statement": "2.4",
+  "questions": [
+    {
+      "id": "4.4.1",
+      "scenario": "Your team of 8 developers all need access to a custom MCP server that connects to your company's internal knowledge base. The server requires an API key for authentication.",
+      "question": "What is the correct way to configure this for the team?",
+      "options": [
+        "A) Each developer adds the server config to their ~/.claude.json with their personal API key",
+        "B) Add the server config to .mcp.json in the project root with ${KB_API_KEY} for the credential, and have each developer set the KB_API_KEY environment variable locally",
+        "C) Add the server config to .mcp.json with the API key hardcoded so everyone gets the same key",
+        "D) Create a setup script that copies the MCP config to each developer's home directory"
+      ],
+      "correct": "B",
+      "explanation": ".mcp.json in the project root is for shared team tooling -- it is version controlled so all developers get the configuration when they clone the repo. Using ${KB_API_KEY} environment variable expansion keeps the secret out of version control while allowing each developer to authenticate with their own key. Option A uses the personal config file which is not shared. Option C commits secrets. Option D is fragile and non-standard."
+    },
+    {
+      "id": "4.4.2",
+      "scenario": "You want to experiment with a new community MCP server for GitHub integration. It is not ready for your team yet -- you just want to test it yourself.",
+      "question": "Where should you configure this MCP server?",
+      "options": [
+        "A) .mcp.json in the project root so it is tracked in version control",
+        "B) ~/.claude.json -- personal servers go in the home directory config",
+        "C) A Docker container running the MCP server locally",
+        "D) Add it to the team's CI/CD pipeline configuration"
+      ],
+      "correct": "B",
+      "explanation": "Personal and experimental MCP servers go in ~/.claude.json. This keeps them private to your machine without affecting teammates. Once tested and ready for the team, you would move the config to .mcp.json. Option A shares an untested tool with the team. Options C and D don't address where Claude discovers the MCP server."
+    },
+    {
+      "id": "4.4.3",
+      "scenario": "You are reviewing a colleague's pull request that adds a new MCP server to .mcp.json. The config includes: {\"mcpServers\": {\"jira\": {\"command\": \"npx\", \"args\": [\"-y\", \"@mcp/jira-server\"], \"env\": {\"JIRA_TOKEN\": \"xoxb-real-token-12345\"}}}}",
+      "question": "What issue should you flag in the code review?",
+      "options": [
+        "A) The command should use 'node' instead of 'npx'",
+        "B) The JIRA_TOKEN contains a hardcoded secret that will be committed to version control -- it should use ${JIRA_TOKEN} environment variable expansion instead",
+        "C) The server name 'jira' is too generic -- it should be more descriptive",
+        "D) MCP servers should not be configured in .mcp.json"
+      ],
+      "correct": "B",
+      "explanation": "Hardcoded secrets in .mcp.json (which is version controlled) is a security vulnerability. The token will be committed to the repository and visible to anyone with access. The fix is to use ${JIRA_TOKEN} syntax and have each developer set the environment variable locally. This is the standard pattern for secrets in MCP configuration."
+    },
+    {
+      "id": "4.4.4",
+      "scenario": "Your .mcp.json configures 3 MCP servers and your ~/.claude.json configures 2 personal servers. When you connect Claude Code to your project, you notice all 5 servers are available.",
+      "question": "Is this the expected behavior?",
+      "options": [
+        "A) No -- .mcp.json should override ~/.claude.json, so only 3 servers should be available",
+        "B) No -- ~/.claude.json should override .mcp.json, so only 2 servers should be available",
+        "C) Yes -- both .mcp.json and ~/.claude.json are discovered at connection time, and servers from both are available simultaneously",
+        "D) No -- you must explicitly enable each server before it becomes available"
+      ],
+      "correct": "C",
+      "explanation": "Both configuration files are discovered at connection time and all configured MCP servers become available simultaneously. They do not override each other -- they merge. This is by design: you get team tools from .mcp.json and personal tools from ~/.claude.json at the same time."
+    },
+    {
+      "id": "4.4.5",
+      "scenario": "You are evaluating whether to use a community MCP server for Slack integration or build your own. The community server has 500+ stars on GitHub and is maintained by a recognized organization.",
+      "question": "What should you consider before adopting the community MCP server?",
+      "options": [
+        "A) Community servers are never suitable for production use -- always build your own",
+        "B) Check that the server follows MCP best practices (structured errors, proper tool descriptions), review the source code for security, verify it handles your authentication model, and test tool description quality with your agents",
+        "C) Star count is the most reliable indicator of quality -- 500+ stars means it is production-ready",
+        "D) Community servers should only be configured in ~/.claude.json, never in .mcp.json"
+      ],
+      "correct": "B",
+      "explanation": "Adopting a community MCP server requires due diligence: review the source code, verify it handles authentication securely (especially secrets via environment variables), check that tool descriptions are production-grade (clear boundaries, not minimal), and test that it integrates well with your agents. Star count (C) is a popularity signal, not a quality guarantee. Community servers can absolutely be shared via .mcp.json (D is wrong)."
+    }
+  ]
+}

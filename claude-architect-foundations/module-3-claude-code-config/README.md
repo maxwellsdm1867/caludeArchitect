@@ -11,12 +11,12 @@ CLAUDE.md files, commands, skills, and rules are all prompts in disguise. You ne
 
 | Unit | Topic | Key exam concepts |
 |------|-------|-------------------|
-| [3.1](unit-3.1-claude-md-hierarchy.md) | CLAUDE.md hierarchy & modular organization | User/project/directory levels, @import, .claude/rules/, /memory command |
-| [3.2](unit-3.2-commands-skills.md) | Custom slash commands & skills | .claude/commands/ vs ~/.claude/commands/, SKILL.md frontmatter, context: fork |
-| [3.3](unit-3.3-path-specific-rules.md) | Path-specific rules with glob patterns | .claude/rules/ YAML frontmatter, paths field, glob patterns vs directory CLAUDE.md |
-| [3.4](unit-3.4-plan-vs-direct.md) | Plan mode vs direct execution | Complexity assessment, Explore subagent, combining plan + execute |
-| [3.5](unit-3.5-iterative-refinement.md) | Iterative refinement techniques | Input/output examples, test-driven iteration, interview pattern |
-| [3.6](unit-3.6-cicd-integration.md) | CI/CD integration | -p flag, --output-format json, --json-schema, session isolation, prior findings |
+| [3.1](unit-3.1-claude-md-hierarchy/overview.html) | CLAUDE.md hierarchy & modular organization | User/project/directory levels, @import, .claude/rules/, /memory command |
+| [3.2](unit-3.2-commands-skills/overview.html) | Custom slash commands & skills | .claude/commands/ vs ~/.claude/commands/, SKILL.md frontmatter, context: fork |
+| [3.3](unit-3.3-path-specific-rules/overview.html) | Path-specific rules with glob patterns | .claude/rules/ YAML frontmatter, paths field, glob patterns vs directory CLAUDE.md |
+| [3.4](unit-3.4-plan-vs-direct/overview.html) | Plan mode vs direct execution | Complexity assessment, Explore subagent, combining plan + execute |
+| [3.5](unit-3.5-iterative-refinement/overview.html) | Iterative refinement techniques | Input/output examples, test-driven iteration, interview pattern |
+| [3.6](unit-3.6-cicd-integration/overview.html) | CI/CD integration | -p flag, --output-format json, --json-schema, session isolation, prior findings |
 
 ## Key mental models
 

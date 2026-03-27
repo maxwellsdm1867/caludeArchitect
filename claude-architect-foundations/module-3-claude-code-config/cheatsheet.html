@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3 Cheat Sheet — Claude Code Configuration &amp; Workflows</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/theme.js" defer></script>
+  <style>
+    /* === Cheatsheet Layout — CSS Columns for masonry packing === */
+    .cheatsheet {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2rem;
+      font-size: .8125rem;
+      line-height: 1.5;
+    }
+    .cheatsheet h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: .25rem;
+      letter-spacing: -.03em;
+    }
+    .cheatsheet .sheet-subtitle {
+      font-size: .8125rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: .5rem;
+    }
+    .cheatsheet-grid {
+      columns: 2;
+      column-gap: 1rem;
+    }
+    /* Sections */
+    .cs-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .875rem 1rem;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+      box-shadow: var(--shadow-sm);
+    }
+    .cs-section h2 {
+      font-size: .8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: .5rem;
+      padding-bottom: .375rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .cs-section h3 {
+      font-size: .8125rem;
+      font-weight: 700;
+      margin-top: .625rem;
+      margin-bottom: .25rem;
+    }
+    .cs-section p,
+    .cs-section li {
+      margin-bottom: .25rem;
+    }
+    .cs-section ul,
+    .cs-section ol {
+      padding-left: 1.125rem;
+      margin-bottom: .375rem;
+    }
+    .cs-section ul { list-style: disc; }
+    .cs-section ol { list-style: decimal; }
+    /* Decision tree compact */
+    .cs-tree {
+      padding-left: .875rem;
+      border-left: 2px solid var(--accent);
+      margin: .375rem 0;
+    }
+    .cs-tree .branch {
+      margin-bottom: .25rem;
+    }
+    /* Full-width section spanning both columns */
+    .cs-full {
+      column-span: all;
+    }
+    /* Inline code */
+    .cheatsheet code {
+      font-size: .76rem;
+      padding: .08em .25em;
+    }
+    /* Table styling */
+    .cs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: .375rem 0;
+      font-size: .76rem;
+    }
+    .cs-table th, .cs-table td {
+      padding: .25rem .4rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .cs-table th {
+      background: var(--accent-light);
+      font-weight: 700;
+    }
+    .cs-rule { color: var(--danger); font-weight: 700; }
+    .cs-tip { color: var(--info); font-weight: 700; }
+    .cs-ok { color: var(--success); font-weight: 700; }
+
+    /* === Print === */
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      [data-theme] {
+        --bg: #fff; --bg-card: #f5f5f5; --text: #000; --text-muted: #444;
+        --border: #ccc; --accent: #4040cc; --accent-light: #e8e6ff;
+        --danger: #c00; --danger-bg: #fff0f0; --info: #06c; --info-bg: #f0f6ff;
+        --success: #070; --success-bg: #f0fff0; --warning: #960; --warning-bg: #fffaf0;
+        --code-bg: #f0f0f0;
+      }
+      .cheatsheet {
+        max-width: 100%;
+        padding: 0;
+        font-size: .68rem;
+        line-height: 1.35;
+      }
+      .cheatsheet h1 { font-size: 1.05rem; }
+      .cheatsheet .sheet-subtitle { font-size: .66rem; }
+      .cheatsheet-grid { gap: .4rem; }
+      .cs-section {
+        padding: .35rem .5rem;
+        border-radius: 3px;
+        box-shadow: none;
+      }
+      .cs-section h2 { font-size: .7rem; }
+      .cs-section h3 { font-size: .66rem; }
+      .cs-table { font-size: .66rem; }
+      .cs-table th, .cs-table td { padding: .15rem .3rem; }
+      .cs-rule, .cs-tip, .cs-ok { font-size: .62rem; padding: .05rem .25rem; }
+      .cheatsheet code { font-size: .64rem; }
+      .theme-toggle { display: none !important; }
+      @page {
+        size: letter;
+        margin: .4in;
+      }
+    }
+
+    /* === Responsive (mobile) === */
+    @media (max-width: 768px) {
+      .cheatsheet-grid {
+        columns: 1;
+      }
+      .cheatsheet { padding: .75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="cheatsheet">
+
+  <h1>Module 3: Claude Code Configuration &amp; Workflows</h1>
+  <p class="sheet-subtitle">Domain 3, Task Statements 3.1&ndash;3.6 &mdash; Claude Architect Foundations Quick Reference</p>
+
+  <div class="cheatsheet-grid">
+
+    <!-- ============================================================
+         S1: CLAUDE.md HIERARCHY (TS 3.1)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>1 &mdash; CLAUDE.md Hierarchy (TS 3.1)</h2>
+
+      <h3>Three Levels</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Level</th><th>Path</th><th>Git?</th><th>Use For</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>User</td><td><code>~/.claude/CLAUDE.md</code></td><td>No</td><td>Personal prefs</td></tr>
+          <tr><td>Project</td><td><code>.claude/CLAUDE.md</code></td><td>Yes</td><td>Team standards</td></tr>
+          <tr><td>Directory</td><td><code>dir/CLAUDE.md</code></td><td>Yes</td><td>Scoped rules</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Key Mechanisms</h3>
+      <ul>
+        <li><code>@import path/to/file.md</code> &mdash; modular config, keeps CLAUDE.md DRY</li>
+        <li><code>.claude/rules/</code> &mdash; path-specific rules with glob patterns</li>
+        <li><code>/memory</code> &mdash; persist facts across sessions</li>
+      </ul>
+
+      <h3><span class="cs-rule">Exam Rule</span> User-level is NOT shared</h3>
+      <p>"Teammate can't see my rules" &rarr; rules are in <code>~/.claude/CLAUDE.md</code>. Move to project-level.</p>
+
+      <h3>Merge Behavior</h3>
+      <p>All levels <strong>merge</strong> (not replace). Avoid contradictions across levels.</p>
+    </section>
+
+    <!-- ============================================================
+         S2: COMMANDS & SKILLS (TS 3.2)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>2 &mdash; Commands &amp; Skills (TS 3.2)</h2>
+
+      <h3>Commands vs Skills</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Aspect</th><th>Command</th><th>Skill</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Location</td><td><code>.claude/commands/</code></td><td><code>.claude/skills/</code></td></tr>
+          <tr><td>Format</td><td>Markdown + <code>$ARGUMENTS</code></td><td>SKILL.md + YAML frontmatter</td></tr>
+          <tr><td>Context</td><td>Current conversation</td><td><code>context: fork</code> available</td></tr>
+          <tr><td>Best for</td><td>Simple templates</td><td>Complex / isolated workflows</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Key Details</h3>
+      <ul>
+        <li><code>$ARGUMENTS</code> &mdash; replaced with text after slash command</li>
+        <li>Nested dirs: <code>.claude/commands/test/unit.md</code> &rarr; <code>/project:test:unit</code></li>
+        <li>Personal: <code>~/.claude/commands/</code> &rarr; <code>/user:cmd-name</code></li>
+      </ul>
+
+      <h3><span class="cs-rule">Exam Rule</span> <code>context: fork</code> = independent review</h3>
+      <p>Same-context review is biased. Use <code>context: fork</code> for unbiased code review.</p>
+    </section>
+
+    <!-- ============================================================
+         S3: PATH-SPECIFIC RULES (TS 3.3)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>3 &mdash; Path-Specific Rules (TS 3.3)</h2>
+
+      <h3>Rules File Anatomy</h3>
+      <pre><code>---
+paths:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+---
+# Testing Standards
+- Use describe/it blocks...</code></pre>
+
+      <h3>Rules vs Directory CLAUDE.md</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Use</th><th>Mechanism</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cross-cutting file types</td><td><code>.claude/rules/</code> with globs</td></tr>
+          <tr><td>Location-specific context</td><td>Directory <code>CLAUDE.md</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Glob Quick Reference</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Pattern</th><th>Matches</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>**/*.test.ts</code></td><td>Test files at any depth</td></tr>
+          <tr><td><code>*.py</code></td><td>Python files in root only</td></tr>
+          <tr><td><code>src/api/**</code></td><td>Everything under src/api/</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cs-rule">Trap</span> <code>*.py</code> vs <code>**/*.py</code></h3>
+      <p><code>*</code> = single directory level. <code>**</code> = any depth. Always use <code>**</code> for recursive matching.</p>
+    </section>
+
+    <!-- ============================================================
+         S4: PLAN VS DIRECT (TS 3.4)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>4 &mdash; Plan vs Direct (TS 3.4)</h2>
+
+      <h3>Decision Tree</h3>
+      <div class="cs-tree">
+        <div class="branch"><strong>Multi-file + unclear approach</strong> &rarr; <span class="cs-tip">PLAN MODE</span></div>
+        <div class="branch"><strong>Investigation / unknown codebase</strong> &rarr; <span class="cs-tip">PLAN MODE</span></div>
+        <div class="branch"><strong>Architectural decisions</strong> &rarr; <span class="cs-tip">PLAN MODE</span></div>
+        <div class="branch"><strong>Single-file fix + clear trace</strong> &rarr; <span class="cs-ok">DIRECT</span></div>
+        <div class="branch"><strong>Implementing approved plan</strong> &rarr; <span class="cs-ok">DIRECT</span></div>
+        <div class="branch"><strong>Trivial change (typo, rename)</strong> &rarr; <span class="cs-ok">DIRECT</span></div>
+      </div>
+
+      <h3>Plan-Then-Execute Pattern</h3>
+      <ol>
+        <li>Plan mode: explore + propose approach</li>
+        <li>Human review: approve/refine</li>
+        <li>Direct execution: implement approved plan</li>
+      </ol>
+
+      <h3>Explore Subagent</h3>
+      <p>Read-only exploration. Cannot modify files. Use for safe codebase understanding.</p>
+
+      <h3><span class="cs-rule">Trap</span> Re-planning an approved plan</h3>
+      <p>Once a plan is approved, execute directly. Re-entering plan mode risks second-guessing.</p>
+    </section>
+
+    <!-- ============================================================
+         S5: ITERATIVE REFINEMENT (TS 3.5)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>5 &mdash; Iterative Refinement (TS 3.5)</h2>
+
+      <h3>Technique Selection</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Problem</th><th>Technique</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Wrong format/style</td><td>Input/output examples</td></tr>
+          <tr><td>Logic errors</td><td>Test-driven iteration</td></tr>
+          <tr><td>Unclear requirements</td><td>Interview pattern</td></tr>
+          <tr><td>Close but needs polish</td><td>Targeted feedback</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Test-Driven Iteration</h3>
+      <ol>
+        <li>Write failing tests (= specification)</li>
+        <li>Claude iterates until tests pass</li>
+        <li>Add edge case tests, iterate again</li>
+      </ol>
+      <p><span class="cs-tip">Key</span> Tests provide <strong>objective, automated</strong> success criteria. No manual review per iteration.</p>
+
+      <h3>Interview Pattern</h3>
+      <p>Instruct Claude to ask 3-5 clarifying questions <em>before</em> generating. Front-loads context gathering.</p>
+
+      <h3><span class="cs-rule">Trap</span> Vague feedback</h3>
+      <p>"Fix the email handling" is ambiguous. Provide specific error: "email field has 'JOHN@EXAMPLE.COM', expected 'john@example.com'."</p>
+    </section>
+
+    <!-- ============================================================
+         S6: CI/CD INTEGRATION (TS 3.6)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>6 &mdash; CI/CD Integration (TS 3.6)</h2>
+
+      <h3>Key Flags</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Flag</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>-p "prompt"</code></td><td>Headless mode (non-interactive)</td></tr>
+          <tr><td><code>--output-format json</code></td><td>Machine-readable JSON output</td></tr>
+          <tr><td><code>--json</code></td><td>Shorthand for <code>--output-format json</code></td></tr>
+          <tr><td><code>--output-format stream-json</code></td><td>Streaming JSON</td></tr>
+          <tr><td><code>--continue</code></td><td>Resume most recent session</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Session Isolation</h3>
+      <p><code>-p</code> mode starts fresh by default. Each CI run is isolated. Use <code>--continue</code> only when you need prior context.</p>
+
+      <h3>CI Patterns</h3>
+      <ul>
+        <li><strong>Per-file review</strong> &mdash; one <code>claude -p</code> per file, aggregate JSON findings</li>
+        <li><strong>Multi-step</strong> &mdash; Step 1: analyze, Step 2: <code>--continue</code> to fix</li>
+        <li><strong>Prior findings</strong> &mdash; capture JSON, inject into next prompt</li>
+      </ul>
+
+      <h3><span class="cs-rule">Trap</span> Inconsistent CI results</h3>
+      <p>If results vary across runs, check for session state leakage. Ensure <code>-p</code> isolation and explicit prompt inputs.</p>
+    </section>
+
+    <!-- ============================================================
+         S7: EXAM PATTERN RECOGNITION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>7 &mdash; Exam Pattern Recognition</h2>
+      <table class="cs-table">
+        <thead>
+          <tr><th>If the question says&hellip;</th><th>The answer points to&hellip;</th><th>TS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>"Teammate can't see my Claude Code rules"</td><td>Move from user-level to project-level CLAUDE.md</td><td>3.1</td></tr>
+          <tr><td>"CLAUDE.md is too long and rules get missed"</td><td>Use <code>@import</code> for modular organization</td><td>3.1</td></tr>
+          <tr><td>"Need independent code review without conversation bias"</td><td>Skill with <code>context: fork</code></td><td>3.2</td></tr>
+          <tr><td>"Test files in different dirs use different conventions"</td><td><code>.claude/rules/</code> with <code>**/*.test.*</code> glob pattern</td><td>3.3</td></tr>
+          <tr><td>"Complex refactor across 15+ files produced mistakes"</td><td>Use plan mode first, then execute after approval</td><td>3.4</td></tr>
+          <tr><td>"Many manual iterations to get correct output"</td><td>Test-driven iteration (tests as automated spec)</td><td>3.5</td></tr>
+          <tr><td>"CI review gives inconsistent results"</td><td>Session isolation (<code>-p</code>) + explicit criteria</td><td>3.6</td></tr>
+          <tr><td>"Need structured output from CI pipeline"</td><td><code>--output-format json</code></td><td>3.6</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         S8: DISTRACTOR DETECTION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>8 &mdash; Distractor Detection Cheat Code</h2>
+      <p>Common wrong answers on the exam. If you see these as options, eliminate them first:</p>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Distractor Phrasing</th><th>Why It's Wrong</th><th>Correct Direction</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"Copy CLAUDE.md to each teammate's home directory"</td>
+            <td>Doesn't scale, no sync, not version-controlled</td>
+            <td>Project-level CLAUDE.md committed to git (3.1)</td>
+          </tr>
+          <tr>
+            <td>"Put a CLAUDE.md in every test directory"</td>
+            <td>Duplication, maintenance nightmare, applies to non-test files too</td>
+            <td>Single <code>.claude/rules/</code> file with glob pattern (3.3)</td>
+          </tr>
+          <tr>
+            <td>"Add 'ignore previous conversation' to the review prompt"</td>
+            <td>Prompt instructions do not reliably clear context</td>
+            <td>Use <code>context: fork</code> in SKILL.md (3.2)</td>
+          </tr>
+          <tr>
+            <td>"Use a more capable model" <span style="opacity:0.6">(for complex tasks)</span></td>
+            <td>Does not fix the structural problem of jumping to execution</td>
+            <td>Use plan mode for exploration first (3.4)</td>
+          </tr>
+          <tr>
+            <td>"Write more detailed instructions" <span style="opacity:0.6">(for iteration problems)</span></td>
+            <td>Instructions are hard to verify; tests are automated</td>
+            <td>Test-driven iteration (3.5)</td>
+          </tr>
+          <tr>
+            <td>"Cache sessions between CI runs for consistency"</td>
+            <td>Cached sessions introduce state leakage and reduce reproducibility</td>
+            <td>Session isolation with <code>-p</code> flag (3.6)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div><!-- /cheatsheet-grid -->
+
+</main>
+
+</body>
+</html>

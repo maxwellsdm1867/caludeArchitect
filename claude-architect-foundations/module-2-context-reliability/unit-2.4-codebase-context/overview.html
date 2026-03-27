@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.4 — Large Codebase Context Management</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.4</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.4 — Large Codebase Context Management</h1>
+    <p class="subtitle">Task Statement 5.4 — Apply context management techniques for large codebase interactions</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Context Strategy by Turn Count -->
+  <section class="concept-card">
+    <h2>Context Strategy Decision Table</h2>
+    <p>Large codebase sessions degrade predictably. The exam tests whether you choose the right intervention for the degradation stage.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Signal</th><th>Diagnosis</th><th>Intervention</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>"The pattern we discussed"</strong></td>
+          <td>Stage 2 &mdash; vague references replacing specifics</td>
+          <td>Write a scratchpad file with concrete names, paths, decisions</td>
+        </tr>
+        <tr>
+          <td><strong>"Typical patterns for this type of project"</strong></td>
+          <td>Stage 3 &mdash; context fully degraded</td>
+          <td>Use <code>/compact</code> or delegate to a fresh subagent</td>
+        </tr>
+        <tr>
+          <td><strong>Session spans 50+ files across the codebase</strong></td>
+          <td>Scope exceeds single-context capacity</td>
+          <td>Subagent delegation &mdash; each subagent handles a module</td>
+        </tr>
+        <tr>
+          <td><strong>Crash or disconnect mid-session</strong></td>
+          <td>All in-memory context lost</td>
+          <td>Scratchpad files survive; read them to resume</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: <strong>externalize context to files</strong> before it degrades.
+      Scratchpad files (e.g., <code>PROGRESS.md</code>) act as persistent memory that survives
+      context compression, session crashes, and subagent delegation boundaries.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The <code>/compact</code> command in Claude Code compresses conversation history to reclaim
+    context space, but it is a <strong>lossy operation</strong> &mdash; specific details may be lost.
+    Always write key decisions and findings to a scratchpad file <em>before</em> compacting.
+    The scratchpad file survives compaction and can be re-read afterward.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Use a larger context window model" is a distractor for context degradation problems.
+    A bigger window delays degradation but does <strong>not prevent it</strong>. The "lost in the
+    middle" effect still applies &mdash; information in the middle of a 200K context is referenced
+    less accurately than at the boundaries. Structural solutions (scratchpad, subagents) fix the
+    root cause.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with a long codebase session &mdash; you'll see context degrade from specific to generic, then build a scratchpad-based preservation system.</p>
+    <p><code>python run.py open module-2 unit-2.4 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-2.3-error-propagation/overview.html" class="prev">Unit 2.3 &mdash; Error Propagation</a>
+    <a href="../unit-2.5-human-review/overview.html" class="next">Unit 2.5 &mdash; Human Review</a>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "unit": "3.4",
+  "title": "Plan Mode vs Direct Execution",
+  "task_statement": "3.4",
+  "questions": [
+    {
+      "id": "3.4.1",
+      "scenario": "A developer asks Claude Code to 'refactor the authentication system to use JWT instead of session cookies.' The codebase has authentication logic spread across 18 files including middleware, route handlers, database models, and test files. The developer uses direct execution mode.",
+      "question": "What is the most likely outcome and what should they have done differently?",
+      "options": [
+        "A) Claude will correctly refactor all 18 files — direct execution handles complex tasks well with clear instructions",
+        "B) Claude may miss files or create inconsistent changes because it jumps to implementation without mapping the full scope — use plan mode first to explore and propose an approach",
+        "C) Claude will refuse the task because it is too complex for direct execution",
+        "D) The developer should split this into 18 separate single-file tasks and run them sequentially"
+      ],
+      "correct": "B",
+      "explanation": "Multi-file refactoring across 18 files is exactly when plan mode should be used. Direct execution jumps to implementation without first understanding the full scope. Plan mode would explore the codebase, identify all affected files, and propose an approach for human review before any changes are made. Option D loses the cross-file consistency that a planned approach provides."
+    },
+    {
+      "id": "3.4.2",
+      "scenario": "A developer receives a bug report with a clear stack trace pointing to a null check missing on line 42 of src/api/users.ts. They know exactly what the fix is: add an early return if user is null.",
+      "question": "Should they use plan mode or direct execution?",
+      "options": [
+        "A) Plan mode — always use plan mode for bug fixes to be safe",
+        "B) Direct execution — the fix is localized, clear, and well-understood; planning would waste time exploring irrelevant code",
+        "C) Plan mode — the bug might have deeper causes that need investigation",
+        "D) Neither — this is too simple for Claude Code; edit the file manually"
+      ],
+      "correct": "B",
+      "explanation": "Direct execution is appropriate when: (1) the change is localized to a single file, (2) the fix is clear from the stack trace, and (3) no exploration is needed. Plan mode would waste time exploring the codebase for a change that is already well-understood. The complexity decision tree points to direct execution for single-file fixes with clear stack traces."
+    },
+    {
+      "id": "3.4.3",
+      "scenario": "A developer is new to a large codebase and needs to add a new API endpoint. They are not sure where endpoints are defined, how routing works, or what middleware is applied. They ask Claude Code to 'add a GET /api/v2/reports endpoint.'",
+      "question": "What is the recommended workflow?",
+      "options": [
+        "A) Direct execution — Claude Code can figure out the codebase structure on its own",
+        "B) Plan mode to explore, then direct execution after understanding the codebase patterns and getting human approval on the approach",
+        "C) Ask Claude Code to read every file in the project first, then add the endpoint",
+        "D) Manually explore the codebase first, then give Claude Code detailed file-by-file instructions"
+      ],
+      "correct": "B",
+      "explanation": "Unfamiliar codebase + multi-file change = plan mode. The plan-then-execute workflow: (1) plan mode explores routing patterns, middleware, and conventions; (2) developer reviews the proposed approach; (3) direct execution implements the approved plan. This ensures Claude follows existing patterns rather than inventing its own structure."
+    },
+    {
+      "id": "3.4.4",
+      "scenario": "During a complex migration, a developer used plan mode and Claude proposed an approach involving changes to 12 files. The developer approved the plan. Now Claude needs to implement it.",
+      "question": "Should the implementation phase use plan mode or direct execution?",
+      "options": [
+        "A) Plan mode again — it should plan at each step to be thorough",
+        "B) Direct execution — the plan is already approved; re-planning would second-guess the approved approach and potentially change direction",
+        "C) Plan mode for the first 6 files, then direct execution for the remaining 6",
+        "D) Direct execution for each file individually with a new session between files"
+      ],
+      "correct": "B",
+      "explanation": "Once a plan is approved, implementation should use direct execution. Re-entering plan mode could cause Claude to reconsider the approach and deviate from what was approved. The plan-then-execute pattern is a two-phase workflow: deliberate broadly, then execute narrowly. Option D loses cross-file context needed for consistency."
+    },
+    {
+      "id": "3.4.5",
+      "scenario": "A developer wants Claude Code to explore a large codebase to understand how error handling works across the project, without making any changes. They want to gather information safely.",
+      "question": "What is the most appropriate approach?",
+      "options": [
+        "A) Direct execution with 'do not make changes, just read' in the prompt",
+        "B) Plan mode — it naturally explores without modifying, and the Explore subagent provides a read-only guarantee",
+        "C) Create a new branch first, then use direct execution to explore",
+        "D) Use grep and find commands manually instead of Claude Code"
+      ],
+      "correct": "B",
+      "explanation": "The Explore subagent in plan mode is designed for safe, read-only exploration. It gathers context by reading files without the ability to modify them. This is the built-in mechanism for understanding unfamiliar code before deciding on changes. Option A relies on prompt instructions which are not a hard guarantee against modifications."
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3.6 — CI/CD Integration</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 3</a><span class="sep"></span>
+    <span>Unit 3.6</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 3.6 — CI/CD Integration</h1>
+    <p class="subtitle">Task Statement 3.6 — Integrate Claude Code into CI/CD pipelines with headless mode and structured output</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Decision table: CI/CD flags -->
+  <section class="concept-card">
+    <h2>Claude Code CI/CD Toolkit</h2>
+    <p>Claude Code can run headless in CI pipelines. The exam tests the correct flags and patterns.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Flag / Option</th><th>Purpose</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>-p "prompt"</code></td>
+          <td>Headless (non-interactive) mode &mdash; sends a single prompt</td>
+          <td><code>claude -p "Review this PR for security issues"</code></td>
+        </tr>
+        <tr>
+          <td><code>--output-format json</code></td>
+          <td>Machine-readable JSON output for downstream processing</td>
+          <td><code>claude -p "..." --output-format json</code></td>
+        </tr>
+        <tr>
+          <td><code>--json</code></td>
+          <td>Shorthand for <code>--output-format json</code></td>
+          <td><code>claude -p "..." --json</code></td>
+        </tr>
+        <tr>
+          <td><code>--output-format stream-json</code></td>
+          <td>Streaming JSON for real-time processing</td>
+          <td><code>claude -p "..." --output-format stream-json</code></td>
+        </tr>
+        <tr>
+          <td>Session isolation</td>
+          <td>Each CI run starts with a fresh context (no prior session)</td>
+          <td>Default behavior in <code>-p</code> mode</td>
+        </tr>
+        <tr>
+          <td><code>--continue</code></td>
+          <td>Resume most recent session (multi-step CI workflows)</td>
+          <td><code>claude --continue -p "Now fix the issues you found"</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>CI/CD Architecture Patterns</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Pattern</th><th>When to Use</th><th>Implementation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PR Review Gate</strong></td>
+          <td>Every pull request needs automated review</td>
+          <td><code>claude -p "Review the diff..." --json</code> &rarr; parse findings &rarr; post comments</td>
+        </tr>
+        <tr>
+          <td><strong>Code Generation Step</strong></td>
+          <td>Generate code as part of build pipeline</td>
+          <td><code>claude -p "Generate..." --json</code> &rarr; write to file &rarr; run tests</td>
+        </tr>
+        <tr>
+          <td><strong>Multi-Step Pipeline</strong></td>
+          <td>Complex tasks needing prior context</td>
+          <td>Step 1: <code>claude -p "Analyze..."</code>; Step 2: <code>claude --continue -p "Now fix..."</code></td>
+        </tr>
+        <tr>
+          <td><strong>Prior Findings Feed-Forward</strong></td>
+          <td>Feed output from one step as input to the next</td>
+          <td>Capture JSON output, inject into next prompt as context</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Session isolation in <code>-p</code> mode is a <strong>feature, not a limitation</strong>.
+    Each CI run gets a clean context with no contamination from previous runs. This makes
+    results reproducible and prevents accumulated context from biasing reviews. When you
+    <em>need</em> context continuity across steps, explicitly use <code>--continue</code>
+    or pass prior findings as structured input.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Claude Code in CI gives inconsistent results across runs." The wrong answer is
+    "increase temperature" or "use a session cache." The right answer is to ensure
+    <strong>session isolation</strong> (default with <code>-p</code>) and feed any necessary
+    prior context explicitly via the prompt. Inconsistency usually comes from leaked
+    session state, not from the model itself.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see a naive CI integration fail, then build a proper pipeline with structured output and session management.</p>
+    <p><code>python run.py open module-3 unit-3.6 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-3.5-iterative-refinement/overview.html" class="prev">Unit 3.5 — Iterative Refinement</a>
+    <span></span>
+  </nav>
+
+</div>
+</body>
+</html>

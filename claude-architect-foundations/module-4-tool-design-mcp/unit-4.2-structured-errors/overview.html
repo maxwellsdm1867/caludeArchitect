@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 4.2 — Structured Error Responses for MCP Tools</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 4</a><span class="sep"></span>
+    <span>Unit 4.2</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 4.2 — Structured Error Responses for MCP Tools</h1>
+    <p class="subtitle">Task Statement 2.2 — Design structured error responses that enable intelligent recovery in agentic workflows</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Error Handling Decision Tree -->
+  <section class="concept-card">
+    <h2>Error Response Decision Tree</h2>
+    <p>When an MCP tool fails, the structure of the error response determines whether the agent can recover intelligently or must escalate. The exam tests this decision tree.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Error Field</th><th>Purpose</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>isError: true</strong></td>
+          <td>Signals that the tool call failed</td>
+          <td>MCP protocol field on tool result</td>
+        </tr>
+        <tr>
+          <td><strong>errorCategory</strong></td>
+          <td>Classifies the failure type for routing recovery</td>
+          <td>"authentication", "not_found", "rate_limit", "validation", "internal"</td>
+        </tr>
+        <tr>
+          <td><strong>isRetryable</strong></td>
+          <td>Tells the agent whether retrying may succeed</td>
+          <td>true for rate_limit, false for not_found</td>
+        </tr>
+        <tr>
+          <td><strong>retryAfterMs</strong></td>
+          <td>Specific backoff hint for retryable errors</td>
+          <td>5000 (wait 5 seconds before retry)</td>
+        </tr>
+        <tr>
+          <td><strong>userMessage</strong></td>
+          <td>Human-readable message safe to show the end user</td>
+          <td>"The file was not found. Please check the path."</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: <strong>local recovery first, propagation second</strong>. If the agent
+      can retry or use a fallback tool, it should. If recovery is impossible
+      (authentication expired, resource permanently deleted), propagate to the user
+      with a clear message.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The <code>isError</code> flag and <code>isRetryable</code> boolean are the two fields
+    the agent needs to make the right decision. Without <code>isRetryable</code>, the agent
+    either retries everything (wasting calls on permanent failures) or retries nothing
+    (missing easy recoveries from rate limits). The <code>errorCategory</code> further
+    enables category-specific fallback strategies.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Returning a plain error string (e.g., <code>"Error: file not found"</code>) instead of a
+    structured error object is <strong>always the wrong answer</strong>. The exam tests whether
+    you provide machine-parseable error metadata, not human-readable strings.
+    Similarly, returning <code>isError: false</code> with an error message in the content
+    confuses the agent &mdash; always set <code>isError: true</code> on failures.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with <strong>unstructured error strings</strong> &mdash; you&rsquo;ll see the agent fail to recover, then build structured errors that enable intelligent retry.</p>
+    <p><code>python run.py open module-4 unit-4.2 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-4.1-tool-descriptions/overview.html" class="prev">Unit 4.1 &mdash; Tool Descriptions</a>
+    <a href="../unit-4.3-tool-distribution/overview.html" class="next">Unit 4.3 &mdash; Tool Distribution</a>
+  </nav>
+
+</div>
+</body>
+</html>

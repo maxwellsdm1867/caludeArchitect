@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 4.1 — Effective Tool Descriptions &amp; Boundaries</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 4</a><span class="sep"></span>
+    <span>Unit 4.1</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 4.1 — Effective Tool Descriptions &amp; Boundaries</h1>
+    <p class="subtitle">Task Statement 2.1 — Design tool descriptions that serve as the primary selection mechanism for Claude</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Tool Description Quality Spectrum -->
+  <section class="concept-card">
+    <h2>The Tool Description Quality Spectrum</h2>
+    <p>When tool selection is unreliable, the problem is almost always inadequate descriptions. The exam tests whether you improve descriptions before reaching for routing classifiers or few-shot examples.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Level</th><th>Description Style</th><th>Selection Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1 &mdash; Minimal</strong></td>
+          <td>"Retrieves customer information"</td>
+          <td>Ambiguous with any tool that touches customer data</td>
+        </tr>
+        <tr>
+          <td><strong>2 &mdash; Better</strong></td>
+          <td>"Retrieves customer account details by customer ID"</td>
+          <td>Clearer input, but overlaps with order lookup when user mentions &ldquo;my account order&rdquo;</td>
+        </tr>
+        <tr>
+          <td><strong>3 &mdash; Good</strong></td>
+          <td>"Retrieves customer account details by ID, email, or phone. Use for account/profile/membership queries."</td>
+          <td>Positive trigger list guides selection but no negative boundary</td>
+        </tr>
+        <tr>
+          <td><strong>4 &mdash; Production</strong></td>
+          <td>"Retrieves customer account details by ID, email, or phone. Use for account/profile/membership queries. Do NOT use for order lookups &mdash; use lookup_order instead."</td>
+          <td>Positive triggers + negative boundary eliminates ambiguity</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: a production tool description includes <strong>what the tool does</strong>,
+      <strong>when to use it</strong> (positive triggers), and <strong>when NOT to use it</strong>
+      (negative boundaries that point to the correct alternative).
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Tool descriptions are prompts. The same principles from Module 1 apply &mdash; explicit
+    categorical criteria beat vague instructions. When two tools overlap, add a
+    <strong>&ldquo;Do NOT use for X &mdash; use Y instead&rdquo;</strong> boundary to the
+    description of each. This is the single highest-leverage fix for tool selection reliability.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    When a question describes unreliable tool selection, answer options like &ldquo;add a routing
+    classifier,&rdquo; &ldquo;use few-shot examples for tool selection,&rdquo; or &ldquo;consolidate
+    tools into fewer endpoints&rdquo; are <strong>almost always distractors</strong>. The correct
+    first step is to improve the tool descriptions with explicit boundaries.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with <strong>minimal descriptions</strong> &mdash; you&rsquo;ll see Claude pick the wrong tool, then fix it with production-grade descriptions.</p>
+    <p><code>python run.py open module-4 unit-4.1 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <span></span>
+    <a href="../unit-4.2-structured-errors/overview.html" class="next">Unit 4.2 &mdash; Structured Error Responses</a>
+  </nav>
+
+</div>
+</body>
+</html>

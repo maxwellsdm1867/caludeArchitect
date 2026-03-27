@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 5 Cheat Sheet — Agentic Architecture & Orchestration</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="../assets/theme.js" defer></script>
+  <style>
+    /* === Cheatsheet Layout — CSS Columns for masonry packing === */
+    .cheatsheet {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 2rem;
+      font-size: .8125rem;
+      line-height: 1.5;
+    }
+    .cheatsheet h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: .25rem;
+      letter-spacing: -.03em;
+    }
+    .cheatsheet .sheet-subtitle {
+      font-size: .8125rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: .5rem;
+    }
+    .cheatsheet-grid {
+      columns: 2;
+      column-gap: 1rem;
+    }
+    /* Sections */
+    .cs-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .875rem 1rem;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+      box-shadow: var(--shadow-sm);
+    }
+    .cs-section h2 {
+      font-size: .8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--accent);
+      margin-bottom: .5rem;
+      padding-bottom: .375rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .cs-section h3 {
+      font-size: .8125rem;
+      font-weight: 700;
+      margin-top: .625rem;
+      margin-bottom: .25rem;
+    }
+    .cs-section p,
+    .cs-section li {
+      margin-bottom: .25rem;
+    }
+    .cs-section ul,
+    .cs-section ol {
+      padding-left: 1.125rem;
+      margin-bottom: .375rem;
+    }
+    .cs-section ul { list-style: disc; }
+    .cs-section ol { list-style: decimal; }
+    .cs-tree {
+      padding-left: .875rem;
+      border-left: 2px solid var(--accent);
+      margin: .375rem 0;
+    }
+    .cs-tree .branch {
+      margin-bottom: .25rem;
+    }
+    .cs-full {
+      column-span: all;
+    }
+    .cs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .76rem;
+      margin: .375rem 0;
+    }
+    .cs-table th, .cs-table td {
+      padding: .25rem .4rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .cs-table th {
+      background: var(--accent-light);
+      font-weight: 700;
+    }
+    .cs-rule {
+      color: var(--danger);
+      font-weight: 700;
+      font-size: .72rem;
+      padding: .05rem .25rem;
+      border-radius: 3px;
+      background: var(--danger-bg);
+    }
+    .cs-tip {
+      color: var(--info);
+      font-weight: 700;
+      font-size: .72rem;
+      padding: .05rem .25rem;
+      border-radius: 3px;
+      background: var(--info-bg);
+    }
+    .cs-ok {
+      color: var(--success);
+      font-weight: 700;
+      font-size: .72rem;
+      padding: .05rem .25rem;
+      border-radius: 3px;
+      background: var(--success-bg);
+    }
+    .cheatsheet code {
+      font-size: .76rem;
+      padding: .08em .25em;
+    }
+
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      [data-theme] {
+        --bg: #fff; --bg-card: #f5f5f5; --text: #000; --text-muted: #444;
+        --border: #ccc; --accent: #4040cc; --accent-light: #e8e6ff;
+        --danger: #c00; --danger-bg: #fff0f0; --info: #06c; --info-bg: #f0f6ff;
+        --success: #070; --success-bg: #f0fff0; --warning: #960; --warning-bg: #fffaf0;
+        --code-bg: #f0f0f0;
+      }
+      .cheatsheet {
+        max-width: 100%;
+        padding: 0;
+        font-size: .68rem;
+        line-height: 1.35;
+      }
+      .cheatsheet h1 { font-size: 1.05rem; }
+      .cheatsheet .sheet-subtitle { font-size: .66rem; }
+      .cheatsheet-grid { gap: .4rem; }
+      .cs-section {
+        padding: .35rem .5rem;
+        border-radius: 3px;
+        box-shadow: none;
+      }
+      .cs-section h2 { font-size: .7rem; }
+      .cs-section h3 { font-size: .66rem; }
+      .cs-table { font-size: .66rem; }
+      .cs-table th, .cs-table td { padding: .15rem .3rem; }
+      .cs-rule, .cs-tip, .cs-ok { font-size: .62rem; padding: .05rem .25rem; }
+      .cheatsheet code { font-size: .64rem; }
+      .theme-toggle { display: none !important; }
+      @page {
+        size: letter;
+        margin: .4in;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cheatsheet-grid {
+        columns: 1;
+      }
+      .cheatsheet { padding: .75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<main class="cheatsheet">
+
+  <h1>Module 5: Agentic Architecture &amp; Orchestration</h1>
+  <p class="sheet-subtitle">Domain 1, Task Statements 1.1&ndash;1.7 &mdash; 27% of exam (highest weight) &mdash; Claude Architect Foundations Quick Reference</p>
+
+  <div class="cheatsheet-grid">
+
+    <!-- ============================================================
+         S1: THE AGENTIC LOOP (TS 1.1)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>1 &mdash; The Agentic Loop (TS 1.1)</h2>
+
+      <h3><code>stop_reason</code> Control Flow</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>stop_reason</th><th>Meaning</th><th>Your Code</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>"tool_use"</code></td><td>Model wants tools</td><td>Execute, append results, continue</td></tr>
+          <tr><td><code>"end_turn"</code></td><td>Model is done</td><td>Break &mdash; present final response</td></tr>
+          <tr><td><code>"max_tokens"</code></td><td>Hit token limit</td><td>Handle truncation</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The Correct Pattern</h3>
+      <p><code>while True</code> &rarr; call API &rarr; check <code>stop_reason</code> &rarr; if <code>"end_turn"</code> break; if <code>"tool_use"</code> execute and continue.</p>
+
+      <h3><span class="cs-rule">Anti-Patterns</span> (all WRONG)</h3>
+      <ul>
+        <li>Parsing NL for termination ("I've completed...")</li>
+        <li>Iteration caps as <em>primary</em> stopping mechanism</li>
+        <li>Checking for text content as completion signal</li>
+        <li>Pre-configured step sequences</li>
+      </ul>
+
+      <h3><span class="cs-tip">Key</span> Safety caps (25+) are fine as a <em>safety net</em>, never as the primary mechanism.</h3>
+    </section>
+
+    <!-- ============================================================
+         S2: COORDINATOR-SUBAGENT (TS 1.2)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>2 &mdash; Coordinator-Subagent (TS 1.2)</h2>
+
+      <h3>Architecture</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Component</th><th>Context</th><th>Tools</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Coordinator</td><td>Full history</td><td>Task tool</td></tr>
+          <tr><td>Subagent</td><td>Only what coordinator passes</td><td>4&ndash;5 domain tools</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cs-rule">Exam Rule</span> Subagents do NOT inherit coordinator context</h3>
+      <p>Context must be passed explicitly. This is the #1 tested concept in Domain 1.</p>
+
+      <h3><span class="cs-rule">Trap</span> More tools = more capable</h3>
+      <p>18 tools on one agent <strong>degrades</strong> tool selection. Scope to 4&ndash;5 per subagent.</p>
+
+      <h3>Principles</h3>
+      <ul>
+        <li>Hub-and-spoke: all communication through coordinator</li>
+        <li>No direct subagent-to-subagent communication</li>
+        <li>Parallel dispatch: multiple Task calls in one response</li>
+        <li>Coordinator synthesizes all subagent results</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================
+         S3: SUBAGENT CONTEXT PASSING (TS 1.3)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>3 &mdash; Subagent Context (TS 1.3)</h2>
+
+      <h3>Task vs fork_session</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Mechanism</th><th>Context</th><th>Use When</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Task tool</strong></td><td>Fresh (only prompt)</td><td>Isolated subagent work</td></tr>
+          <tr><td><strong>fork_session</strong></td><td>Inherited snapshot</td><td>Exploratory branches</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Context Passing Checklist</h3>
+      <ul>
+        <li><strong>Include:</strong> task description, specific data, output format, constraints</li>
+        <li><strong>Exclude:</strong> full coordinator history, other subagents' reasoning, system config</li>
+      </ul>
+
+      <h3><code>allowedTools</code></h3>
+      <p>Restricts which tools a subagent can access. Deterministic &mdash; the subagent cannot call unlisted tools.</p>
+    </section>
+
+    <!-- ============================================================
+         S4: ENFORCEMENT & HANDOFF (TS 1.4)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>4 &mdash; Enforcement &amp; Handoff (TS 1.4)</h2>
+
+      <h3>Decision Tree</h3>
+      <div class="cs-tree">
+        <div class="branch"><strong>Must be 100%?</strong> &rarr; <span class="cs-rule">PROGRAMMATIC</span> (hooks, gates)</div>
+        <div class="branch"><strong>Financial/safety?</strong> &rarr; <span class="cs-rule">PROGRAMMATIC</span></div>
+        <div class="branch"><strong>Style/suggestion?</strong> &rarr; <span class="cs-ok">PROMPT guidance</span></div>
+      </div>
+
+      <h3><span class="cs-rule">Exam Rule</span> Prompts NEVER guarantee compliance</h3>
+      <p>Non-zero failure rate. For money, safety, compliance &rarr; always programmatic.</p>
+
+      <h3>Structured Handoff</h3>
+      <ul>
+        <li><strong>Include:</strong> actions taken, current state, remaining work, constraints</li>
+        <li><strong>Exclude:</strong> transcripts, chain-of-thought, raw API data</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================
+         S5: HOOKS (TS 1.5)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>5 &mdash; Agent SDK Hooks (TS 1.5)</h2>
+
+      <h3>Hook Types</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Hook</th><th>Fires</th><th>Use Case</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PreToolCall</td><td>Before tool executes</td><td>Access control, input validation</td></tr>
+          <tr><td>PostToolUse</td><td>After tool returns</td><td>Normalization, redaction, logging</td></tr>
+          <tr><td>PreResponse</td><td>Before final output</td><td>Content filtering, compliance</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Hooks vs Prompts</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Requirement</th><th>Answer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Date normalization</td><td><span class="cs-rule">PostToolUse hook</span></td></tr>
+          <tr><td>Block unauthorized calls</td><td><span class="cs-rule">PreToolCall hook</span></td></tr>
+          <tr><td>Redact PII</td><td><span class="cs-rule">PostToolUse hook</span></td></tr>
+          <tr><td>Friendly tone</td><td><span class="cs-ok">Prompt</span></td></tr>
+          <tr><td>Suggest products</td><td><span class="cs-ok">Prompt</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         S6: TASK DECOMPOSITION (TS 1.6)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>6 &mdash; Task Decomposition (TS 1.6)</h2>
+
+      <h3>Strategy Selection</h3>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Task Type</th><th>Strategy</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Predictable pipeline</td><td><strong>Prompt chaining</strong></td></tr>
+          <tr><td>Variable investigation</td><td><strong>Dynamic decomposition</strong></td></tr>
+          <tr><td>Multi-file analysis</td><td><strong>Per-file + cross-file</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Per-File + Cross-File</h3>
+      <p><strong>Pass 1:</strong> Each file individually (deep local analysis)</p>
+      <p><strong>Pass 2:</strong> All files together (API contracts, data flow, consistency)</p>
+
+      <h3><span class="cs-rule">Trap</span> Narrow decomposition is always better</h3>
+      <p><strong>FALSE.</strong> Overly narrow scoping misses coverage. Example: scoping to "visual arts" misses most of "creative industries."</p>
+    </section>
+
+    <!-- ============================================================
+         S7: SESSION MANAGEMENT (TS 1.7)
+         ============================================================ -->
+    <section class="cs-section">
+      <h2>7 &mdash; Session Management (TS 1.7)</h2>
+
+      <h3>Resume vs Fresh Decision</h3>
+      <div class="cs-tree">
+        <div class="branch"><strong>Data changed?</strong> &rarr; <span class="cs-rule">Fresh session + summary</span></div>
+        <div class="branch"><strong>Data unchanged?</strong> &rarr; <span class="cs-ok">Resume (--resume)</span></div>
+      </div>
+
+      <h3><span class="cs-rule">Trap</span> --resume is always efficient</h3>
+      <p><strong>FALSE</strong> when data has changed. Resumed session operates on stale assumptions.</p>
+
+      <h3>Fresh Session Summary</h3>
+      <ul>
+        <li>Key findings (with sources)</li>
+        <li>Approaches tried + results (prevents dead-end repeats)</li>
+        <li>Open questions + remaining work</li>
+        <li>NOT: full conversation history</li>
+      </ul>
+
+      <h3><code>fork_session</code></h3>
+      <p>Snapshot of current context for parallel exploration. Both branches inherit understanding.</p>
+    </section>
+
+    <!-- ============================================================
+         S8: EXAM PATTERN RECOGNITION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>8 &mdash; Exam Pattern Recognition</h2>
+      <table class="cs-table">
+        <thead>
+          <tr><th>If the question says&hellip;</th><th>The answer points to&hellip;</th><th>TS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>"Agent stops mid-task" / "loop terminates early"</td><td>Check stop_reason, not text or iteration caps</td><td>1.1</td></tr>
+          <tr><td>"Agent uses wrong tools" / "too many tools"</td><td>Coordinator-subagent with scoped tools (4-5 per subagent)</td><td>1.2</td></tr>
+          <tr><td>"Subagent lacks needed context"</td><td>Explicit context passing via Task prompt</td><td>1.3</td></tr>
+          <tr><td>"Critical business rule must be enforced"</td><td>Programmatic enforcement (hooks/gates), not prompts</td><td>1.4</td></tr>
+          <tr><td>"Inconsistent data formats from tools"</td><td>PostToolUse hook for normalization</td><td>1.5</td></tr>
+          <tr><td>"Code review misses integration bugs"</td><td>Per-file + cross-file analysis</td><td>1.6</td></tr>
+          <tr><td>"Agent uses stale data after changes"</td><td>Fresh session + summary, not --resume</td><td>1.7</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============================================================
+         S9: DISTRACTOR DETECTION (full width)
+         ============================================================ -->
+    <section class="cs-section cs-full">
+      <h2>9 &mdash; Distractor Detection Cheat Code</h2>
+      <table class="cs-table">
+        <thead>
+          <tr><th>Distractor Phrasing</th><th>Why It's Wrong</th><th>Correct Direction</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"Check if response contains text to determine completion"</td>
+            <td>Response can have both text and tool_use blocks</td>
+            <td>Use stop_reason == "end_turn" (1.1)</td>
+          </tr>
+          <tr>
+            <td>"Give the agent more tools for flexibility"</td>
+            <td>18+ tools degrades tool selection accuracy</td>
+            <td>Coordinator + scoped subagents (1.2)</td>
+          </tr>
+          <tr>
+            <td>"Subagents inherit coordinator context"</td>
+            <td>FALSE &mdash; subagents start with fresh context via Task</td>
+            <td>Explicit context passing (1.3)</td>
+          </tr>
+          <tr>
+            <td>"Add the rule to the system prompt" <span style="opacity:.6">(for financial/safety rules)</span></td>
+            <td>Prompts have non-zero failure rate</td>
+            <td>Programmatic enforcement (1.4)</td>
+          </tr>
+          <tr>
+            <td>"Tell the model to normalize dates in its response"</td>
+            <td>Prompt-based normalization is inconsistent</td>
+            <td>PostToolUse hook (1.5)</td>
+          </tr>
+          <tr>
+            <td>"Decompose into the most granular subtasks possible"</td>
+            <td>Overly narrow decomposition misses coverage</td>
+            <td>Balanced decomposition with broad enough scope (1.6)</td>
+          </tr>
+          <tr>
+            <td>"Resume the session to continue" <span style="opacity:.6">(when data changed)</span></td>
+            <td>Stale context leads to wrong conclusions</td>
+            <td>Fresh session + summary (1.7)</td>
+          </tr>
+          <tr>
+            <td>"Self-review in the same session"</td>
+            <td>Same context = same blind spots</td>
+            <td>Independent review instance (from Module 1)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div><!-- /cheatsheet-grid -->
+
+</main>
+
+</body>
+</html>

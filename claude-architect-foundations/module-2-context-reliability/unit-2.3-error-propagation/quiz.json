@@ -1,0 +1,72 @@
+{
+  "unit": "2.3",
+  "title": "Error Propagation in Multi-Agent Systems",
+  "task_statement": "5.3",
+  "questions": [
+    {
+      "id": "2.3.1",
+      "scenario": "A multi-agent research system has three subagents: one queries a database, one searches the web, and one reads local files. The database subagent encounters a connection timeout but returns an empty results list instead of an error. The coordinator agent synthesizes results from all three sources.",
+      "question": "What problem does this cause?",
+      "options": [
+        "A) The coordinator will retry the database query automatically",
+        "B) The coordinator will proceed with incomplete data, treating the empty results as 'nothing found in the database' rather than 'database was unreachable' — silently producing wrong conclusions",
+        "C) The coordinator will crash because it expects non-empty results",
+        "D) The empty results will be filtered out during synthesis"
+      ],
+      "correct": "B",
+      "explanation": "This is the silent suppression anti-pattern. By returning empty results as success, the database subagent hides a critical distinction: 'we couldn't look' (access failure) vs 'we looked and found nothing' (empty results). The coordinator has no way to know that an entire data source was missed. It may conclude 'no database records exist for this query' when in reality the query never executed."
+    },
+    {
+      "id": "2.3.2",
+      "scenario": "You are designing error handling for a multi-agent pipeline where a file-reading subagent encounters a 'permission denied' error on one of five files. The other four files were read successfully.",
+      "question": "What is the correct error propagation pattern?",
+      "options": [
+        "A) Raise an exception that terminates the entire pipeline — any missing data makes results unreliable",
+        "B) Catch the exception silently and proceed with only the four successfully read files",
+        "C) Return a structured result: {success: [file1-4], errors: [{file: file5, error_type: 'permission_denied', attempted_path: '...'}], partial: true}",
+        "D) Retry the failed file read three times, then terminate if still failing"
+      ],
+      "correct": "C",
+      "explanation": "Structured error propagation preserves both the successful results AND the error context. The coordinator can then decide: is file5 critical (terminate) or optional (proceed with partial results and flag the gap)? Option A is catastrophic termination — four good results are wasted. Option B is silent suppression — the coordinator doesn't know data is missing. Option D may work for transient errors but doesn't help with permission issues, and still needs structured output."
+    },
+    {
+      "id": "2.3.3",
+      "scenario": "A research agent has a coordinator and two subagents. Subagent A returns: 'Error: API rate limited.' Subagent B returns: 'Error: No results found for query.' The coordinator needs to decide how to proceed.",
+      "question": "Why must these two errors be handled differently?",
+      "options": [
+        "A) They shouldn't — both are errors and should trigger the same retry logic",
+        "B) Rate limiting is an access failure (we couldn't look) that may succeed on retry; 'no results found' is a legitimate empty result (we looked and found nothing) that retrying won't fix",
+        "C) Rate limiting is more severe and should cause immediate termination, while 'no results' can be ignored",
+        "D) Both should be suppressed to avoid interrupting the workflow"
+      ],
+      "correct": "B",
+      "explanation": "Access failures (rate limiting, timeouts, permission denied) mean the query never executed — retrying may succeed. Empty results (no matching records) mean the query executed successfully but returned nothing — retrying will produce the same result. This distinction is critical for the coordinator's decision: retry vs accept. Option A treats all errors identically. Option C overreacts to rate limiting. Option D is silent suppression."
+    },
+    {
+      "id": "2.3.4",
+      "scenario": "Your team is reviewing a multi-agent system's error handling. A developer proposes: 'Let's wrap every subagent call in try/except and return an empty dict on any exception. This way the pipeline never crashes.'",
+      "question": "Why is this proposal dangerous?",
+      "options": [
+        "A) Empty dicts consume too much memory in large pipelines",
+        "B) It prevents the system from crashing, which eliminates the only signal that something is wrong — the coordinator will silently produce results based on incomplete data without any warning",
+        "C) Try/except blocks are too slow for high-performance pipelines",
+        "D) This approach is actually fine — preventing crashes is the top priority for production systems"
+      ],
+      "correct": "B",
+      "explanation": "This is a textbook example of the silent suppression anti-pattern. Catching all exceptions and returning empty results means failures are invisible. The coordinator operates on incomplete data, producing outputs that look correct but are wrong. Silent suppression is worse than crashing because crashes are at least detectable. The correct approach returns structured error objects that the coordinator can inspect and act on."
+    },
+    {
+      "id": "2.3.5",
+      "scenario": "A multi-agent pipeline processes customer orders. The inventory-check subagent fails due to a network timeout. You want the coordinator to attempt local recovery before escalating.",
+      "question": "What structured error response from the inventory subagent enables local recovery?",
+      "options": [
+        "A) {\"error\": true, \"message\": \"Something went wrong\"}",
+        "B) {\"error_type\": \"network_timeout\", \"attempted_query\": \"check_stock(SKU-1234)\", \"partial_results\": null, \"alternatives\": [\"cached_inventory_check\", \"manual_stock_lookup\"]}",
+        "C) Raise a NetworkTimeoutException with a stack trace",
+        "D) {\"success\": false}"
+      ],
+      "correct": "B",
+      "explanation": "Option B provides everything the coordinator needs for local recovery: error_type tells it the failure is transient (network), attempted_query tells it what to retry, partial_results indicates nothing was retrieved, and alternatives suggests fallback strategies. Option A has no actionable information. Option C provides developer diagnostics but not coordinator-actionable data. Option D has no context at all."
+    }
+  ]
+}

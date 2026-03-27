@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.6 — Task Decomposition Strategies</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.6</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.6 — Task Decomposition Strategies</h1>
+    <p class="subtitle">Task Statement 1.6 — Choose between prompt chaining and dynamic decomposition; understand per-file vs cross-file analysis and narrow decomposition risks</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Decomposition approaches -->
+  <section class="concept-card">
+    <h2>Two Decomposition Approaches</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Approach</th><th>How It Works</th><th>Best For</th><th>Risk</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Prompt chaining</strong><br>(pre-configured)</td>
+          <td>Fixed sequence of steps defined by the developer</td>
+          <td>Well-understood pipelines (extract &rarr; validate &rarr; format)</td>
+          <td>Cannot adapt to unexpected inputs</td>
+        </tr>
+        <tr>
+          <td><strong>Dynamic decomposition</strong><br>(model-driven)</td>
+          <td>Coordinator decides subtasks at runtime based on the input</td>
+          <td>Complex, variable tasks (research, investigation, debugging)</td>
+          <td>Higher latency; requires good coordinator prompt</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Per-File + Cross-File Analysis Pattern</h2>
+    <p>For large codebases, reviews, or document sets, decompose into two passes:</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Pass</th><th>Scope</th><th>Focus</th><th>Why Both Are Needed</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Pass 1: Per-file</strong></td>
+          <td>Each file individually</td>
+          <td>Local issues (bugs, style, logic errors)</td>
+          <td>Deep analysis without attention dilution</td>
+        </tr>
+        <tr>
+          <td><strong>Pass 2: Cross-file</strong></td>
+          <td>All files together (or summaries)</td>
+          <td>Integration issues (API contracts, data flow, consistency)</td>
+          <td>Catches issues invisible at the single-file level</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Narrow Decomposition Risk</h2>
+    <p>Overly narrow task decomposition can <strong>miss coverage</strong>. The classic exam example:</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Scenario</th><th>Narrow Decomposition</th><th>Result</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Research "creative industries"</td>
+          <td>Subagent scoped to "visual arts" only</td>
+          <td>Misses music, film, writing, gaming &mdash; incomplete coverage</td>
+        </tr>
+        <tr>
+          <td>Analyze security vulnerabilities</td>
+          <td>One subagent per OWASP category</td>
+          <td>Misses cross-category attack chains</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Narrow decomposition is <strong>not always better</strong>. When tasks have overlapping
+    boundaries or require holistic coverage, overly narrow scoping causes the agent to miss
+    important areas. The exam tests this with the "creative industries" example &mdash; a subagent
+    scoped to "visual arts" misses most of the creative industries.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Answer options suggesting "decompose into the most granular possible subtasks" are
+    <strong>often wrong</strong>. The correct decomposition level depends on the task.
+    For well-defined pipelines, prompt chaining works. For open-ended research, dynamic
+    decomposition with broader scopes prevents coverage gaps.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with an <strong>overly narrow</strong> decomposition &mdash; you'll see coverage gaps, then build a balanced decomposition strategy.</p>
+    <p><code>python run.py open module-5 unit-5.6 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.5-hooks/overview.html" class="prev">Unit 5.5 — Hooks</a>
+    <a href="../unit-5.7-session-management/overview.html" class="next">Unit 5.7 — Session Management</a>
+  </nav>
+
+</div>
+</body>
+</html>

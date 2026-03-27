@@ -11,13 +11,13 @@ This is the highest-weighted domain on the exam, but it **integrates everything 
 
 | Unit | Topic | Key exam concepts |
 |------|-------|-------------------|
-| [5.1](unit-5.1-agentic-loop.md) | The agentic loop lifecycle | stop_reason ("tool_use" vs "end_turn"), tool result appending, model-driven vs pre-configured |
-| [5.2](unit-5.2-coordinator-subagent.md) | Coordinator-subagent patterns | Hub-and-spoke, isolated subagent context, task decomposition, narrow decomposition risks |
-| [5.3](unit-5.3-subagent-context.md) | Subagent invocation & context passing | Task tool, allowedTools, explicit context in prompts, parallel Task calls, fork_session |
-| [5.4](unit-5.4-enforcement-handoff.md) | Enforcement & handoff patterns | Programmatic vs prompt-based, prerequisite gates, structured handoff summaries |
-| [5.5](unit-5.5-hooks.md) | Agent SDK hooks | PostToolUse for normalization, tool call interception for compliance, hooks vs prompts |
-| [5.6](unit-5.6-task-decomposition.md) | Task decomposition strategies | Prompt chaining vs dynamic decomposition, per-file + cross-file, adaptive investigation |
-| [5.7](unit-5.7-session-management.md) | Session state & resumption | --resume, fork_session, stale context, fresh session + summary |
+| [5.1](unit-5.1-agentic-loop/overview.html) | The agentic loop lifecycle | stop_reason ("tool_use" vs "end_turn"), tool result appending, model-driven vs pre-configured |
+| [5.2](unit-5.2-coordinator-subagent/overview.html) | Coordinator-subagent patterns | Hub-and-spoke, isolated subagent context, task decomposition, narrow decomposition risks |
+| [5.3](unit-5.3-subagent-context/overview.html) | Subagent invocation & context passing | Task tool, allowedTools, explicit context in prompts, parallel Task calls, fork_session |
+| [5.4](unit-5.4-enforcement-handoff/overview.html) | Enforcement & handoff patterns | Programmatic vs prompt-based, prerequisite gates, structured handoff summaries |
+| [5.5](unit-5.5-hooks/overview.html) | Agent SDK hooks | PostToolUse for normalization, tool call interception for compliance, hooks vs prompts |
+| [5.6](unit-5.6-task-decomposition/overview.html) | Task decomposition strategies | Prompt chaining vs dynamic decomposition, per-file + cross-file, adaptive investigation |
+| [5.7](unit-5.7-session-management/overview.html) | Session state & resumption | --resume, fork_session, stale context, fresh session + summary |
 
 ## Key mental models
 

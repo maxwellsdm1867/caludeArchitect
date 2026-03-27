@@ -1,0 +1,72 @@
+{
+  "unit": "3.1",
+  "title": "CLAUDE.md Hierarchy & Modular Organization",
+  "task_statement": "3.1",
+  "questions": [
+    {
+      "id": "3.1.1",
+      "scenario": "A senior developer has carefully configured Claude Code with coding standards, architectural patterns, and naming conventions in their ~/.claude/CLAUDE.md file. A new team member joins and reports that Claude Code does not follow any of these standards when working in the shared repository.",
+      "question": "What is the most likely cause and correct fix?",
+      "options": [
+        "A) The new team member needs to copy the senior developer's ~/.claude/CLAUDE.md to their own home directory",
+        "B) The rules are in user-level CLAUDE.md which is not version-controlled — move team standards to .claude/CLAUDE.md or CLAUDE.md at the repo root",
+        "C) The new team member needs to run /memory to sync the senior developer's memory files",
+        "D) Upgrade Claude Code to a newer version that supports multi-user CLAUDE.md sharing"
+      ],
+      "correct": "B",
+      "explanation": "~/.claude/CLAUDE.md is user-level and personal — it is not checked into version control and not shared with teammates. Team-wide standards belong in project-level CLAUDE.md (.claude/CLAUDE.md or CLAUDE.md at the repo root), which is committed to git. Option A is a manual workaround that doesn't scale and won't stay in sync. Option C confuses /memory with CLAUDE.md."
+    },
+    {
+      "id": "3.1.2",
+      "scenario": "Your monorepo has a root CLAUDE.md with general coding standards. The /backend directory has its own CLAUDE.md with API-specific patterns. A developer notices that when editing backend files, Claude follows the API patterns but seems to ignore some root-level standards.",
+      "question": "How does the CLAUDE.md hierarchy actually work in this case?",
+      "options": [
+        "A) Directory CLAUDE.md replaces root CLAUDE.md — only the most specific level applies",
+        "B) Root CLAUDE.md replaces directory CLAUDE.md — only the broadest level applies",
+        "C) All levels are merged together — root and directory CLAUDE.md instructions are combined when editing backend files",
+        "D) Claude randomly selects one level to follow based on context window limits"
+      ],
+      "correct": "C",
+      "explanation": "Claude Code merges all CLAUDE.md levels (user + project + directory). When editing a backend file, Claude sees both the root-level standards AND the directory-level API patterns. They don't replace each other — they are combined. If the developer perceives 'ignoring' root rules, it is likely that directory rules create conflicting guidance, not that root rules are excluded."
+    },
+    {
+      "id": "3.1.3",
+      "scenario": "Your project's CLAUDE.md has grown to 500 lines covering coding standards, architecture decisions, setup instructions, and API documentation. Developers report that Claude sometimes misses important rules buried in the middle of the file.",
+      "question": "What is the best way to address this?",
+      "options": [
+        "A) Move the most important rules to the top of the file since Claude pays more attention to the beginning",
+        "B) Use @import directives to split CLAUDE.md into modular files (standards.md, architecture.md, setup.md) and import them",
+        "C) Duplicate the important rules at both the beginning and end of the file for emphasis",
+        "D) Switch to using only .claude/rules/ files and delete CLAUDE.md entirely"
+      ],
+      "correct": "B",
+      "explanation": "@import is designed exactly for this problem — it keeps CLAUDE.md as a concise table of contents that imports detailed sections from separate files. This is the DRY (Don't Repeat Yourself) approach. Option A is a workaround that doesn't scale as the file grows further. Option C wastes context window. Option D throws away the organizational structure CLAUDE.md provides."
+    },
+    {
+      "id": "3.1.4",
+      "scenario": "You want Claude Code to remember that your project uses PostgreSQL (not MySQL) across all sessions, so you don't have to remind it every time. This fact should be available to all team members.",
+      "question": "What is the most appropriate mechanism?",
+      "options": [
+        "A) Add it to ~/.claude/CLAUDE.md so it persists across sessions",
+        "B) Use the /memory command to save it as a project-level memory, then commit the memory file to git",
+        "C) Add it to the project-level CLAUDE.md at the repo root and commit it to git",
+        "D) Tell Claude at the start of every session — there is no persistence mechanism"
+      ],
+      "correct": "C",
+      "explanation": "Persistent architectural facts that the whole team needs belong in the project-level CLAUDE.md committed to version control. /memory can also work but CLAUDE.md is the primary mechanism for stable project context. Option A is user-level only and not shared. Option D is incorrect — CLAUDE.md and /memory both provide persistence."
+    },
+    {
+      "id": "3.1.5",
+      "scenario": "Your project has the following CLAUDE.md structure:\n- Root CLAUDE.md: 'Use 4-space indentation'\n- ~/.claude/CLAUDE.md: 'Use 2-space indentation'\n- /frontend/CLAUDE.md: 'Use tabs for indentation'\n\nA developer edits a file in the /frontend directory.",
+      "question": "What indentation instructions does Claude receive?",
+      "options": [
+        "A) Only 'Use tabs for indentation' — the most specific directory rule wins",
+        "B) Only 'Use 2-space indentation' — user-level rules take highest priority",
+        "C) All three instructions are merged — Claude receives all of them and must reconcile the conflict",
+        "D) 'Use 4-space indentation' from root, because project-level always overrides user and directory levels"
+      ],
+      "correct": "C",
+      "explanation": "Claude Code merges ALL levels of the hierarchy together. When conflicting instructions exist, Claude receives all of them and attempts to reconcile. In practice, this creates ambiguity — the solution is to avoid conflicts by keeping indentation standards in exactly one place (typically project-level CLAUDE.md) rather than spreading them across levels."
+    }
+  ]
+}

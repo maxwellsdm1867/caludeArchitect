@@ -1,0 +1,72 @@
+{
+  "unit": "2.1",
+  "title": "Context Preservation Across Long Interactions",
+  "task_statement": "5.1",
+  "questions": [
+    {
+      "id": "2.1.1",
+      "scenario": "Your customer support agent handles complex billing disputes that span 15-20 turns. After turn 12, you notice the agent starts saying 'the refund we discussed' instead of referencing the specific amount ($1,234.56) and order number (#ORD-7892). The final resolution email contains incorrect amounts.",
+      "question": "What is the most effective fix for this context degradation?",
+      "options": [
+        "A) Increase the model's context window size to accommodate longer conversations",
+        "B) Use progressive summarization to compress earlier turns into shorter summaries",
+        "C) Inject a structured case facts block (JSON with amounts, order numbers, dates) into the system prompt that persists across all turns",
+        "D) Add 'remember to reference specific numbers' to the system prompt instructions"
+      ],
+      "correct": "C",
+      "explanation": "A structured case facts block keeps critical data (amounts, IDs, dates) in a format the model reliably references regardless of conversation length. Option A delays degradation but doesn't prevent it — the 'lost in the middle' effect still applies. Option B is the trap: progressive summarization is exactly what causes '$1,234.56 on order #789' to become 'a refund was discussed.' Option D is a vague instruction that doesn't solve the structural problem."
+    },
+    {
+      "id": "2.1.2",
+      "scenario": "A legal research assistant processes case documents with 100+ pages of testimony. When asked about details from the middle of the document, the assistant provides less accurate answers than when asked about details from the beginning or end.",
+      "question": "What causes this behavior and what is the correct mitigation?",
+      "options": [
+        "A) The model needs extended thinking enabled to process long documents — enable it and retry",
+        "B) The 'lost in the middle' effect causes lower attention to mid-document content — restructure input to place key findings at the beginning and end",
+        "C) The model's context window is too small — switch to a model with a larger context window",
+        "D) The document should be summarized into bullet points before processing to reduce length"
+      ],
+      "correct": "B",
+      "explanation": "The 'lost in the middle' effect is well-documented: models attend more to content at the beginning and end of long inputs. The fix is structural — place key findings at boundaries. Option A doesn't address the attention distribution pattern. Option C doesn't fix the effect (it exists even in very large context windows). Option D loses details, which is the opposite of what legal research requires."
+    },
+    {
+      "id": "2.1.3",
+      "scenario": "Your tool-using agent calls a database API that returns 500 rows of results. The agent needs to analyze patterns across these results and answer follow-up questions. You notice that when the full results are in context, the agent's responses to subsequent questions become vague and slow.",
+      "question": "What is the best approach to handle this?",
+      "options": [
+        "A) Trim the tool output to keep only the first and last 50 rows, discarding the middle",
+        "B) Instruct the agent to 'focus on the most important rows' from the tool output",
+        "C) Have the agent extract structured findings (counts, patterns, outliers) from the tool output immediately, then trim the raw output from context",
+        "D) Store all 500 rows in a separate context window and reference them as needed"
+      ],
+      "correct": "C",
+      "explanation": "Extracting structured findings before trimming preserves the analytical value while freeing context space. The agent's analysis is captured in a compact format that survives context management. Option A loses data from the middle where patterns may exist. Option B is a vague instruction. Option D is not a real capability — you can't reference a separate context window."
+    },
+    {
+      "id": "2.1.4",
+      "scenario": "A financial analysis agent conducts multi-turn analysis of quarterly earnings. By turn 18, it references 'strong growth metrics' instead of the specific numbers (revenue $4.2B, up 23% YoY). A colleague suggests implementing progressive summarization that runs every 5 turns to keep context manageable.",
+      "question": "Why is this suggestion problematic for this use case?",
+      "options": [
+        "A) Progressive summarization is too computationally expensive for real-time conversations",
+        "B) Progressive summarization preserves structure but loses specific numbers, dates, and identifiers — exactly the data financial analysis requires",
+        "C) Progressive summarization only works with models that have extended thinking capability",
+        "D) Progressive summarization should run every 3 turns, not every 5 turns"
+      ],
+      "correct": "B",
+      "explanation": "Progressive summarization converts '$4.2B revenue, 23% YoY growth' into 'strong growth metrics.' It preserves narrative structure but loses the specific quantitative details that financial analysis depends on. The fix is structured fact extraction — pull key numbers into a persistent facts block, not narrative summarization. Options A, C, and D argue about implementation details of the wrong approach."
+    },
+    {
+      "id": "2.1.5",
+      "scenario": "You're building a customer support system where agents handle cases that span multiple sessions (customer calls back the next day to follow up). Each new session starts with a fresh context window.",
+      "question": "What is the most reliable way to preserve case context across sessions?",
+      "options": [
+        "A) Store the full conversation transcript and replay it at the start of each new session",
+        "B) Use progressive summarization on the previous session and inject the summary into the new session's system prompt",
+        "C) Extract structured case facts (customer info, issue details, actions taken, pending items) into a persistent record and inject it as a case facts block in the new session",
+        "D) Train a fine-tuned model on the customer's previous interactions so it remembers the context"
+      ],
+      "correct": "C",
+      "explanation": "Structured case facts (customer ID, order numbers, amounts, actions taken, resolution status) survive session boundaries without loss. Option A wastes context window space on turn-by-turn dialogue that isn't needed — the agent needs facts, not transcript. Option B loses specific details through summarization. Option D is impractical and doesn't address the structural problem of preserving specific data points."
+    }
+  ]
+}

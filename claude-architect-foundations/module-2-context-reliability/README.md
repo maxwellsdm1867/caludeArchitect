@@ -11,12 +11,12 @@ Context management is the hidden foundation of everything else. Agents fail when
 
 | Unit | Topic | Key exam concepts |
 |------|-------|-------------------|
-| [2.1](unit-2.1-context-preservation.md) | Context preservation across long interactions | Progressive summarization risks, "lost in the middle" effect, case facts blocks, trimming tool output |
-| [2.2](unit-2.2-escalation-patterns.md) | Escalation & ambiguity resolution | Explicit triggers, sentiment is unreliable, customer preference honoring, policy gaps |
-| [2.3](unit-2.3-error-propagation.md) | Error propagation in multi-agent systems | Structured error context, access failures vs empty results, local recovery, anti-patterns |
-| [2.4](unit-2.4-codebase-context.md) | Large codebase context management | Context degradation, scratchpad files, subagent delegation, /compact, crash recovery |
-| [2.5](unit-2.5-human-review.md) | Human review workflows & confidence calibration | Aggregate accuracy masking, stratified sampling, field-level confidence, validation sets |
-| [2.6](unit-2.6-provenance.md) | Information provenance & multi-source synthesis | Claim-source mappings, conflicting sources, temporal data, coverage gap reporting |
+| [2.1](unit-2.1-context-preservation/overview.html) | Context preservation across long interactions | Progressive summarization risks, "lost in the middle" effect, case facts blocks, trimming tool output |
+| [2.2](unit-2.2-escalation-patterns/overview.html) | Escalation & ambiguity resolution | Explicit triggers, sentiment is unreliable, customer preference honoring, policy gaps |
+| [2.3](unit-2.3-error-propagation/overview.html) | Error propagation in multi-agent systems | Structured error context, access failures vs empty results, local recovery, anti-patterns |
+| [2.4](unit-2.4-codebase-context/overview.html) | Large codebase context management | Context degradation, scratchpad files, subagent delegation, /compact, crash recovery |
+| [2.5](unit-2.5-human-review/overview.html) | Human review workflows & confidence calibration | Aggregate accuracy masking, stratified sampling, field-level confidence, validation sets |
+| [2.6](unit-2.6-provenance/overview.html) | Information provenance & multi-source synthesis | Claim-source mappings, conflicting sources, temporal data, coverage gap reporting |
 
 ## Key mental models
 

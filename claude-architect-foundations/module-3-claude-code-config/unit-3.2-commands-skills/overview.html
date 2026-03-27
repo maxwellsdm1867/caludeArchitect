@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3.2 — Custom Slash Commands &amp; Skills</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 3</a><span class="sep"></span>
+    <span>Unit 3.2</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 3.2 — Custom Slash Commands &amp; Skills</h1>
+    <p class="subtitle">Task Statement 3.2 — Create reusable commands and skills for Claude Code workflows</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Decision table: Commands vs Skills -->
+  <section class="concept-card">
+    <h2>Commands vs Skills: Which Do You Need?</h2>
+    <p>Both are reusable prompt templates, but they serve different purposes and live in different places.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Aspect</th><th>Commands</th><th>Skills</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Location (project)</strong></td>
+          <td><code>.claude/commands/</code></td>
+          <td><code>.claude/skills/</code></td>
+        </tr>
+        <tr>
+          <td><strong>Location (personal)</strong></td>
+          <td><code>~/.claude/commands/</code></td>
+          <td>N/A</td>
+        </tr>
+        <tr>
+          <td><strong>File format</strong></td>
+          <td>Markdown (<code>.md</code>) with optional YAML frontmatter</td>
+          <td><code>SKILL.md</code> with required YAML frontmatter</td>
+        </tr>
+        <tr>
+          <td><strong>Invocation</strong></td>
+          <td><code>/project:command-name</code> or <code>/user:command-name</code></td>
+          <td>Auto-loaded based on context or invoked via slash command</td>
+        </tr>
+        <tr>
+          <td><strong>Arguments</strong></td>
+          <td><code>$ARGUMENTS</code> placeholder in template</td>
+          <td>Defined in YAML frontmatter</td>
+        </tr>
+        <tr>
+          <td><strong>Context</strong></td>
+          <td>Runs in current conversation by default</td>
+          <td><code>context: fork</code> runs in isolated context (no conversation bleed)</td>
+        </tr>
+        <tr>
+          <td><strong>Best for</strong></td>
+          <td>Simple, repeatable tasks (review, generate, format)</td>
+          <td>Complex workflows needing isolation or specialized context</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Command File Anatomy</h2>
+    <p>A command is a Markdown file in <code>.claude/commands/</code>. The filename (minus <code>.md</code>) becomes the slash command name.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Feature</th><th>Syntax</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Arguments</td>
+          <td><code>$ARGUMENTS</code></td>
+          <td>Replaced with text after the slash command</td>
+        </tr>
+        <tr>
+          <td>Nested directories</td>
+          <td><code>.claude/commands/test/unit.md</code></td>
+          <td>Creates <code>/project:test:unit</code></td>
+        </tr>
+        <tr>
+          <td>Personal commands</td>
+          <td><code>~/.claude/commands/my-cmd.md</code></td>
+          <td>Available as <code>/user:my-cmd</code> in any project</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The <code>context: fork</code> setting in SKILL.md frontmatter is what makes skills
+    fundamentally different from commands. A forked context means the skill runs
+    <strong>without the current conversation history</strong>, preventing context contamination.
+    This is critical for review tasks where you need an independent perspective.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "A developer's personal command works on their machine but not for teammates."
+    Commands in <code>~/.claude/commands/</code> are <strong>user-level, not version-controlled</strong>.
+    Move to <code>.claude/commands/</code> (project-level) for team sharing. This parallels
+    the CLAUDE.md hierarchy trap from Unit 3.1.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll build commands without structure and see why skills with forked context matter.</p>
+    <p><code>python run.py open module-3 unit-3.2 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-3.1-claude-md-hierarchy/overview.html" class="prev">Unit 3.1 — CLAUDE.md Hierarchy</a>
+    <a href="../unit-3.3-path-specific-rules/overview.html" class="next">Unit 3.3 — Path-Specific Rules</a>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "unit": "2.4",
+  "title": "Large Codebase Context Management",
+  "task_statement": "5.4",
+  "questions": [
+    {
+      "id": "2.4.1",
+      "scenario": "A developer is using Claude Code for a refactoring task across a large monorepo. After 25 turns of discussion, Claude starts referring to 'the service class we discussed' instead of the specific class name (PaymentGatewayService in src/payments/gateway.py). The developer asks Claude to continue making changes to that class.",
+      "question": "What is the best immediate action?",
+      "options": [
+        "A) Ask Claude to recall the specific class name from earlier in the conversation",
+        "B) Switch to a model with a larger context window",
+        "C) Have Claude write key decisions and file paths to a PROGRESS.md scratchpad file, then use /compact to compress the conversation",
+        "D) Start a new conversation and re-explain the entire refactoring plan"
+      ],
+      "correct": "C",
+      "explanation": "The vague reference ('the service class we discussed') signals Stage 3 context degradation. Writing key decisions to a scratchpad file preserves them before /compact compresses the conversation. After compaction, Claude can re-read the scratchpad to continue with full context. Option A is unreliable once context has degraded. Option B doesn't fix the fundamental problem. Option D loses all conversation progress."
+    },
+    {
+      "id": "2.4.2",
+      "scenario": "You need Claude Code to refactor 80 files across 12 modules in a large codebase. Each module has its own conventions and interdependencies. After processing the first 3 modules, Claude's suggestions for module 4 start conflicting with decisions made in module 1.",
+      "question": "What is the correct approach for this scope of work?",
+      "options": [
+        "A) Use a model with a larger context window to fit all 80 files",
+        "B) Delegate each module to a separate subagent with a shared scratchpad file documenting cross-module decisions and conventions",
+        "C) Process all 80 files in a single long conversation, using /compact between modules",
+        "D) Ask Claude to 'remember to maintain consistency across all modules'"
+      ],
+      "correct": "B",
+      "explanation": "When the scope exceeds single-context capacity, subagent delegation is the correct pattern. Each subagent handles one module with full attention, and a shared scratchpad file records cross-module decisions (API contracts, naming conventions, shared types) that all subagents reference. Option A doesn't fix attention dilution. Option C loses earlier decisions through compaction. Option D is a vague instruction."
+    },
+    {
+      "id": "2.4.3",
+      "scenario": "A developer's Claude Code session crashes during a complex refactoring that has been going on for 15 turns. When they restart, they have a fresh context window with no memory of the previous session's decisions.",
+      "question": "What practice would have prevented this data loss?",
+      "options": [
+        "A) Using a more stable internet connection to prevent session crashes",
+        "B) Periodically writing key decisions, modified files, and current status to a scratchpad file (e.g., PROGRESS.md) throughout the session",
+        "C) Saving the conversation transcript after every turn",
+        "D) Using extended thinking to make the model's internal state more robust to crashes"
+      ],
+      "correct": "B",
+      "explanation": "Scratchpad files persist on disk and survive session crashes, context compaction, and subagent boundaries. Periodically externalizing decisions to a file means the developer can resume by reading the scratchpad. Option A addresses a symptom, not the practice. Option C is impractical and doesn't provide structured context for resumption. Option D doesn't survive a session restart."
+    },
+    {
+      "id": "2.4.4",
+      "scenario": "A developer uses /compact during a Claude Code session to reclaim context space. After compaction, they notice Claude has lost awareness of a critical architectural decision made 10 turns ago about using event-driven architecture instead of REST for inter-service communication.",
+      "question": "What should the developer have done before running /compact?",
+      "options": [
+        "A) Written the architectural decision to a scratchpad file before compacting — scratchpad files survive compaction",
+        "B) Used a larger model that doesn't require compaction",
+        "C) Told Claude to 'remember the architectural decision' in the compact command",
+        "D) Avoided using /compact entirely — it always loses important context"
+      ],
+      "correct": "A",
+      "explanation": "/compact is a lossy operation — it compresses conversation history and specific details may be lost. The mitigation is to externalize critical decisions to a file before compacting. After compaction, Claude reads the file to restore key context. Option B delays but doesn't prevent the need for context management. Option C is not how /compact works. Option D is too restrictive — /compact is useful when combined with scratchpad practices."
+    },
+    {
+      "id": "2.4.5",
+      "scenario": "You are reviewing two proposed approaches for a large codebase migration task:\n\nApproach A: Process the entire codebase in one session, using a model with 200K context.\nApproach B: Break the work into module-sized tasks, each handled by a subagent, with a coordinator tracking cross-module dependencies in a shared file.",
+      "question": "Which approach is more reliable and why?",
+      "options": [
+        "A) Approach A — the 200K context can hold the entire codebase with room to spare",
+        "B) Approach B — subagent delegation ensures each module gets full attention, and the shared file preserves cross-module consistency regardless of individual context limits",
+        "C) Approach A — it avoids the complexity of coordinating multiple subagents",
+        "D) Neither — large codebase migrations should not use AI assistance"
+      ],
+      "correct": "B",
+      "explanation": "Even with a 200K context window, the 'lost in the middle' effect and attention dilution mean that files processed mid-session get less careful treatment. Subagent delegation gives each module full attention, and the shared scratchpad file ensures cross-module decisions persist. Option A underestimates context degradation in long sessions. Option C trades reliability for convenience. Option D is unnecessarily restrictive."
+    }
+  ]
+}

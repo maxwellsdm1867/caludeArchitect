@@ -1,0 +1,72 @@
+{
+  "unit": "5.4",
+  "title": "Enforcement & Handoff Patterns",
+  "task_statement": "1.4",
+  "questions": [
+    {
+      "id": "5.4.1",
+      "scenario": "You are building a customer service agent that can process refunds. Company policy requires identity verification before any refund over $50. The current implementation adds 'Always verify identity before processing refunds over $50' to the system prompt.",
+      "question": "What is the fundamental problem with this approach?",
+      "options": [
+        "A) The system prompt is too long and the instruction might get lost in context",
+        "B) Prompt instructions have a non-zero failure rate — for a financial compliance rule, even a 1% failure rate is unacceptable and the rule must be enforced programmatically",
+        "C) The model does not understand financial concepts well enough to enforce this rule",
+        "D) The $50 threshold should be stored in a database, not in the prompt"
+      ],
+      "correct": "B",
+      "explanation": "The core issue is that prompts are guidance, not enforcement. They have a non-zero failure rate. For financial compliance rules, this is unacceptable. The fix: a programmatic prerequisite gate that blocks the refund tool unless identity verification has been completed in code. Option A is a secondary concern. Option C is wrong — the model understands the concept, it just cannot guarantee 100% compliance via prompts."
+    },
+    {
+      "id": "5.4.2",
+      "scenario": "Your agent handles customer service and product recommendations. You need to decide which rules to enforce programmatically vs via prompt instructions.\n\n1. Identity verification before refunds (financial)\n2. Friendly conversational tone (style)\n3. Maximum refund amount of $500 (financial)\n4. Recommend products from current catalog only (best practice)\n5. All PII must be redacted from logs (compliance)\n6. Escalate if customer mentions legal action (compliance)\n7. Prefer shorter responses when possible (style)",
+      "question": "Which rules require programmatic enforcement?",
+      "options": [
+        "A) Rules 1 and 3 only — only financial rules need programmatic enforcement",
+        "B) Rules 1, 3, 5, and 6 — financial and compliance rules have consequences that make prompt-only enforcement unacceptable",
+        "C) Rules 1, 3, and 6 — financial rules plus legal escalation, but PII redaction can be prompt-based",
+        "D) All seven rules should be enforced programmatically for maximum reliability"
+      ],
+      "correct": "B",
+      "explanation": "Rules with financial or compliance consequences require programmatic enforcement because even a small failure rate is unacceptable. Rule 1 (identity verification) and Rule 3 (refund cap) are financial gates. Rule 5 (PII redaction) is a compliance requirement — a single PII leak in logs is a regulatory violation, not a minor quality issue. Rule 6 (legal escalation) is also compliance — failing to escalate when a customer threatens legal action creates liability. Rules 2 and 7 (tone, brevity) are style preferences suited to prompt guidance. Rule 4 (catalog) is a best practice that can be handled by constraining the product lookup tool."
+    },
+    {
+      "id": "5.4.3",
+      "scenario": "An agent is handing off a partially completed customer interaction to a human supervisor. The agent has verified the customer's identity, looked up their order history, and determined that the customer's refund request exceeds the agent's authority ($750 refund, agent limit is $500).",
+      "question": "What should the handoff summary include?",
+      "options": [
+        "A) The full conversation transcript so the supervisor has complete context",
+        "B) A narrative summary: 'I talked to the customer about their refund request and found some issues with their order'",
+        "C) A structured summary: customer ID (verified), order number, refund amount requested ($750), agent limit exceeded, actions taken (identity verified, order history reviewed), next step (supervisor approval for amount over $500)",
+        "D) Just the refund amount and customer ID — the supervisor can look up the rest"
+      ],
+      "correct": "C",
+      "explanation": "Structured handoff summaries include: what was accomplished, current state (verified facts), what remains (explicit next steps), and discovered constraints. Option A dumps raw history (too much noise). Option B is vague narrative. Option D lacks critical context about what was already verified and why the handoff occurred."
+    },
+    {
+      "id": "5.4.4",
+      "scenario": "Your agent system processes insurance claims. Regulations require that claims over $10,000 must be reviewed by a licensed adjuster before payout. A developer proposes adding a PostToolUse hook on the payout tool that checks the claim amount.",
+      "question": "Is this the correct enforcement pattern?",
+      "options": [
+        "A) Yes — PostToolUse hooks are the correct pattern for all enforcement",
+        "B) No — the check should be a prerequisite gate that prevents the payout tool from executing at all unless adjuster review is recorded, not a PostToolUse hook that fires after the action",
+        "C) No — this should be a prompt instruction because hooks are too rigid for insurance scenarios",
+        "D) Yes, but only if combined with a prompt instruction as a backup"
+      ],
+      "correct": "B",
+      "explanation": "A PostToolUse hook fires AFTER the tool executes — by then the payout may already be processed. The correct pattern is a prerequisite gate: before the payout tool can execute, code checks whether an adjuster review record exists for claims over $10K. If not, the tool call is blocked and the agent is told to request adjuster review first. Prevention is better than after-the-fact detection."
+    },
+    {
+      "id": "5.4.5",
+      "scenario": "You are designing handoff points in a multi-agent system. Agent A performs initial analysis, Agent B handles specialized processing, and Agent C produces the final output. Between each handoff, context must be transferred.",
+      "question": "What is the most common mistake in multi-agent handoff design?",
+      "options": [
+        "A) Not using structured formats for the handoff data",
+        "B) Passing the full conversation history from one agent to the next, which includes irrelevant internal reasoning, tool call details, and intermediate failures that pollute the receiving agent's context",
+        "C) Using too few handoff points, forcing agents to do too much work",
+        "D) Not encrypting the handoff data between agents"
+      ],
+      "correct": "B",
+      "explanation": "The most common handoff mistake is passing full conversation histories instead of structured summaries. The receiving agent does not need the sender's chain of thought, failed tool calls, or intermediate reasoning. It needs: what was accomplished, current state, relevant data, and what to do next. Full history causes context pollution, attention dilution, and wasted tokens."
+    }
+  ]
+}

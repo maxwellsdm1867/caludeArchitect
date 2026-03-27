@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 4.4 — MCP Server Integration</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 4</a><span class="sep"></span>
+    <span>Unit 4.4</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 4.4 — MCP Server Integration</h1>
+    <p class="subtitle">Task Statement 2.4 — Configure MCP servers for team and personal use, manage secrets, and leverage community servers</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: MCP Configuration Locations -->
+  <section class="concept-card">
+    <h2>MCP Configuration: Where Does It Go?</h2>
+    <p>MCP servers are configured in two locations. The exam tests whether you know which to use.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Config File</th><th>Location</th><th>Scope</th><th>Use For</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>.mcp.json</strong></td>
+          <td>Project root</td>
+          <td>Shared (version controlled)</td>
+          <td>Team tooling &mdash; all devs get these tools when they clone the repo</td>
+        </tr>
+        <tr>
+          <td><strong>~/.claude.json</strong></td>
+          <td>Home directory</td>
+          <td>Personal (not shared)</td>
+          <td>Personal/experimental servers &mdash; your own tools, not for the team</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:1.5rem">Secret Management</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Pattern</th><th>Example</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Environment variable expansion</td>
+          <td><code>"apiKey": "${API_KEY}"</code></td>
+          <td><strong>Correct</strong> &mdash; secrets stay in the environment, config is safe to commit</td>
+        </tr>
+        <tr>
+          <td>Hardcoded secrets</td>
+          <td><code>"apiKey": "sk-ant-abc123..."</code></td>
+          <td><strong>Wrong</strong> &mdash; secrets committed to version control</td>
+        </tr>
+        <tr>
+          <td>No secrets needed</td>
+          <td>Local filesystem tools</td>
+          <td>No credential configuration required</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    <code>.mcp.json</code> is for <strong>team tooling</strong> (shared, version-controlled).
+    <code>~/.claude.json</code> is for <strong>personal servers</strong> (not shared).
+    Both are discovered at connection time and available simultaneously. Use
+    <code>${ENV_VAR}</code> syntax in <code>.mcp.json</code> to reference secrets
+    without committing them &mdash; each developer sets the environment variable locally.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    When a question asks about sharing MCP tools with a team, the answer is always
+    <code>.mcp.json</code> in the project root (version controlled). <code>~/.claude.json</code>
+    is <strong>personal-only</strong>. If a distractor suggests putting team tools in
+    <code>~/.claude.json</code> and telling teammates to copy it, that is always wrong &mdash;
+    use <code>.mcp.json</code> with environment variable expansion for secrets.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab walks through configuring MCP servers in both locations and handling secret management correctly.</p>
+    <p><code>python run.py open module-4 unit-4.4 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-4.3-tool-distribution/overview.html" class="prev">Unit 4.3 &mdash; Tool Distribution</a>
+    <a href="../unit-4.5-builtin-tools/overview.html" class="next">Unit 4.5 &mdash; Built-in Tools</a>
+  </nav>
+
+</div>
+</body>
+</html>

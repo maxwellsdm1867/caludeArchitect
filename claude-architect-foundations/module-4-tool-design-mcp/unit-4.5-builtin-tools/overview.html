@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 4.5 — Built-in Tools (Read, Write, Edit, Bash, Grep, Glob)</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 4</a><span class="sep"></span>
+    <span>Unit 4.5</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 4.5 — Built-in Tools (Read, Write, Edit, Bash, Grep, Glob)</h1>
+    <p class="subtitle">Task Statement 2.5 — Choose the right built-in tool for codebase exploration and modification tasks</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Which Built-in Tool? -->
+  <section class="concept-card">
+    <h2>Built-in Tool Selection Guide</h2>
+    <p>Claude Code provides 6 built-in tools. Choosing the wrong one wastes context tokens and produces worse results. The exam tests this decision tree.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Task</th><th>Correct Tool</th><th>Why Not the Others</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Find files by name or extension</strong></td>
+          <td><strong>Glob</strong> &mdash; searches file paths</td>
+          <td>Grep searches content, not paths. Bash <code>find</code> is slower and less integrated.</td>
+        </tr>
+        <tr>
+          <td><strong>Find text inside files</strong></td>
+          <td><strong>Grep</strong> &mdash; searches file content</td>
+          <td>Glob only matches file names. Read requires knowing the exact file already.</td>
+        </tr>
+        <tr>
+          <td><strong>Read a known file</strong></td>
+          <td><strong>Read</strong> &mdash; reads file contents</td>
+          <td>Grep finds matches but does not show full file. Bash <code>cat</code> works but is less integrated.</td>
+        </tr>
+        <tr>
+          <td><strong>Change a specific section of a file</strong></td>
+          <td><strong>Edit</strong> &mdash; replaces unique text matches</td>
+          <td>Write replaces the entire file. Bash <code>sed</code> is fragile and error-prone.</td>
+        </tr>
+        <tr>
+          <td><strong>Create a new file or rewrite entirely</strong></td>
+          <td><strong>Write</strong> &mdash; creates/overwrites files</td>
+          <td>Edit requires existing unique text to match. Cannot create from scratch.</td>
+        </tr>
+        <tr>
+          <td><strong>Run commands, install packages, execute scripts</strong></td>
+          <td><strong>Bash</strong> &mdash; executes shell commands</td>
+          <td>Other tools are read/write only. Bash handles process execution.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The key insight for codebase exploration: <strong>Grep for content, Glob for paths</strong>.
+      Start broad (Glob to find relevant files), then narrow (Grep to find specific patterns), then
+      Read to examine the full context.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    <strong>Edit requires the old_string to be unique in the file.</strong> If your target text
+    appears multiple times, Edit will fail. Either provide more surrounding context to make the
+    match unique, or use the <code>replace_all</code> parameter for global replacements. This is
+    the most common Edit pitfall on the exam.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    When a question asks &ldquo;how to find where a function is defined in a large codebase,&rdquo;
+    the correct answer is <strong>Grep</strong> (searches file content for the definition pattern).
+    <strong>Glob</strong> is the wrong answer because it searches file <em>names</em>, not content.
+    Conversely, when the question asks &ldquo;find all Python test files,&rdquo; the correct answer
+    is <strong>Glob</strong> (<code>**/test_*.py</code>), not Grep.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab presents 10 codebase tasks &mdash; you&rsquo;ll pick the right built-in tool for each and see why the wrong choice fails.</p>
+    <p><code>python run.py open module-4 unit-4.5 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-4.4-mcp-server-integration/overview.html" class="prev">Unit 4.4 &mdash; MCP Server Integration</a>
+    <span></span>
+  </nav>
+
+</div>
+</body>
+</html>

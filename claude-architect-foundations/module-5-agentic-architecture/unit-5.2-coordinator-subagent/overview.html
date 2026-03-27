@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.2 — Coordinator-Subagent Patterns</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.2</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.2 — Coordinator-Subagent Patterns</h1>
+    <p class="subtitle">Task Statement 1.2 — Design coordinator-subagent architectures with isolated context and scoped tool access</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The architecture pattern -->
+  <section class="concept-card">
+    <h2>Hub-and-Spoke: Coordinator-Subagent Architecture</h2>
+    <p>The coordinator is the brain. Subagents are specialized workers. Communication always flows through the coordinator.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Component</th><th>Role</th><th>Context</th><th>Tools</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Coordinator</strong></td>
+          <td>Decomposes tasks, dispatches to subagents, synthesizes results</td>
+          <td>Full conversation history</td>
+          <td>Task tool (for spawning subagents)</td>
+        </tr>
+        <tr>
+          <td><strong>Subagent</strong></td>
+          <td>Executes one focused task</td>
+          <td>Only what the coordinator passes explicitly</td>
+          <td>4&ndash;5 domain-specific tools</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Critical rule: subagents <strong>do NOT inherit the coordinator's context</strong>.
+      Each subagent starts with a fresh conversation containing only the explicit prompt and
+      context the coordinator provides. This isolation is a feature &mdash; it prevents context
+      pollution and keeps subagents focused.
+    </p>
+  </section>
+
+  <section class="concept-card">
+    <h2>Design Principles</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Principle</th><th>Right</th><th>Wrong</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Context isolation</strong></td>
+          <td>Pass only relevant context to each subagent</td>
+          <td>Let subagents "see" the full coordinator history</td>
+        </tr>
+        <tr>
+          <td><strong>Tool scoping</strong></td>
+          <td>4&ndash;5 tools per subagent, domain-specific</td>
+          <td>18 tools on one agent (degrades tool selection)</td>
+        </tr>
+        <tr>
+          <td><strong>Communication</strong></td>
+          <td>All results flow back through coordinator</td>
+          <td>Subagents communicate directly with each other</td>
+        </tr>
+        <tr>
+          <td><strong>Observability</strong></td>
+          <td>Coordinator logs all subagent dispatches and results</td>
+          <td>Subagents operate as black boxes</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Subagents do <strong>NOT</strong> inherit the coordinator's context. This is the most frequently
+    tested concept in Domain 1. Every subagent starts fresh &mdash; the coordinator must explicitly
+    pass all relevant information. This isolation prevents context pollution and ensures each
+    subagent stays focused on its specific task.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "More tools = more capable agent" is <strong>always wrong</strong>. Research shows that
+    giving a single agent 18+ tools degrades tool selection accuracy. The correct architecture:
+    coordinator with a Task tool, subagents each scoped to 4&ndash;5 domain-specific tools.
+    When you see an answer suggesting "add more tools to the agent," eliminate it.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with a <strong>monolithic agent</strong> that has too many tools &mdash; you'll see tool selection fail, then build the coordinator-subagent pattern.</p>
+    <p><code>python run.py open module-5 unit-5.2 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.1-agentic-loop/overview.html" class="prev">Unit 5.1 — The Agentic Loop</a>
+    <a href="../unit-5.3-subagent-context/overview.html" class="next">Unit 5.3 — Subagent Context Passing</a>
+  </nav>
+
+</div>
+</body>
+</html>

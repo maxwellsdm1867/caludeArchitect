@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.1 — Context Preservation Across Long Interactions</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.1</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.1 — Context Preservation Across Long Interactions</h1>
+    <p class="subtitle">Task Statement 5.1 — Manage context windows to preserve critical information across extended conversations</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Context Degradation Stages -->
+  <section class="concept-card">
+    <h2>The Context Degradation Curve</h2>
+    <p>As conversations extend, Claude's ability to reference earlier details degrades predictably. The exam tests whether you can identify the stage and apply the correct fix.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Stage</th><th>Turns</th><th>Symptom</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1 &mdash; Accurate</strong></td>
+          <td>1&ndash;10</td>
+          <td>References specific class names, variable values, dollar amounts</td>
+          <td>None needed</td>
+        </tr>
+        <tr>
+          <td><strong>2 &mdash; Vague</strong></td>
+          <td>10&ndash;20</td>
+          <td>"The pattern we discussed" instead of <code>OrderProcessor.validate()</code></td>
+          <td>Inject structured fact blocks; use scratchpad files</td>
+        </tr>
+        <tr>
+          <td><strong>3 &mdash; Generic</strong></td>
+          <td>20+</td>
+          <td>"Typical patterns" &mdash; context has effectively degraded to zero</td>
+          <td>Delegate to subagent with fresh context; use <code>/compact</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: <strong>progressive summarization</strong> silently drops numbers, names, and constraints.
+      "$1,234.56 on order #789" becomes "a refund was discussed." The fix is structured fact extraction
+      that preserves critical data in a format the model can reliably reference.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The "lost in the middle" effect means information placed in the <strong>middle</strong> of long
+    context windows is referenced less accurately than information at the <strong>beginning or end</strong>.
+    Put case facts blocks at the top of system prompts, not buried in conversation history.
+    When trimming tool output, keep the first and last sections &mdash; trim the middle.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Use progressive summarization to keep context manageable" sounds correct but is a
+    <strong>distractor</strong> when the scenario involves specific numbers, dates, or identifiers.
+    Summarization <em>loses</em> those details. The correct answer preserves them in structured
+    blocks (e.g., a case facts JSON) that survive context compression.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see progressive summarization lose critical details, then build a structured preservation system.</p>
+    <p><code>python run.py open module-2 unit-2.1 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <span></span>
+    <a href="../unit-2.2-escalation-patterns/overview.html" class="next">Unit 2.2 &mdash; Escalation Patterns</a>
+  </nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "unit": "5.7",
+  "title": "Session State & Resumption",
+  "task_statement": "1.7",
+  "questions": [
+    {
+      "id": "5.7.1",
+      "scenario": "Your code review agent analyzed a pull request yesterday and found 5 issues. Overnight, the developer pushed 3 new commits addressing some of the issues and adding new code. The team lead asks you to continue the review.",
+      "question": "What is the correct approach?",
+      "options": [
+        "A) Use --resume to restore the prior session and continue the review where it left off",
+        "B) Start a fresh session with a structured summary of yesterday's findings and the current state of the PR, so the agent reviews the updated code without stale assumptions",
+        "C) Use fork_session to branch from yesterday's session and review only the new commits",
+        "D) Re-run yesterday's session verbatim since the same issues likely still exist"
+      ],
+      "correct": "B",
+      "explanation": "The code has changed since the original session. Resuming would give the agent stale context — it would reference the old code state and might not notice the new commits. A fresh session + summary provides: what was found before, what was addressed, and asks the agent to review the current state. Option C still carries stale assumptions. Option D wastes effort and misses new code."
+    },
+    {
+      "id": "5.7.2",
+      "scenario": "An agent is performing a complex data analysis task that takes multiple interactions. Midway through, the user's internet drops and the session is interrupted. The underlying data has NOT changed.",
+      "question": "What is the best way to continue?",
+      "options": [
+        "A) Start a completely new session and redo all the analysis from scratch",
+        "B) Use --resume to restore the session context and continue from where the agent left off, since the underlying data has not changed",
+        "C) Start a fresh session with a summary, even though nothing has changed",
+        "D) Use fork_session from the interrupted point"
+      ],
+      "correct": "B",
+      "explanation": "--resume is appropriate when the underlying data has not changed. The session context accurately reflects reality, so resuming is both efficient and correct. Option A wastes time and API calls redoing completed work. Option C is unnecessarily cautious when data is unchanged. Option D is for parallel exploration, not continuation."
+    },
+    {
+      "id": "5.7.3",
+      "scenario": "Your agent has been debugging a production issue for 20 minutes and has accumulated extensive context about the system state. The team wants to try two different fix approaches simultaneously without losing the debugging context.",
+      "question": "Which mechanism is appropriate?",
+      "options": [
+        "A) Use --resume twice to create two copies of the session",
+        "B) Use fork_session to create two branches from the current debugging context, each exploring a different fix approach",
+        "C) Start two fresh sessions and manually copy the debugging context into each",
+        "D) Have the agent try both approaches sequentially in the same session"
+      ],
+      "correct": "B",
+      "explanation": "fork_session creates a snapshot of the current context and spawns a new branch. Both branches inherit the full debugging context (understanding of the system, findings so far) and can independently explore different fix approaches. Option A is not how --resume works. Option C is error-prone (manually serializing complex context). Option D is sequential, not parallel."
+    },
+    {
+      "id": "5.7.4",
+      "scenario": "Your agent completed a security audit of a codebase last week. Since then, the team has merged 15 pull requests including a major dependency update. Management wants the agent to 'continue the audit from where it left off.'",
+      "question": "Why is resuming the prior session problematic?",
+      "options": [
+        "A) The session token has expired and cannot be restored",
+        "B) The agent's context contains assumptions about the prior code state — file contents, dependency versions, and security posture — that are now stale, leading to incorrect audit conclusions about the current codebase",
+        "C) 15 PRs is too many changes for the context window to handle",
+        "D) Security audits should always be run from scratch for compliance reasons"
+      ],
+      "correct": "B",
+      "explanation": "The agent's session context reflects the codebase as it existed last week. Resuming means the agent will reason about files that have changed, dependencies that have been updated, and security configurations that may be different. Its conclusions will be based on stale data. The correct approach: fresh session + summary of prior audit findings + current codebase state."
+    },
+    {
+      "id": "5.7.5",
+      "scenario": "You are designing the fresh session + summary pattern for a long-running research agent. The prior session conducted 15 web searches, read 8 documents, and produced intermediate analysis. You need to create the summary for the new session.",
+      "question": "What should the summary include?",
+      "options": [
+        "A) The full conversation history from the prior session so nothing is lost",
+        "B) All 15 search queries and 8 document URLs so the new session can re-read them",
+        "C) A structured summary: key findings (with sources), open questions remaining, approaches that were tried and failed, and the specific task that still needs to be completed",
+        "D) Just the final analysis from the prior session — the intermediate steps do not matter"
+      ],
+      "correct": "C",
+      "explanation": "An effective summary captures: what was found (key findings with sources for verification), what was tried and failed (prevents the new session from repeating dead ends), open questions, and remaining work. Option A defeats the purpose of a fresh session (full history = stale context). Option B requires re-reading everything (wasteful). Option D loses valuable context about failed approaches."
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.2 — Escalation & Ambiguity Resolution</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.2</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.2 — Escalation & Ambiguity Resolution</h1>
+    <p class="subtitle">Task Statement 5.2 — Design escalation triggers and ambiguity resolution strategies for AI agents</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Escalation Decision Tree -->
+  <section class="concept-card">
+    <h2>The Escalation Decision Tree</h2>
+    <p>When should an AI agent hand off to a human? The exam rewards explicit trigger-based escalation, not sentiment analysis.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Condition</th><th>Escalate?</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Customer explicitly requests human</strong></td>
+          <td>YES &mdash; immediately</td>
+          <td>Customer preference overrides all other signals. Do NOT investigate first.</td>
+        </tr>
+        <tr>
+          <td><strong>Policy gap</strong> (request not covered by policy)</td>
+          <td>YES</td>
+          <td>Agent cannot invent policy. Escalate with structured context.</td>
+        </tr>
+        <tr>
+          <td><strong>No progress after N attempts</strong></td>
+          <td>YES</td>
+          <td>Define N concretely (e.g., 3 tool calls with no resolution).</td>
+        </tr>
+        <tr>
+          <td><strong>Frustrated customer, simple issue</strong></td>
+          <td>NO &mdash; resolve first</td>
+          <td>Offer resolution; escalate only if they insist after solution offered.</td>
+        </tr>
+        <tr>
+          <td><strong>Agent self-reports low confidence</strong></td>
+          <td>UNRELIABLE</td>
+          <td>Model confidence is not calibrated for escalation decisions.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: escalation triggers must be <strong>explicit and deterministic</strong> &mdash;
+      based on observable conditions (customer said "talk to a human," policy lookup returned empty,
+      retry count exceeded threshold), not inferred sentiment or self-assessed confidence.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Sentiment-based escalation fails in <strong>both directions</strong>: frustrated customers
+    with simple issues get over-escalated (wasting human time), while calm customers with
+    genuinely complex issues get under-escalated (poor outcomes). The exam always prefers
+    explicit trigger conditions over sentiment analysis.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Analyze customer sentiment to decide when to escalate" sounds sophisticated but is
+    <strong>almost always a distractor</strong>. Sentiment correlates poorly with escalation need.
+    The correct answer defines explicit conditions: customer requests human, policy gap detected,
+    or resolution attempts exhausted.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with sentiment-based escalation &mdash; watch it fail on calm-but-complex and angry-but-simple cases, then build explicit trigger logic.</p>
+    <p><code>python run.py open module-2 unit-2.2 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-2.1-context-preservation/overview.html" class="prev">Unit 2.1 &mdash; Context Preservation</a>
+    <a href="../unit-2.3-error-propagation/overview.html" class="next">Unit 2.3 &mdash; Error Propagation</a>
+  </nav>
+
+</div>
+</body>
+</html>

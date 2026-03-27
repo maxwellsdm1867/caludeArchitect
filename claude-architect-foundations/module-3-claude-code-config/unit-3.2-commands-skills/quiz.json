@@ -1,0 +1,72 @@
+{
+  "unit": "3.2",
+  "title": "Custom Slash Commands & Skills",
+  "task_statement": "3.2",
+  "questions": [
+    {
+      "id": "3.2.1",
+      "scenario": "A developer creates a custom code review command at ~/.claude/commands/review.md that works well on their machine. When they tell their team about it, no one else can find the /user:review command.",
+      "question": "What is the issue and how should it be fixed?",
+      "options": [
+        "A) The team needs to restart Claude Code to see new commands",
+        "B) The command is in the user-level directory (~/.claude/commands/) which is not shared via git — move it to .claude/commands/ in the project repo",
+        "C) The command filename must match the project name to be visible to the team",
+        "D) Custom commands only work for the project owner, not collaborators"
+      ],
+      "correct": "B",
+      "explanation": "Commands in ~/.claude/commands/ are user-level and personal — they are not checked into version control. To share commands with the team, place them in .claude/commands/ at the project level and commit to git. This is the same user-vs-project pattern as CLAUDE.md hierarchy (Unit 3.1)."
+    },
+    {
+      "id": "3.2.2",
+      "scenario": "You need to create a Claude Code workflow that reviews generated code for security issues. The review must NOT be influenced by the conversation that generated the code — it needs an independent, fresh perspective.",
+      "question": "Which approach ensures an independent review?",
+      "options": [
+        "A) Create a command in .claude/commands/review.md with detailed review instructions",
+        "B) Create a skill in .claude/skills/ with SKILL.md containing context: fork in the YAML frontmatter",
+        "C) Tell the user to start a new Claude Code session manually before running the review command",
+        "D) Add 'ignore previous conversation' to the beginning of the command template"
+      ],
+      "correct": "B",
+      "explanation": "The context: fork setting in SKILL.md frontmatter runs the skill in an isolated context without the current conversation history. This is the built-in mechanism for independent review — no manual session management needed. Option A runs in the current conversation context by default, so it would be influenced by prior exchanges. Option D does not reliably clear context."
+    },
+    {
+      "id": "3.2.3",
+      "scenario": "You want to create a command that generates test files. The command should accept a file path as an argument, like: /project:gen-test src/api/users.ts",
+      "question": "How should the command template reference the argument?",
+      "options": [
+        "A) Use {{filepath}} as a placeholder in the command markdown",
+        "B) Use $ARGUMENTS in the command markdown — it will be replaced with everything after the command name",
+        "C) Define an args: field in the YAML frontmatter of the command file",
+        "D) Arguments are not supported in commands — use skills instead"
+      ],
+      "correct": "B",
+      "explanation": "$ARGUMENTS is the placeholder used in command templates. When a user types /project:gen-test src/api/users.ts, the $ARGUMENTS placeholder is replaced with 'src/api/users.ts'. This is a simple string substitution mechanism built into Claude Code's command system."
+    },
+    {
+      "id": "3.2.4",
+      "scenario": "Your team has many commands organized by category. You want to create /project:test:unit, /project:test:integration, and /project:test:e2e as separate commands.",
+      "question": "How should the command files be organized?",
+      "options": [
+        "A) Create three files: .claude/commands/test-unit.md, .claude/commands/test-integration.md, .claude/commands/test-e2e.md",
+        "B) Create a nested directory: .claude/commands/test/unit.md, .claude/commands/test/integration.md, .claude/commands/test/e2e.md",
+        "C) Create one file .claude/commands/test.md that handles all three via conditional logic",
+        "D) Colon-separated commands require a special registry file in .claude/config/"
+      ],
+      "correct": "B",
+      "explanation": "Nested directories in .claude/commands/ create colon-separated command names. A file at .claude/commands/test/unit.md becomes /project:test:unit. This provides clean hierarchical organization for related commands."
+    },
+    {
+      "id": "3.2.5",
+      "scenario": "A team is deciding whether to implement a complex multi-step deployment workflow as a command or a skill. The workflow needs to: (1) run tests, (2) build artifacts, (3) deploy to staging, and (4) run smoke tests. Each step may need different context and the deployment step should not be influenced by test output.",
+      "question": "Which implementation is most appropriate?",
+      "options": [
+        "A) A single command in .claude/commands/deploy.md with all four steps in sequence",
+        "B) A skill with context: fork that ensures each step runs independently without context contamination",
+        "C) Four separate commands invoked manually in sequence by the developer",
+        "D) A CLAUDE.md rule that defines the deployment process"
+      ],
+      "correct": "B",
+      "explanation": "A skill with context: fork is designed for complex workflows that need context isolation. The deployment step should not be influenced by test output, which requires the forked context capability. A command runs in the current conversation and would carry forward all prior context. Four separate commands require manual orchestration and still do not guarantee isolation."
+    }
+  ]
+}

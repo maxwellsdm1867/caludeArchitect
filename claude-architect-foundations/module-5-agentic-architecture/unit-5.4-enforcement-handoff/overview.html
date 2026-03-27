@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.4 — Enforcement & Handoff Patterns</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.4</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.4 — Enforcement & Handoff Patterns</h1>
+    <p class="subtitle">Task Statement 1.4 — Choose programmatic enforcement vs prompt-based guidance; design structured handoff summaries</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The decision tree -->
+  <section class="concept-card">
+    <h2>Decision Tree: Programmatic vs Prompt-Based</h2>
+    <p>This decision appears in almost every exam scenario involving safety, compliance, or financial rules.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Question</th><th>If YES</th><th>If NO</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Must the rule be followed 100% of the time?</strong></td>
+          <td>Programmatic enforcement (hooks, prerequisite gates, code-level checks)</td>
+          <td>Prompt-based guidance is acceptable</td>
+        </tr>
+        <tr>
+          <td><strong>Are there financial/legal/safety consequences for violation?</strong></td>
+          <td>MUST be programmatic &mdash; prompts have a non-zero failure rate</td>
+          <td>Prompt guidance for best practices, style preferences</td>
+        </tr>
+        <tr>
+          <td><strong>Is the rule a hard constraint (refund limits, identity verification)?</strong></td>
+          <td>Prerequisite gate: block the action until the condition is verified in code</td>
+          <td>Prompt instruction with monitoring</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Structured Handoff Summaries</h2>
+    <p>When control passes between agents (or from agent to human), the handoff summary must be structured, not narrative.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Include in Handoff</th><th>Exclude from Handoff</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>What was accomplished (structured list of actions taken)</td>
+          <td>Internal reasoning or chain of thought</td>
+        </tr>
+        <tr>
+          <td>Current state (verified facts, pending items)</td>
+          <td>Speculative analysis</td>
+        </tr>
+        <tr>
+          <td>What remains (explicit next steps for the recipient)</td>
+          <td>Full conversation history</td>
+        </tr>
+        <tr>
+          <td>Any constraints or blockers discovered</td>
+          <td>Tool call details or raw API responses</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Prompt instructions have a <strong>non-zero failure rate</strong>. For rules with financial,
+    legal, or safety consequences, this failure rate is unacceptable. The exam tests this
+    distinction heavily: if the scenario involves money, compliance, or safety, the answer
+    is <em>always</em> programmatic enforcement (hooks, gates, code checks) &mdash; never
+    "add it to the prompt."
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Answer options like "add a system prompt instruction telling the agent to always verify
+    identity before processing refunds" sound reasonable but are <strong>wrong for critical rules</strong>.
+    The correct answer is a prerequisite gate: code-level check that blocks the refund tool
+    unless identity verification has been completed. Prompts guide; code enforces.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with a <strong>prompt-only</strong> enforcement approach for refund limits &mdash; you'll see it fail, then build programmatic gates.</p>
+    <p><code>python run.py open module-5 unit-5.4 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.3-subagent-context/overview.html" class="prev">Unit 5.3 — Subagent Context</a>
+    <a href="../unit-5.5-hooks/overview.html" class="next">Unit 5.5 — Agent SDK Hooks</a>
+  </nav>
+
+</div>
+</body>
+</html>

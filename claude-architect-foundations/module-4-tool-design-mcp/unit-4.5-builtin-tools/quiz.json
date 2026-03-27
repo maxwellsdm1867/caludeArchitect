@@ -1,0 +1,72 @@
+{
+  "unit": "4.5",
+  "title": "Built-in Tools (Read, Write, Edit, Bash, Grep, Glob)",
+  "task_statement": "2.5",
+  "questions": [
+    {
+      "id": "4.5.1",
+      "scenario": "You need to find where the function 'calculate_tax' is defined in a large codebase with 500+ files. You don't know which file it's in.",
+      "question": "Which built-in tool should you use?",
+      "options": [
+        "A) Glob -- search for files matching 'calculate_tax'",
+        "B) Grep -- search file content for the definition pattern 'def calculate_tax'",
+        "C) Read -- read each file until you find the function",
+        "D) Bash -- run 'find . -name calculate_tax'"
+      ],
+      "correct": "B",
+      "explanation": "Grep searches FILE CONTENT, which is what you need to find a function definition. 'def calculate_tax' is a content pattern that Grep will match. Glob (A) searches file NAMES/PATHS, not content -- 'calculate_tax' is a function name, not a file name. Read (C) requires knowing the file first. Bash find (D) also searches file names, not content."
+    },
+    {
+      "id": "4.5.2",
+      "scenario": "You need to find all Python test files in a project to understand the test structure. Test files follow the pattern 'test_*.py' or '*_test.py'.",
+      "question": "Which built-in tool should you use?",
+      "options": [
+        "A) Grep -- search for 'import pytest' in all files",
+        "B) Glob -- search for file paths matching '**/test_*.py'",
+        "C) Bash -- run 'ls -R | grep test'",
+        "D) Read -- read the project's test configuration file"
+      ],
+      "correct": "B",
+      "explanation": "Glob searches FILE PATHS, which is exactly what you need to find files by name pattern. '**/test_*.py' matches all test files recursively. Grep (A) searches file content, not names -- not all test files import pytest. Bash ls (C) is less integrated and harder to parse. Read (D) only works if you already know the config file location."
+    },
+    {
+      "id": "4.5.3",
+      "scenario": "You need to change the default timeout value from 30 to 60 in a configuration file. The line 'timeout: 30' appears only once in the file.",
+      "question": "Which built-in tool should you use?",
+      "options": [
+        "A) Write -- rewrite the entire file with the new value",
+        "B) Bash -- use sed to replace the value",
+        "C) Edit -- replace the unique string 'timeout: 30' with 'timeout: 60'",
+        "D) Read the file, then Write the modified version"
+      ],
+      "correct": "C",
+      "explanation": "Edit is designed for targeted replacements when the old_string is unique in the file. 'timeout: 30' appears once, so Edit will match and replace it precisely. Write (A) rewrites the entire file, which is wasteful for a single-line change. Bash sed (B) is fragile and error-prone. Read+Write (D) requires transferring the entire file content through the conversation."
+    },
+    {
+      "id": "4.5.4",
+      "scenario": "You are exploring an unfamiliar codebase for the first time. You need to understand the project structure before diving into any specific file.",
+      "question": "What is the recommended incremental exploration strategy?",
+      "options": [
+        "A) Read every file in the project to build a complete mental model",
+        "B) Use Glob to find key files (README, package.json, main entry points), then Read those files, then Grep for specific patterns as questions arise",
+        "C) Use Bash to run 'cat *' and read all file contents at once",
+        "D) Use Grep to search for 'import' statements across all files to understand dependencies"
+      ],
+      "correct": "B",
+      "explanation": "Incremental exploration: start broad (Glob to find structural files like README, config files, entry points), then narrow (Read the key files), then targeted (Grep for specific patterns). This minimizes context token usage while building understanding. Reading everything (A, C) wastes tokens on irrelevant files. Starting with imports (D) skips the structural overview."
+    },
+    {
+      "id": "4.5.5",
+      "scenario": "You need to rename a variable from 'user_name' to 'username' throughout a file. The string 'user_name' appears 12 times in the file, and all instances should change.",
+      "question": "How should you use the Edit tool for this?",
+      "options": [
+        "A) Call Edit 12 times, once for each instance, with enough surrounding context to make each match unique",
+        "B) Use Edit with the replace_all parameter set to true to change all 12 instances in one call",
+        "C) Use Write to rewrite the entire file with the renamed variable",
+        "D) Use Bash with sed -i 's/user_name/username/g' to replace all instances"
+      ],
+      "correct": "B",
+      "explanation": "Edit's replace_all parameter is designed for exactly this case -- renaming a string across an entire file. It handles all 12 instances in one call. Calling Edit 12 times (A) is wasteful. Write (C) requires sending the entire file content. Bash sed (D) works but is less integrated and harder to verify."
+    }
+  ]
+}

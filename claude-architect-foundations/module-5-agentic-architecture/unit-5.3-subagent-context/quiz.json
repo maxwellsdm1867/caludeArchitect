@@ -1,0 +1,72 @@
+{
+  "unit": "5.3",
+  "title": "Subagent Invocation & Context Passing",
+  "task_statement": "1.3",
+  "questions": [
+    {
+      "id": "5.3.1",
+      "scenario": "Your coordinator dispatches a subagent to analyze a customer complaint. The subagent needs access to the complaint text, the customer's subscription tier, and the product version. The coordinator has all of this in its conversation history.",
+      "question": "How should the coordinator pass this information to the subagent?",
+      "options": [
+        "A) Use fork_session so the subagent inherits the full coordinator context and can find the information itself",
+        "B) Pass the coordinator's full message history as the subagent's initial messages",
+        "C) Include the complaint text, subscription tier, and product version explicitly in the Task tool's prompt, along with a clear task description and expected output format",
+        "D) Store the data in a shared database and give the subagent a database-read tool"
+      ],
+      "correct": "C",
+      "explanation": "Context must be passed explicitly via the Task tool prompt. Include only the specific data the subagent needs plus a clear task description. Option A uses fork_session which inherits everything (violates isolation). Option B leaks the full history (unnecessary context pollution). Option D adds unnecessary infrastructure when direct context passing suffices."
+    },
+    {
+      "id": "5.3.2",
+      "scenario": "You are designing a coordinator that dispatches subagents to handle different aspects of a code review. One subagent handles security analysis and another handles performance analysis. You want to ensure the security subagent cannot accidentally call performance-related tools.",
+      "question": "What mechanism enforces this tool scoping?",
+      "options": [
+        "A) Include instructions in the subagent's system prompt saying 'Do not use performance tools'",
+        "B) Use the allowedTools parameter when creating the subagent to restrict it to only security-related tools",
+        "C) Create separate tool schemas for each subagent and rely on the model to select the correct ones",
+        "D) Run each subagent on a different model to enforce tool isolation"
+      ],
+      "correct": "B",
+      "explanation": "The allowedTools parameter programmatically restricts which tools a subagent can access. This is deterministic — the subagent literally cannot see or call tools outside its allowed list. Option A relies on prompt-based enforcement which has a non-zero failure rate (Unit 5.4 topic). Option C does not actually prevent cross-usage. Option D is unnecessary and impractical."
+    },
+    {
+      "id": "5.3.3",
+      "scenario": "Your coordinator needs to explore two possible approaches to solving a problem. Both approaches need access to the current analysis state, including intermediate results from prior tool calls. The coordinator wants to try both in parallel and use the better result.",
+      "question": "Which mechanism is most appropriate for this parallel exploration?",
+      "options": [
+        "A) Dispatch two Task tool calls, each with a copy of the current analysis state in the prompt",
+        "B) Use fork_session twice to create two branches that inherit the current session context",
+        "C) Run the two approaches sequentially in the same session and compare results",
+        "D) Create two independent coordinator instances from scratch"
+      ],
+      "correct": "B",
+      "explanation": "fork_session is designed for exploratory branches that need to share the current session context. Both branches inherit the full analysis state naturally, without requiring the coordinator to manually serialize and pass it. Option A requires manually reconstructing the context (error-prone for complex states). Option C is sequential, not parallel. Option D loses all accumulated context."
+    },
+    {
+      "id": "5.3.4",
+      "scenario": "A coordinator dispatches three subagents in parallel via three Task tool calls. Subagent A searches for academic papers, Subagent B searches news articles, and Subagent C queries an internal database. All three complete and return results to the coordinator.",
+      "question": "How should the coordinator use these results?",
+      "options": [
+        "A) Pass all three subagent results to a fourth subagent for synthesis, including each subagent's full conversation history",
+        "B) The coordinator itself should synthesize the results, since it has the overall task context and can determine relevance across all three sources",
+        "C) Have the three subagents communicate directly to merge their findings before reporting to the coordinator",
+        "D) Pick the subagent with the most results and discard the others"
+      ],
+      "correct": "B",
+      "explanation": "The coordinator is responsible for synthesis because it holds the overall task context and understands how the pieces fit together. It receives structured results from each subagent and combines them. Option A leaks full conversation histories unnecessarily. Option C violates hub-and-spoke (no direct subagent communication). Option D wastes the parallel work."
+    },
+    {
+      "id": "5.3.5",
+      "scenario": "You are building a subagent that extracts financial data from documents. The coordinator passes the document text and a task description. However, the subagent sometimes extracts data from similar-sounding but irrelevant sections of the document.",
+      "question": "What is the most effective improvement?",
+      "options": [
+        "A) Give the subagent more tools so it can verify its own extractions",
+        "B) Include explicit constraints in the Task prompt: which sections to read, what field names to extract, and what to skip — plus expected output format with nullable fields for missing data",
+        "C) Use fork_session instead of Task so the subagent has more context about the overall analysis",
+        "D) Add a second subagent that reviews the first subagent's work in the same session"
+      ],
+      "correct": "B",
+      "explanation": "The fix is better context passing — more explicit constraints in the Task prompt. Specify exactly which sections, fields, and format. Nullable fields prevent fabrication when data is missing (Module 1 technique). Option A adds unnecessary tools. Option C adds irrelevant context. Option D — self-review in the same session is ineffective (Module 1, Unit 1.6 concept)."
+    }
+  ]
+}

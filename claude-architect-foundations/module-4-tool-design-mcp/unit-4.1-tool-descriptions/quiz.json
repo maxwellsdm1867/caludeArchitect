@@ -1,0 +1,72 @@
+{
+  "unit": "4.1",
+  "title": "Effective Tool Descriptions & Boundaries",
+  "task_statement": "2.1",
+  "questions": [
+    {
+      "id": "4.1.1",
+      "scenario": "Your customer service agent has 8 tools including lookup_customer, lookup_order, and get_account_history. Users asking about 'my recent order status' trigger lookup_customer 40% of the time instead of lookup_order. The tool descriptions are one-line summaries like 'Retrieves customer information' and 'Retrieves order information'.",
+      "question": "What is the most effective first step to fix this?",
+      "options": [
+        "A) Add a routing classifier that analyzes user intent before tool selection",
+        "B) Consolidate lookup_customer and lookup_order into a single lookup_customer_data tool",
+        "C) Add explicit boundaries to both tool descriptions: when to use each tool and when NOT to use it, pointing to the correct alternative",
+        "D) Add few-shot examples showing which tool to call for different query types"
+      ],
+      "correct": "C",
+      "explanation": "Tool descriptions are the primary selection mechanism. Adding 'Use for order status, shipping, delivery queries. Do NOT use for account/profile queries -- use lookup_customer instead' to lookup_order (and the inverse to lookup_customer) eliminates the ambiguity. A routing classifier (A) adds unnecessary complexity. Consolidation (B) creates a bloated tool. Few-shot examples (D) are secondary to clear descriptions."
+    },
+    {
+      "id": "4.1.2",
+      "scenario": "You are designing a tool for an MCP server that searches a knowledge base. The tool will be used alongside a web_search tool and a database_query tool. You need to write the tool description.",
+      "question": "Which description will produce the most reliable tool selection?",
+      "options": [
+        "A) 'Searches the internal knowledge base for relevant documents.'",
+        "B) 'Searches the internal knowledge base by keyword or semantic query. Use when the user asks about company policies, procedures, or internal documentation. Do NOT use for real-time data (use web_search) or structured record lookups (use database_query). Returns ranked document excerpts with source links.'",
+        "C) 'A powerful search tool for finding information in our knowledge base. Very useful for many types of queries.'",
+        "D) 'Knowledge base search. Input: query string. Output: matching documents.'"
+      ],
+      "correct": "B",
+      "explanation": "Option B follows the production description pattern: what it does, when to use it (positive triggers), when NOT to use it (negative boundaries pointing to alternatives), and what it returns. Options A and D are too minimal -- they lack boundaries. Option C uses vague language ('powerful', 'many types') that gives no actionable selection criteria."
+    },
+    {
+      "id": "4.1.3",
+      "scenario": "Your agent has two tools: update_user_profile and update_user_preferences. Descriptions say 'Updates user profile fields' and 'Updates user preference settings.' When a user says 'change my notification settings,' the agent calls update_user_profile 60% of the time.",
+      "question": "What is the root cause of this misselection?",
+      "options": [
+        "A) The model needs a larger context window to understand the tools",
+        "B) The descriptions lack disambiguation -- both say 'updates user' with no boundary defining which fields belong to which tool",
+        "C) The model temperature is too high, causing random tool selection",
+        "D) Two tools with similar names should always be consolidated into one"
+      ],
+      "correct": "B",
+      "explanation": "The descriptions are nearly identical at a semantic level ('updates user X'). Without explicit boundaries listing which fields belong to each tool and when to choose one over the other, the model has no reliable selection criteria. The fix is to add field lists and negative boundaries (e.g., 'Do NOT use for notification, theme, or display settings -- use update_user_preferences')."
+    },
+    {
+      "id": "4.1.4",
+      "scenario": "You are deciding whether to keep calculate_tax and calculate_shipping as separate tools or merge them into a single calculate_order_costs tool.",
+      "question": "When should you split tools rather than consolidate them?",
+      "options": [
+        "A) Always split -- more tools give the model more options",
+        "B) Split when each tool has a distinct trigger context and the model can reliably distinguish between them; consolidate when users frequently need both results together and the tools share the same input",
+        "C) Always consolidate -- fewer tools means simpler selection",
+        "D) Split based on backend implementation; if they call different APIs, keep them separate"
+      ],
+      "correct": "B",
+      "explanation": "The decision depends on usage patterns and selection reliability. If users always need both tax and shipping together and both take order data as input, consolidation reduces unnecessary tool calls. If they are used independently in different contexts (e.g., tax for invoicing, shipping for logistics), splitting with clear boundaries is better. Backend implementation (D) should not drive the tool boundary design."
+    },
+    {
+      "id": "4.1.5",
+      "scenario": "After improving tool descriptions, your agent's tool selection accuracy improved from 60% to 85%. The remaining 15% misselections happen when users use ambiguous phrases that could apply to either of two tools.",
+      "question": "What should you add to handle the remaining ambiguity?",
+      "options": [
+        "A) Add a confidence threshold that rejects tool calls below 85% confidence",
+        "B) Add an edge case note to the description: 'If the user's intent is ambiguous between this tool and X, ask the user to clarify before calling either tool'",
+        "C) Increase the model temperature to explore more tool selection options",
+        "D) Add a pre-processing step that rewrites user queries to be less ambiguous"
+      ],
+      "correct": "B",
+      "explanation": "Adding an explicit edge case instruction in the tool description tells the model what to do when it encounters the exact ambiguity that causes misselection. This is the description-first principle extended to edge cases. Confidence thresholds (A) are not a reliable mechanism for tool selection. Query rewriting (D) adds complexity when the simpler fix is teaching the agent to ask for clarification."
+    }
+  ]
+}

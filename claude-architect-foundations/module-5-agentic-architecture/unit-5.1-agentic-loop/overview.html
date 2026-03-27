@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.1 — The Agentic Loop Lifecycle</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.1</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.1 — The Agentic Loop Lifecycle</h1>
+    <p class="subtitle">Task Statement 1.1 — Understand the agentic loop: stop_reason-driven control flow, tool result appending, and model-driven termination</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: How the agentic loop works -->
+  <section class="concept-card">
+    <h2>The Agentic Loop: stop_reason-Driven Control Flow</h2>
+    <p>An agent is just a while loop. The model decides when to stop, not your code.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>stop_reason</th><th>Meaning</th><th>Your Code Does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><code>"tool_use"</code></strong></td>
+          <td>Model wants to call one or more tools</td>
+          <td>Execute tool(s), append results to messages, loop back</td>
+        </tr>
+        <tr>
+          <td><strong><code>"end_turn"</code></strong></td>
+          <td>Model has finished &mdash; final response ready</td>
+          <td>Break out of loop, present response to user</td>
+        </tr>
+        <tr>
+          <td><strong><code>"max_tokens"</code></strong></td>
+          <td>Response hit the token limit</td>
+          <td>Handle truncation (extend or surface partial result)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The correct pattern: <code>while True</code> &rarr; call API &rarr; check <code>stop_reason</code> &rarr;
+      if <code>"end_turn"</code>, break; if <code>"tool_use"</code>, execute tools and continue.
+      The <strong>model</strong> drives the loop, not arbitrary iteration caps or text parsing.
+    </p>
+  </section>
+
+  <section class="concept-card">
+    <h2>Anti-Patterns the Exam Tests</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Anti-Pattern</th><th>Why It Fails</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Parsing natural language for termination<br><em>("I've completed the task")</em></td>
+          <td>Model may say this mid-process; text content is unreliable as a control signal</td>
+        </tr>
+        <tr>
+          <td>Arbitrary iteration caps as primary stopping</td>
+          <td>Cuts off legitimate multi-step reasoning; the model knows when it is done</td>
+        </tr>
+        <tr>
+          <td>Checking for text content as completion</td>
+          <td>Model may emit text AND tool_use blocks in the same response</td>
+        </tr>
+        <tr>
+          <td>Pre-configured step sequences</td>
+          <td>Removes the model's ability to adapt; agents should be model-driven</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    The agentic loop is <strong>stop_reason-driven</strong>, not step-count-driven. The model signals
+    completion via <code>stop_reason: "end_turn"</code>. Your while loop should check this field &mdash;
+    not parse text, count iterations, or follow a pre-configured sequence. Safety caps (e.g., max 25
+    iterations) are acceptable as a <em>safety net</em>, but never as the <em>primary</em> termination mechanism.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    Answer options that suggest checking for text content in the response (e.g., "if assistant message
+    contains text, the task is complete") are <strong>always wrong</strong>. The model can return both
+    text and tool_use blocks in a single response. Only <code>stop_reason</code> reliably indicates
+    whether the model wants to continue or is done.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see iteration caps fail, then build a proper stop_reason-driven agent.</p>
+    <p><code>python run.py open module-5 unit-5.1 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <span></span>
+    <a href="../unit-5.2-coordinator-subagent/overview.html" class="next">Unit 5.2 — Coordinator-Subagent Patterns</a>
+  </nav>
+
+</div>
+</body>
+</html>

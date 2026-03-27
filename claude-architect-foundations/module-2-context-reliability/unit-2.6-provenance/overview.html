@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 2.6 — Information Provenance & Multi-Source Synthesis</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 2</a><span class="sep"></span>
+    <span>Unit 2.6</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 2.6 — Information Provenance & Multi-Source Synthesis</h1>
+    <p class="subtitle">Task Statement 5.6 — Implement provenance tracking and multi-source synthesis with conflict detection</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The ONE decision tree: Provenance Requirements -->
+  <section class="concept-card">
+    <h2>The Source Reliability Decision Table</h2>
+    <p>When synthesizing information from multiple sources, provenance tracking determines whether the output is trustworthy or dangerously unverifiable.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Situation</th><th>Required Action</th><th>Anti-pattern</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Single source, single claim</strong></td>
+          <td>Map claim to source with citation</td>
+          <td>Presenting claim without attribution</td>
+        </tr>
+        <tr>
+          <td><strong>Multiple sources agree</strong></td>
+          <td>Note agreement; cite all sources for the claim</td>
+          <td>Citing only one source (hides corroboration)</td>
+        </tr>
+        <tr>
+          <td><strong>Sources conflict</strong></td>
+          <td>Report BOTH values with sources; flag the conflict explicitly</td>
+          <td>Silently picking one value or averaging</td>
+        </tr>
+        <tr>
+          <td><strong>Temporal data</strong></td>
+          <td>Prioritize most recent source; note date of each</td>
+          <td>Treating all sources as equally current</td>
+        </tr>
+        <tr>
+          <td><strong>Coverage gap</strong></td>
+          <td>Explicitly report what was NOT found in any source</td>
+          <td>Omitting unfound information (reader assumes it was checked)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The pattern: every claim in the output must map to a source. Every conflict must be
+      surfaced. Every gap must be reported. The exam tests whether you choose
+      <strong>claim-source mappings</strong> over unattributed synthesis.
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Coverage gap reporting is as important as what you <em>do</em> find. If the user asks about
+    5 topics and the sources only cover 3, the output must explicitly state "no information found
+    for topics X and Y in any source." Omission without reporting creates a false sense of
+    completeness that readers cannot detect.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Synthesize information from all sources into a coherent summary" sounds professional but is a
+    <strong>distractor</strong> when sources conflict. Coherent summaries <em>hide</em> conflicts
+    by smoothing over disagreements. The correct answer surfaces conflicts explicitly with
+    claim-source mappings so the reader can evaluate.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with a naive synthesis that silently picks favorites among conflicting sources &mdash; then you'll build a provenance-tracked system that maps every claim to its source.</p>
+    <p><code>python run.py open module-2 unit-2.6 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-2.5-human-review/overview.html" class="prev">Unit 2.5 &mdash; Human Review</a>
+    <span></span>
+  </nav>
+
+</div>
+</body>
+</html>

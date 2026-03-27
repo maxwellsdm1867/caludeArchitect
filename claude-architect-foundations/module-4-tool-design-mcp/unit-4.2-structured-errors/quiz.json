@@ -1,0 +1,72 @@
+{
+  "unit": "4.2",
+  "title": "Structured Error Responses for MCP Tools",
+  "task_statement": "2.2",
+  "questions": [
+    {
+      "id": "4.2.1",
+      "scenario": "Your MCP tool server returns errors as plain text strings like 'Error: database connection timeout.' The agent that calls this tool sometimes retries on permanent failures (wasting API calls) and sometimes gives up on transient failures (missing easy recoveries).",
+      "question": "What is the root cause of the agent's poor error handling?",
+      "options": [
+        "A) The agent needs a more sophisticated retry policy with exponential backoff",
+        "B) The error response lacks structured metadata (isRetryable, errorCategory) that the agent needs to decide between retry and propagation",
+        "C) The agent should always retry 3 times before giving up, regardless of error type",
+        "D) The tool should catch all errors internally and return a success response with an error field"
+      ],
+      "correct": "B",
+      "explanation": "Without isRetryable and errorCategory, the agent has no machine-parseable signal to distinguish transient failures (retry) from permanent failures (propagate). Plain text errors force the agent to guess, leading to wasted retries on permanent failures and premature escalation on transient ones."
+    },
+    {
+      "id": "4.2.2",
+      "scenario": "An MCP tool receives a request to fetch a user profile, but the user_id does not exist in the database. The tool needs to return an error.",
+      "question": "Which error response structure is correct?",
+      "options": [
+        "A) {\"isError\": true, \"content\": [{\"type\": \"text\", \"text\": \"User not found\"}]}",
+        "B) {\"isError\": false, \"content\": [{\"type\": \"text\", \"text\": \"Error: user not found\"}]}",
+        "C) {\"isError\": true, \"content\": [{\"type\": \"text\", \"text\": \"{\\\"errorCategory\\\": \\\"not_found\\\", \\\"isRetryable\\\": false, \\\"userMessage\\\": \\\"User ID does not exist. Please verify the ID.\\\"}\"}]}",
+        "D) Throw an exception and let the MCP framework handle it"
+      ],
+      "correct": "C",
+      "explanation": "Option C sets isError: true (correct MCP protocol) and includes structured metadata in the content: errorCategory for routing, isRetryable: false because the user genuinely doesn't exist (retrying won't help), and a userMessage for the end user. Option A lacks structured metadata. Option B sets isError: false which hides the failure from the agent. Option D provides no structured data to the agent."
+    },
+    {
+      "id": "4.2.3",
+      "scenario": "Your MCP tool makes an HTTP request to an external API that returns a 429 (Too Many Requests) with a Retry-After: 30 header.",
+      "question": "What should the tool's error response include?",
+      "options": [
+        "A) isError: true, errorCategory: 'rate_limit', isRetryable: true, retryAfterMs: 30000",
+        "B) isError: true, errorCategory: 'rate_limit', isRetryable: false (the agent should not retry automatically)",
+        "C) isError: false with a message saying 'Please try again in 30 seconds'",
+        "D) isError: true, errorCategory: 'internal', isRetryable: true (categorize all HTTP errors as internal)"
+      ],
+      "correct": "A",
+      "explanation": "A 429 is a textbook retryable error. The response should include isRetryable: true so the agent knows to retry, retryAfterMs: 30000 (converted from seconds to milliseconds) so the agent knows how long to wait, and errorCategory: 'rate_limit' for specific handling. Option B prevents recovery. Option C hides the error. Option D miscategorizes the error."
+    },
+    {
+      "id": "4.2.4",
+      "scenario": "An agent calls a file_read MCP tool which fails with 'Permission denied.' The agent needs to decide whether to retry, try a different approach, or escalate to the user.",
+      "question": "What is the correct recovery strategy for a permission denied error?",
+      "options": [
+        "A) Retry 3 times -- permission issues are often transient",
+        "B) The tool should return isRetryable: false and errorCategory: 'authorization'; the agent should propagate to the user since it cannot fix permissions",
+        "C) The agent should try a different tool to read the file",
+        "D) Lower the model temperature and try again for a more precise file path"
+      ],
+      "correct": "B",
+      "explanation": "Permission denied is a permanent failure -- the agent cannot grant itself file permissions. The tool should signal this with isRetryable: false and errorCategory: 'authorization', so the agent knows to escalate to the user rather than waste retries. Retrying (A) will fail identically. A different tool (C) will face the same permissions. Temperature (D) is irrelevant."
+    },
+    {
+      "id": "4.2.5",
+      "scenario": "You are designing the error response schema for a suite of MCP tools. A colleague suggests always including a detailed stack trace in the error response so the agent can debug issues.",
+      "question": "Why is including stack traces in MCP error responses a bad practice?",
+      "options": [
+        "A) Stack traces are too large for the response payload",
+        "B) Stack traces expose internal implementation details and are not actionable by the agent -- the agent needs errorCategory and isRetryable to decide next steps, not debugging information",
+        "C) Stack traces slow down the response time",
+        "D) Stack traces are only useful in development, not production"
+      ],
+      "correct": "B",
+      "explanation": "The agent is not a developer debugging code -- it needs structured metadata (errorCategory, isRetryable, userMessage) to make recovery decisions. Stack traces are implementation details that leak internal information without providing actionable signals. Log stack traces server-side; return structured error metadata to the agent."
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5.3 — Subagent Invocation & Context Passing</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 5</a><span class="sep"></span>
+    <span>Unit 5.3</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 5.3 — Subagent Invocation & Context Passing</h1>
+    <p class="subtitle">Task Statement 1.3 — Use the Task tool, allowedTools, explicit context, parallel dispatch, and fork_session for subagent invocation</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- The decision table -->
+  <section class="concept-card">
+    <h2>Subagent Invocation Mechanisms</h2>
+    <p>There are multiple ways to spawn and control subagents. Each has distinct context and tool behaviors.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Mechanism</th><th>Context</th><th>Tools</th><th>Use When</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Task tool</strong></td>
+          <td>Fresh context; only the prompt you provide</td>
+          <td>Scoped via <code>allowedTools</code></td>
+          <td>Default for coordinator-subagent dispatch</td>
+        </tr>
+        <tr>
+          <td><strong>fork_session</strong></td>
+          <td>Snapshot of current session context</td>
+          <td>Same as parent session</td>
+          <td>Exploratory branches that share current understanding</td>
+        </tr>
+        <tr>
+          <td><strong>Parallel Task calls</strong></td>
+          <td>Each gets independent fresh context</td>
+          <td>Each scoped independently</td>
+          <td>Independent tasks with no cross-dependencies</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="concept-card">
+    <h2>Context Passing: What to Include</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Include</th><th>Exclude</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Clear task description (what to do and what to return)</td>
+          <td>Coordinator's full conversation history</td>
+        </tr>
+        <tr>
+          <td>Specific data the subagent needs (e.g., extracted text, URLs)</td>
+          <td>Other subagents' internal reasoning</td>
+        </tr>
+        <tr>
+          <td>Output format requirements</td>
+          <td>Unrelated prior results</td>
+        </tr>
+        <tr>
+          <td>Constraints and boundaries</td>
+          <td>System-level configuration details</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The <code>allowedTools</code> parameter restricts which tools a subagent can access.
+      This is critical for security (prevent data exfiltration) and focus (prevent tool selection confusion).
+    </p>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Context must be <strong>explicitly passed</strong> to subagents via the Task tool's prompt.
+    The subagent cannot "see" anything the coordinator does not include. This means the quality
+    of the coordinator's prompt to the subagent directly determines the subagent's effectiveness.
+    Treat subagent prompts like function calls &mdash; specify inputs, expected outputs, and constraints.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    <code>fork_session</code> and <code>Task</code> are <strong>not interchangeable</strong>.
+    fork_session inherits the current session's full context (useful for exploratory branches).
+    Task creates a fresh context (useful for isolated subagent work). If an exam question asks about
+    context isolation, the answer is Task, not fork_session.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts by passing <strong>no context</strong> to a subagent &mdash; you'll see it fail, then build proper context passing.</p>
+    <p><code>python run.py open module-5 unit-5.3 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-5.2-coordinator-subagent/overview.html" class="prev">Unit 5.2 — Coordinator-Subagent</a>
+    <a href="../unit-5.4-enforcement-handoff/overview.html" class="next">Unit 5.4 — Enforcement & Handoff</a>
+  </nav>
+
+</div>
+</body>
+</html>

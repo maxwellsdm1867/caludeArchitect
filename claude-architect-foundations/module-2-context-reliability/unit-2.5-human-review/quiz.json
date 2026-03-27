@@ -1,0 +1,72 @@
+{
+  "unit": "2.5",
+  "title": "Human Review Workflows & Confidence Calibration",
+  "task_statement": "5.5",
+  "questions": [
+    {
+      "id": "2.5.1",
+      "scenario": "Your document extraction system reports 97% accuracy across 10,000 processed invoices. However, finance teams are finding significant errors in refund amounts. The system extracts 15 fields per invoice.",
+      "question": "What is the most likely explanation and what should you do first?",
+      "options": [
+        "A) The 97% accuracy is calculated at the document level — some documents are entirely wrong while most are perfect",
+        "B) The 97% aggregate accuracy masks per-field failures — break down accuracy by individual field to find which fields (likely refund amounts) are failing",
+        "C) The 3% error rate is acceptable — focus on improving the model to reach 99%",
+        "D) The finance team is misreading the extracted data — verify their complaints against the raw extractions"
+      ],
+      "correct": "B",
+      "explanation": "Aggregate accuracy averaging across all fields hides per-field failures. If 14 of 15 fields are at 99% but the refund_amount field is at 55%, the aggregate is still ~96%. Breaking down by field reveals exactly which fields need improvement. Option A is possible but less likely than field-level variance. Option C ignores the specific failure pattern. Option D dismisses valid feedback."
+    },
+    {
+      "id": "2.5.2",
+      "scenario": "You need to build a validation set for your extraction system that processes three document types: typed invoices (80% of volume), scanned receipts (15%), and handwritten notes (5%). You have budget for 200 manual reviews.",
+      "question": "How should you allocate the 200 reviews?",
+      "options": [
+        "A) Proportional to volume: 160 typed invoices, 30 receipts, 10 handwritten",
+        "B) Equal distribution: ~67 of each type",
+        "C) Stratified sampling with over-representation of hard cases: 80 typed invoices, 60 receipts, 60 handwritten",
+        "D) Random sampling from the full pool — any 200 documents regardless of type"
+      ],
+      "correct": "C",
+      "explanation": "Stratified sampling with over-representation of hard cases (scanned receipts, handwritten notes) ensures you catch failures where they're most likely to occur. Proportional sampling (Option A) gives you only 10 handwritten notes — not enough to detect systematic failures. Equal distribution (Option B) over-samples the easy category. Random sampling (Option D) will mostly select typed invoices due to volume, missing rare but error-prone types."
+    },
+    {
+      "id": "2.5.3",
+      "scenario": "Your extraction system outputs per-field confidence scores. A document has: vendor_name (95% confidence), invoice_date (92%), line_items (88%), total_amount (35%). Your human review budget is limited.",
+      "question": "What is the most efficient review strategy?",
+      "options": [
+        "A) Review the entire document since one low-confidence field means the whole extraction is unreliable",
+        "B) Route only the total_amount field to human review — the other fields have high confidence and don't need verification",
+        "C) Skip review entirely — 3 out of 4 fields have high confidence",
+        "D) Run the entire document through the extraction system again and compare results"
+      ],
+      "correct": "B",
+      "explanation": "Field-level confidence enables targeted human review. The 35% confidence on total_amount clearly needs human verification, while the other fields at 88-95% don't. This is far more efficient than reviewing entire documents (Option A) or skipping review when there's a clear problem (Option C). Option D doesn't help if the model consistently fails on the same field — re-extraction may produce the same wrong result."
+    },
+    {
+      "id": "2.5.4",
+      "scenario": "You're evaluating an extraction system and build a validation set of 100 documents. The system scores 98% accuracy. Your colleague points out that all 100 documents in the validation set are clean, typed invoices from the same vendor.",
+      "question": "What is wrong with this validation approach?",
+      "options": [
+        "A) 100 documents is too few — you need at least 1,000 for statistical significance",
+        "B) The validation set is not representative — it excludes the document types and conditions where the system is most likely to fail, producing an inflated accuracy number",
+        "C) The system should be tested on training data, not new documents",
+        "D) 98% accuracy is sufficient regardless of the validation methodology"
+      ],
+      "correct": "B",
+      "explanation": "A validation set of clean, typed invoices from one vendor tells you nothing about performance on scanned receipts, handwritten notes, or invoices from other vendors with different formats. The 98% accuracy is meaningless for production because it doesn't reflect the actual distribution of inputs. Validation sets must include the hard cases — that's where failures hide."
+    },
+    {
+      "id": "2.5.5",
+      "scenario": "Your extraction system processes insurance claims. A field-level analysis reveals:\n- Claim number: 99% accuracy\n- Patient name: 97% accuracy\n- Diagnosis codes: 94% accuracy\n- Treatment amounts: 62% accuracy\n- Date ranges: 58% accuracy\nThe aggregate accuracy across all fields is 82%.",
+      "question": "What is the correct action plan?",
+      "options": [
+        "A) Focus on improving the model until aggregate accuracy reaches 95%",
+        "B) Route all insurance claims to human review since aggregate accuracy is below 90%",
+        "C) Route only treatment_amounts and date_ranges fields to human review; auto-approve claim_number, patient_name, and diagnosis_codes; improve prompts for the two failing fields",
+        "D) Add more training examples for all five fields equally"
+      ],
+      "correct": "C",
+      "explanation": "Field-level accuracy data enables targeted action: the three high-accuracy fields (94-99%) can be auto-approved, saving human review time. The two failing fields (58-62%) need human review now AND prompt improvement for the future. Option A targets the wrong metric (aggregate). Option B wastes review budget on fields that are already accurate. Option D spreads effort equally instead of targeting where it's needed."
+    }
+  ]
+}

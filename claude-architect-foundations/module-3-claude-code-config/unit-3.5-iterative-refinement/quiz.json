@@ -1,0 +1,72 @@
+{
+  "unit": "3.5",
+  "title": "Iterative Refinement Techniques",
+  "task_statement": "3.5",
+  "questions": [
+    {
+      "id": "3.5.1",
+      "scenario": "A developer is using Claude Code to generate API endpoint handlers. Each iteration, they manually review the output, spot issues, and type corrections. After 6 rounds of manual review, the code finally passes all requirements. The developer wants to speed up this process for future endpoints.",
+      "question": "What technique should they adopt?",
+      "options": [
+        "A) Write more detailed initial instructions to get it right on the first try",
+        "B) Use test-driven iteration — write tests encoding the requirements first, then let Claude iterate until tests pass automatically",
+        "C) Switch to a more capable model that produces correct code on the first attempt",
+        "D) Use few-shot examples of correct endpoint handlers in the prompt"
+      ],
+      "correct": "B",
+      "explanation": "Test-driven iteration replaces the manual review bottleneck with automated verification. Write tests that encode the requirements (status codes, response shapes, error handling), then let Claude iterate against the tests. Tests provide an objective, automated success criterion that eliminates the need for human review at each iteration."
+    },
+    {
+      "id": "3.5.2",
+      "scenario": "A developer asks Claude Code to 'build a user dashboard.' After the first attempt, the dashboard is functional but doesn't match the team's design patterns, uses the wrong state management approach, and has unfamiliar component structure.",
+      "question": "Which refinement technique would have prevented the mismatch?",
+      "options": [
+        "A) Test-driven iteration with unit tests for each component",
+        "B) Input/output examples showing the team's existing components as before/after transformation patterns",
+        "C) The interview pattern — instruct Claude to ask clarifying questions about design patterns before generating",
+        "D) Use plan mode to explore existing components first"
+      ],
+      "correct": "C",
+      "explanation": "The interview pattern front-loads context gathering. By instructing Claude to ask clarifying questions about design patterns, state management, and component structure before generating, the developer provides specific requirements that prevent the mismatch. This technique is best when requirements are unclear or implicit (like team conventions). Option D is also helpful but is about codebase exploration, not requirement elicitation."
+    },
+    {
+      "id": "3.5.3",
+      "scenario": "Claude Code generates a data transformation function. The logic is correct but the output format is wrong — it uses snake_case keys instead of camelCase, dates are in ISO format instead of Unix timestamps, and nested objects should be flattened.",
+      "question": "Which refinement technique is most effective for format/style issues?",
+      "options": [
+        "A) Add detailed format specifications to the prompt instructions",
+        "B) Provide input/output examples showing the exact transformation from the current wrong format to the desired format",
+        "C) Use the interview pattern to ask about formatting preferences",
+        "D) Write tests that validate the output format"
+      ],
+      "correct": "B",
+      "explanation": "Input/output examples are the most effective technique for format and style issues. Showing concrete before/after pairs lets Claude learn the exact transformation pattern — camelCase keys, Unix timestamps, flattened structure. The model learns the pattern from examples more reliably than from format specifications described in prose. Option D also works but is more effort for a purely cosmetic issue."
+    },
+    {
+      "id": "3.5.4",
+      "scenario": "A developer gives Claude Code targeted feedback: 'The function handles the happy path correctly but crashes on empty input and negative numbers.' Claude fixes the empty input case but introduces a regression in the happy path while fixing the negative number case.",
+      "question": "What went wrong and how should the developer approach refinement differently?",
+      "options": [
+        "A) The feedback was too specific — give broader instructions like 'fix all edge cases'",
+        "B) The developer should have used test-driven iteration — tests for all cases (happy path + empty + negative) would catch regressions automatically",
+        "C) Claude cannot handle multiple fixes at once — address one issue per iteration",
+        "D) Use a more capable model that can handle multiple fixes without regressions"
+      ],
+      "correct": "B",
+      "explanation": "Test-driven iteration prevents regressions by design. If tests exist for the happy path, empty input, AND negative numbers, Claude cannot regress on the happy path while fixing edge cases — the tests would catch it. Targeted feedback without automated regression checks is fragile. Option C is a workaround that does not prevent regressions either."
+    },
+    {
+      "id": "3.5.5",
+      "scenario": "A team lead wants Claude Code to generate database migration scripts. The requirements are well-defined: specific column types, index patterns, naming conventions, and rollback procedures. The team has 20 existing migration files that follow these patterns perfectly.",
+      "question": "Which combination of refinement techniques will produce the best results?",
+      "options": [
+        "A) Input/output examples only — show 3-4 migration files as examples",
+        "B) Test-driven iteration only — write tests for the migration output",
+        "C) Input/output examples (show existing migrations as pattern) combined with test-driven iteration (validate naming, column types, rollback existence)",
+        "D) The interview pattern — have Claude ask about each migration requirement"
+      ],
+      "correct": "C",
+      "explanation": "Combining input/output examples with test-driven iteration covers both pattern matching (style, structure, naming conventions from examples) and correctness (column types, rollback procedures from tests). Examples teach the format, tests enforce the requirements. The interview pattern is unnecessary here because requirements are already well-defined."
+    }
+  ]
+}

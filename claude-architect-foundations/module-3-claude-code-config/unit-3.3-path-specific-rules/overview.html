@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3.3 — Path-Specific Rules with Glob Patterns</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/theme.js" defer></script>
+</head>
+<body>
+<div class="overview-page">
+
+  <nav class="breadcrumb">
+    <a href="../../">Home</a><span class="sep"></span>
+    <a href="../">Module 3</a><span class="sep"></span>
+    <span>Unit 3.3</span><span class="sep"></span>
+    <span>Overview</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>Unit 3.3 — Path-Specific Rules with Glob Patterns</h1>
+    <p class="subtitle">Task Statement 3.3 — Write path-specific rules using .claude/rules/ with YAML frontmatter and glob patterns</p>
+    <p class="subtitle" style="opacity:0.6">&#9201; 2 min read &#8594; then open the Lab</p>
+  </header>
+
+  <!-- Decision tree: Rules files vs Directory CLAUDE.md -->
+  <section class="concept-card">
+    <h2>When to Use Rules Files vs Directory CLAUDE.md</h2>
+    <p>Both scope instructions to specific parts of your codebase. The exam tests when each is appropriate.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Criteria</th><th>.claude/rules/ file</th><th>Directory CLAUDE.md</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Scope</strong></td>
+          <td>Files matching glob pattern(s) &mdash; can span directories</td>
+          <td>All files in that directory and below</td>
+        </tr>
+        <tr>
+          <td><strong>Location</strong></td>
+          <td><code>.claude/rules/rule-name.md</code></td>
+          <td><code>path/to/dir/CLAUDE.md</code></td>
+        </tr>
+        <tr>
+          <td><strong>Targeting</strong></td>
+          <td><code>paths: ["**/*.test.ts", "**/*.spec.ts"]</code></td>
+          <td>Implicit &mdash; everything in the directory</td>
+        </tr>
+        <tr>
+          <td><strong>Best for</strong></td>
+          <td>File-type rules (all tests, all migrations, all configs)</td>
+          <td>Package/module-specific rules (API layer, frontend, etc.)</td>
+        </tr>
+        <tr>
+          <td><strong>Activation</strong></td>
+          <td>When Claude reads/edits a file matching the glob</td>
+          <td>When Claude reads/edits any file in that directory</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Rule File Anatomy</h3>
+    <p>A rule file uses YAML frontmatter with a <code>paths:</code> field, followed by Markdown instructions:</p>
+    <pre><code>---
+paths:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+---
+# Testing Standards
+- Use describe/it blocks, not test()
+- Mock external services, never call real APIs
+- Name tests: test_&lt;behavior&gt;_&lt;condition&gt;_&lt;expected&gt;</code></pre>
+
+    <h3>Common Glob Patterns</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Pattern</th><th>Matches</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>**/*.test.ts</code></td><td>All TypeScript test files at any depth</td></tr>
+        <tr><td><code>src/api/**</code></td><td>Everything under src/api/</td></tr>
+        <tr><td><code>*.py</code></td><td>Python files in root only</td></tr>
+        <tr><td><code>**/*.py</code></td><td>Python files at any depth</td></tr>
+        <tr><td><code>migrations/**/*.sql</code></td><td>SQL migration files</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ONE key insight -->
+  <div class="key-insight">
+    <strong>&#128161; Key Insight:</strong>
+    Rules files with glob patterns are <strong>more precise than directory CLAUDE.md</strong> for
+    cross-cutting concerns. When you need all test files across the entire repo to follow the
+    same conventions regardless of which package they are in, a single
+    <code>.claude/rules/testing.md</code> with <code>paths: ["**/*.test.*"]</code> is cleaner
+    than duplicating a CLAUDE.md in every directory.
+  </div>
+
+  <!-- ONE exam trap -->
+  <div class="exam-trap">
+    <strong>&#9888; Exam Trap:</strong>
+    "Test files in different directories use different conventions." The wrong answer puts a
+    CLAUDE.md in each test directory. The right answer is a single <code>.claude/rules/</code>
+    file with a glob pattern matching all test files. Rules files handle cross-cutting concerns;
+    directory CLAUDE.md handles location-specific context.
+  </div>
+
+  <!-- CTA -->
+  <div class="concept-card" style="text-align:center; margin-top:2rem">
+    <h3>Ready? Open the Lab</h3>
+    <p>The lab starts with the <strong>wrong approach</strong> &mdash; you'll see duplicated directory CLAUDE.md files, then replace them with a single rules file.</p>
+    <p><code>python run.py open module-3 unit-3.3 lab</code></p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="unit-nav">
+    <a href="../unit-3.2-commands-skills/overview.html" class="prev">Unit 3.2 — Commands &amp; Skills</a>
+    <a href="../unit-3.4-plan-vs-direct/overview.html" class="next">Unit 3.4 — Plan Mode vs Direct Execution</a>
+  </nav>
+
+</div>
+</body>
+</html>

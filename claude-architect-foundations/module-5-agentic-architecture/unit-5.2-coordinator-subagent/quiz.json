@@ -1,0 +1,72 @@
+{
+  "unit": "5.2",
+  "title": "Coordinator-Subagent Patterns",
+  "task_statement": "1.2",
+  "questions": [
+    {
+      "id": "5.2.1",
+      "scenario": "You are building a research agent that needs to: (1) search the web for information, (2) analyze documents for relevant data, (3) synthesize findings into a report, and (4) verify facts against known databases. A colleague suggests putting all 16 tools (4 search, 5 document analysis, 4 synthesis, 3 verification) on a single agent.",
+      "question": "What is the best architecture for this system?",
+      "options": [
+        "A) A single agent with all 16 tools and a detailed system prompt explaining when to use each tool",
+        "B) A coordinator agent with a Task tool that dispatches to 4 specialized subagents, each with 3-5 domain-specific tools",
+        "C) Four independent agents that communicate directly with each other via shared memory",
+        "D) A pipeline of 4 agents where each passes its full conversation history to the next"
+      ],
+      "correct": "B",
+      "explanation": "The coordinator-subagent pattern is correct. 16 tools on one agent degrades tool selection accuracy. Subagents scoped to 3-5 tools each maintain high accuracy. Option A has too many tools. Option C violates the hub-and-spoke principle (no direct subagent-to-subagent communication). Option D leaks irrelevant context forward — each agent should get only what it needs."
+    },
+    {
+      "id": "5.2.2",
+      "scenario": "Your coordinator agent dispatches a web search subagent to find recent pricing data. The subagent completes its search and returns results to the coordinator. The coordinator then needs to dispatch an analysis subagent to process the pricing data.",
+      "question": "What context should the analysis subagent receive?",
+      "options": [
+        "A) The full coordinator conversation history so it understands the overall task",
+        "B) The web search subagent's full conversation history so it can see how the data was found",
+        "C) Only the specific pricing data extracted from the search results, plus a clear task description of what analysis to perform",
+        "D) A summary of all previous subagent interactions for maximum context"
+      ],
+      "correct": "C",
+      "explanation": "Subagents receive only the context they need for their specific task. The analysis subagent needs the pricing data and a task description — not the coordinator's history (option A), the search subagent's internal reasoning (option B), or summaries of unrelated work (option D). Context isolation prevents pollution and keeps subagents focused."
+    },
+    {
+      "id": "5.2.3",
+      "scenario": "Your coordinator-subagent system has a document analysis subagent that occasionally returns results in an inconsistent format. Sometimes it returns structured JSON, other times it returns narrative text. This causes errors when the coordinator tries to parse the results.",
+      "question": "What is the best fix?",
+      "options": [
+        "A) Add more tools to the subagent so it can self-correct its output format",
+        "B) Have the coordinator retry the subagent call when the format is wrong, passing back the full error details",
+        "C) Give the subagent a structured output schema (via tool_use) so its responses are always in a consistent format that the coordinator can reliably parse",
+        "D) Add a format-checking subagent between the analysis subagent and the coordinator"
+      ],
+      "correct": "C",
+      "explanation": "Using tool_use with a JSON schema guarantees the subagent's output format. This is a Module 1 technique (structured output) applied within the coordinator-subagent pattern. Option A adds tool bloat. Option B wastes API calls on a problem that schemas solve deterministically. Option D adds unnecessary complexity — the schema enforces format at the source."
+    },
+    {
+      "id": "5.2.4",
+      "scenario": "You are debugging a coordinator-subagent system. The coordinator dispatches a subagent to analyze customer feedback. The subagent returns an analysis that seems to reference prior customer interactions that it should not know about — information that only exists in the coordinator's conversation history.",
+      "question": "What is the most likely cause?",
+      "options": [
+        "A) The model has long-term memory that persists across API calls",
+        "B) The coordinator is accidentally passing its full conversation history to the subagent instead of only the relevant feedback data",
+        "C) The subagent is accessing a shared database that contains the coordinator's history",
+        "D) This is normal behavior — subagents naturally inherit some context from the coordinator"
+      ],
+      "correct": "B",
+      "explanation": "Subagents never inherit coordinator context automatically (option D is false). The model has no persistent memory across API calls (option A is false). The most likely cause is a bug where the coordinator passes too much context. This is a common implementation error — the coordinator's message-building code must explicitly select only the relevant data to pass, not forward its entire history."
+    },
+    {
+      "id": "5.2.5",
+      "scenario": "Your coordinator needs to gather information from three independent sources: a web search, a database query, and a document analysis. The three tasks have no dependencies on each other.",
+      "question": "How should the coordinator dispatch these tasks?",
+      "options": [
+        "A) Sequentially — dispatch one subagent at a time, waiting for each to complete before starting the next",
+        "B) The coordinator should emit multiple Task tool calls in a single response, allowing parallel execution of all three subagents",
+        "C) Create a single subagent with all three capabilities and let it handle the sequencing",
+        "D) Use the Batch API to process all three as a batch job"
+      ],
+      "correct": "B",
+      "explanation": "When tasks are independent, the coordinator should emit multiple Task tool calls in one response for parallel execution. This is faster and matches the model-driven pattern. Option A is unnecessarily slow. Option C violates the principle of scoped tools (one subagent should not have all capabilities). Option D is for non-blocking batch processing, not real-time agent coordination."
+    }
+  ]
+}
