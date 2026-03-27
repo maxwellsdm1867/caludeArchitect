@@ -10,14 +10,14 @@ This is a study repository for the **Claude Certified Architect – Foundations*
 
 ```
 caludeArchitect/
-├── Claude+Certified+Architect+...+Exam+Guide.pdf   ← Official exam guide (reference)
-└── claude-architect-foundations/                     ← Main study content
-    ├── module-1-prompt-engineering/     ← Domain 4 (20%) — foundational, no prereqs
-    ├── module-2-context-reliability/    ← Domain 5 (15%) — no prereqs
-    ├── module-3-claude-code-config/     ← Domain 3 (20%) — requires Module 1
-    ├── module-4-tool-design-mcp/        ← Domain 2 (18%) — requires Modules 1, 2
-    ├── module-5-agentic-architecture/   ← Domain 1 (27%) — requires all previous
-    └── capstone/                        ← All domains — scenario practice exams
+├── module-1-prompt-engineering/     ← Domain 4 (20%) — 6 units
+├── module-2-context-reliability/    ← Domain 5 (15%) — 6 units
+├── module-3-claude-code-config/     ← Domain 3 (20%) — 6 units
+├── module-4-tool-design-mcp/        ← Domain 2 (18%) — 5 units
+├── module-5-agentic-architecture/   ← Domain 1 (27%) — 7 units
+├── capstone/                        ← All domains — 6 scenario practice exams
+├── assets/                          ← Shared CSS, JS, templates
+└── run.py                           ← CLI dashboard
 ```
 
 Modules are intentionally resequenced from the exam guide order. The exam lists Domain 1 (Agentic Architecture) first by weight, but this repo teaches it last because it integrates all other domains.
@@ -33,7 +33,6 @@ Each unit follows 3 stages (Card → Lab → Drill):
 
 ### 1. Install dependencies
 ```bash
-cd claude-architect-foundations
 pip install -r requirements.txt          # anthropic, jupyter, pydantic, python-dotenv
 ```
 

@@ -8,7 +8,7 @@ Built to be worked through with **Claude Code**, **Jupyter notebooks**, and **in
 
 ```bash
 git clone https://github.com/maxwellsdm1867/caludeArchitect.git
-cd caludeArchitect/claude-architect-foundations
+cd caludeArchitect
 pip install -r requirements.txt
 echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
 ./jupyter.sh start
@@ -19,13 +19,15 @@ Open notebooks at `http://localhost:8888/?token=claude_architect_token` and run 
 ## What's inside
 
 ```
-claude-architect-foundations/
+caludeArchitect/
 ├── module-1-prompt-engineering/     ← Domain 4 (20%) — 6 units, 47 concepts
 ├── module-2-context-reliability/    ← Domain 5 (15%) — 6 units, 48 concepts
 ├── module-3-claude-code-config/     ← Domain 3 (20%) — 6 units, 57 concepts
 ├── module-4-tool-design-mcp/        ← Domain 2 (18%) — 5 units, 44 concepts
 ├── module-5-agentic-architecture/   ← Domain 1 (27%) — 7 units, 57 concepts
-└── capstone/                        ← All domains — 6 scenarios, 42 questions
+├── capstone/                        ← All domains — 6 scenarios, 42 questions
+├── assets/                          ← Shared CSS, JS, HTML templates
+└── run.py                           ← CLI dashboard
 ```
 
 Modules are intentionally resequenced from the exam guide. The exam lists Agentic Architecture first by weight, but this repo teaches it last because it integrates all other domains.
@@ -88,8 +90,6 @@ Claude Code picks up the CLAUDE.md and `.claude/` config automatically. With Jup
 - **4-5 tools per agent max** — more degrades selection
 - **Independent review instances** catch more than self-review
 - **Batch API has no latency SLA** — never use for blocking workflows
-
-See the full [study guide README](claude-architect-foundations/README.md) for setup details, the complete learning sequence, and exam scenario breakdowns.
 
 ## License
 
